@@ -1,3 +1,4 @@
+import 'dotenv/config'
 import { DB, sq, Op } from './mysql.mjs'
 import consoleStamp from 'console-stamp'
 import { createServer, plugins } from 'restify'

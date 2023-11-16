@@ -6,8 +6,8 @@ import Usages from './models/usages.mjs'
 let logging = (...msg) => {
 	console.log(msg[0], msg[1]?.bind || '')
 }
-const sq = new Sequelize('wing', 'root', null, {
-	host: 'localhost',
+const sq = new Sequelize(process.env.DB_NAME || 'wing', process.env.DB_USER || 'root', process.env.DB_PASS, {
+	host: process.env.DB_HOST || 'localhost',
 	port: process.env.DB_PORT || 3306,
 	timezone: '+09:00', // SETUP THE TIMEZONE
 	dialect: 'mysql',
