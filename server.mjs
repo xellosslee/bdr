@@ -36,6 +36,9 @@ server.post('/item/put', async function (req, res) {
 })
 
 server.listen(PORT, '0.0.0.0', async () => {
+	if (typeof process.send == 'function') {
+		process.send('ready')
+	}
 	console.log('%s listening at %s', server.name, server.url)
 })
 process.on('SIGINT', async () => {
