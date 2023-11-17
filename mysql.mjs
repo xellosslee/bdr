@@ -25,7 +25,6 @@ function ping() {
 }
 setInterval(ping, 28500 * 1000)
 
-process.env.SYNC_DB = 1
 DBSync()
 async function DBSync() {
 	if (process.env.SYNC_DB === '2' && process.env.NODE_ENV !== 'prod') {

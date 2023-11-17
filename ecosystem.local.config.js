@@ -6,7 +6,7 @@ module.exports = {
 			script: 'server.mjs',
 			cwd: './',
 			autorestart: false,
-			watch: ['server.mjs', 'models', 'mysql.mjs', 'src'],
+			watch: ['server.mjs', 'models', 'mysql.mjs'],
 		},
 	],
 }
