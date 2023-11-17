@@ -19,6 +19,9 @@ const sq = new Sequelize(process.env.DB_NAME || 'wing', process.env.DB_USER || '
 
 let DB = { initialized: false, sq, Item: Item(sq), Earn: Earn(sq), Usages: Usages(sq) }
 
+DB.Usages.belongsTo(DB.Item, { foreignKey: 'itemId', as: 'Item', constraints: false, foreignKeyConstraint: false })
+DB.Usages.belongsTo(DB.Item, { foreignKey: 'useItemId', as: 'useItem', constraints: false, foreignKeyConstraint: false })
+
 // db connection 끊기지 않게 주기적으로 ping 수행
 function ping() {
 	sq.query('SELECT 1', { logging: false })

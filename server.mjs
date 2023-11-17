@@ -56,7 +56,14 @@ server.get('/item/:itemId', async (req, res) => {
 	try {
 		let item = await DB.Item.findOne({ where: { itemId: req.params.itemId } })
 		let earn = await DB.Earn.findAll({ where: { itemId: req.params.itemId } })
-		let usages = await DB.Usages.findAll({ where: { itemId: req.params.itemId } })
+		let usages = await DB.Usages.findAll({
+			include: [
+				{ model: DB.Item, as: 'Item', attributes: ['name'] },
+				{ model: DB.Item, as: 'useItem', attributes: ['name'] },
+			],
+			where: { useItemId: req.params.itemId },
+		})
+
 		let html = await ejs.renderFile('src/main.ejs', { item, earn, usages })
 		res.writeHead(200, { 'content-length': Buffer.byteLength(html), 'content-type': 'text/html' })
 		res.write(html)

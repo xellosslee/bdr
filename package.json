@@ -13,5 +13,8 @@
     "restify-cors-middleware2": "^2.2.1",
     "sequelize": "^6.35.0",
     "vm": "^0.1.0"
+  },
+  "devDependencies": {
+    "prettier-plugin-ejs": "^0.0.18"
   }
 }

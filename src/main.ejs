@@ -11,17 +11,27 @@
 	</head>
 	<body>
 		<div><%= item.itemId %></div>
+		<hr>
 		<div><img src="<%= item.imgUrl %>" /></div>
 		<div><%= item.name %></div>
 		<div><%- item.desc.replace('\n', '<br />') %></div>
-		<% for (let i = 0 ; Array.isArray(earn) && i < earn.length; i++) {%>
-		<div><%= earn[i].type %></div>
+		<hr>
+		<div>획득경로</div>
+		<% for (var i = 0 ; Array.isArray(earn) && i < earn.length; i++) {%>
+		<div><%= earn[i].type == 'craft' ? '제작' : '습득' %></div>
 		<div><%= earn[i].work %></div>
 		<div><%= earn[i].path %></div>
-		<div><%= earn[i].craftList %></div>
-		<% } %> <% for (let i = 0 ; Array.isArray(usages) && i < usages.length; i++) {%>
-		<div><%= usages[i].itemId %></div>
-		<div><%= usages[i].useItemId %></div>
+			<% for (var x = 0 ; Array.isArray(earn[i].craftList) && x < earn[i].craftList.length; x++) {%>
+				<div><%= earn[i].craftList[x].itemId %></div>
+				<div><%= earn[i].craftList[x].count %></div>
+			<% } %>
+		<% } %>
+		<hr>
+		<div><%= item.name %> - 제작가능 아이템</div>
+		<% for (var y = 0 ; Array.isArray(usages) && y < usages.length; y++) {%>
+		<div><%= usages[y].itemId %></div>
+		<div><%= usages[y].Item.name %></div>
+		<!-- <div><%= usages[y].useItem.name %></div> -->
 		<% } %>
 	</body>
 </html>
