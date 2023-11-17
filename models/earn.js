@@ -1,7 +1,7 @@
-import { Model, DataTypes } from 'sequelize'
+const { Model, DataTypes } = require('sequelize')
 class Earn extends Model {}
 
-export default (sq) => {
+module.exports = (sq) => {
 	Earn.init(
 		{
 			itemId: {

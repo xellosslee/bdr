@@ -2,8 +2,16 @@ module.exports = {
 	apps: [
 		{
 			namespace: 'bdr',
-			name: 'bdr-server',
-			script: 'server.mjs',
+			name: 'bdr-dev',
+			script: 'server.js',
+			cwd: './',
+			autorestart: false,
+			watch: ['server.js', 'models', 'mysql.js'],
+		},
+		{
+			namespace: 'bdr',
+			name: 'bdr-prod',
+			script: 'server.js',
 			cwd: './',
 			max_restarts: 5,
 			env: {

@@ -3,10 +3,10 @@ module.exports = {
 		{
 			namespace: 'bdr',
 			name: 'bdr-server',
-			script: 'server.mjs',
+			script: 'server.js',
 			cwd: './',
 			autorestart: false,
-			watch: ['server.mjs', 'models', 'mysql.mjs'],
+			watch: ['server.js', 'models', 'mysql.js'],
 		},
 	],
 }

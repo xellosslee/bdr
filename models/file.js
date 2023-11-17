@@ -1,7 +1,7 @@
-import { Model, DataTypes } from 'sequelize'
+const { Model, DataTypes } = require('sequelize')
 class File extends Model {}
 
-export default (sq) => {
+module.exports = (sq) => {
 	File.init(
 		{
 			fileId: {

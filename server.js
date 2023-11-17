@@ -1,9 +1,9 @@
-import 'dotenv/config'
-import { DB, sq, Op } from './mysql.mjs'
-import consoleStamp from 'console-stamp'
-import { createServer, plugins } from 'restify'
-import corsMiddleware from 'restify-cors-middleware2'
-import ejs from 'ejs'
+require('dotenv').config()
+const { DB, sq, Op } = require('./mysql')
+const consoleStamp = require('console-stamp')
+const { createServer, plugins } = require('restify')
+const corsMiddleware = require('restify-cors-middleware2')
+const ejs = require('ejs')
 
 const defaultErrorHtml = `<p>일시적으로 장애가 발생할 수 있습니다.</p>
                         <p>잠시 후 다시 시도해 주세요.</p>`

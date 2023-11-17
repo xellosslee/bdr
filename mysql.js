@@ -1,8 +1,4 @@
-import { Sequelize, Op } from 'sequelize'
-import Item from './models/item.mjs'
-import Earn from './models/earn.mjs'
-import Usages from './models/usages.mjs'
-import File from './models/file.mjs'
+const { Sequelize, Op } = require('sequelize')
 
 let logging = (...msg) => {
 	console.log(msg[0], msg[1]?.bind || '')
@@ -18,7 +14,14 @@ const sq = new Sequelize(process.env.DB_NAME || 'wing', process.env.DB_USER || '
 	logging: logging,
 })
 
-let DB = { initialized: false, sq, Item: Item(sq), Earn: Earn(sq), Usages: Usages(sq), File: File(sq) }
+let DB = {
+	initialized: false,
+	sq,
+	Item: require('./models/item.js')(sq),
+	Earn: require('./models/earn.js')(sq),
+	Usages: require('./models/usages.js')(sq),
+	File: require('./models/file.js')(sq),
+}
 
 DB.Usages.belongsTo(DB.Item, { foreignKey: 'itemId', as: 'Item', constraints: false, foreignKeyConstraint: false })
 DB.Usages.belongsTo(DB.Item, { foreignKey: 'useItemId', as: 'useItem', constraints: false, foreignKeyConstraint: false })
@@ -50,4 +53,4 @@ async function DBSync() {
 	}
 }
 
-export { DB, sq, Op }
+module.exports = { DB, sq, Op }
