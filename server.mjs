@@ -54,12 +54,12 @@ server.post('/item/put', async function (req, res) {
 
 server.get('/item/:itemId', async (req, res) => {
 	try {
-		let item = await DB.Item.findOne({ where: { itemId: req.params.itemId } })
+		let item = await DB.Item.findOne({ where: { itemId: req.params.itemId, removed: 0 } })
 		let earn = await DB.Earn.findAll({ where: { itemId: req.params.itemId } })
 		let usages = await DB.Usages.findAll({
 			include: [
-				{ model: DB.Item, as: 'Item', attributes: ['name'] },
-				{ model: DB.Item, as: 'useItem', attributes: ['name'] },
+				{ model: DB.Item, as: 'Item', attributes: ['name'], where: {removed: 0} },
+				{ model: DB.Item, as: 'useItem', attributes: ['name'], where: {removed: 0} },
 			],
 			where: { useItemId: req.params.itemId },
 		})
