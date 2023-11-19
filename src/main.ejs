@@ -29,9 +29,10 @@
 		<hr>
 		<div><%= item.name %> - 제작가능 아이템</div>
 		<% for (var y = 0 ; Array.isArray(usages) && y < usages.length; y++) {%>
-		<div><%= usages[y].itemId %></div>
-		<div><%= usages[y].Item.name %></div>
-		<!-- <div><%= usages[y].useItem.name %></div> -->
+		<!-- <div><%= usages[y].itemId %></div>
+		<div><%= usages[y].Item.name %></div> -->
+		<div><%= usages[y].resultItemId %></div>
+		<div><%= usages[y].resultItem.name %></div>
 		<% } %>
 	</body>
 </html>

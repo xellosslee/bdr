@@ -47,19 +47,19 @@ process.on('SIGINT', async () => {
 
 // 데이터 저장
 server.post('/item/put', async function (req, res) {
-	let transaction = await DB.transaction()
+	let transaction = await sq.transaction()
 	try {
-		console.dir(req.body)
+		console.log(req.body)
 		if (req.body.item.itemId != null) {
-			await DB.Item.update(req.body.item, { where: req.body.item.itemId, transaction })
-			await DB.Earn.destroy({ where: { itemId: req.body.item.itemId, transaction } })
+			await DB.Item.update(req.body.item, { where: {itemId: req.body.item.itemId}, transaction })
+			await DB.Earn.destroy({ where: { itemId: req.body.item.itemId }, transaction })
 			await DB.Earn.bulkCreate(
 				req.body.item.earnList.map((e) => ({ ...e, itemId: req.body.item.itemId })),
 				{ transaction },
 			)
 			await DB.Usages.destroy({ where: { itemId: req.body.item.itemId }, transaction })
 			await DB.Usages.bulkCreate(
-				req.body.item.usageList.map((e) => ({ ...e, useItemId: req.body.item.itemId })),
+				req.body.item.usageList.map((e) => ({ ...e, itemId: req.body.item.itemId })),
 				{ transaction },
 			)
 		} else {
@@ -72,13 +72,15 @@ server.post('/item/put', async function (req, res) {
 				{ transaction },
 			)
 			await DB.Usages.bulkCreate(
-				req.body.item.usageList.map((e) => ({ ...e, useItemId: req.body.item.itemId })),
+				req.body.item.usageList.map((e) => ({ ...e, itemId: req.body.item.itemId })),
 				{ transaction },
 			)
 		}
+		await transaction.commit()
 		res.send(200, { ...jsonSuccess })
 	} catch (err) {
 		console.error(err.original || err)
+		await transaction.rollback()
 		if (typeof err == 'object') {
 			res.send({ ...defJsonError, ...err })
 		} else {
@@ -89,14 +91,17 @@ server.post('/item/put', async function (req, res) {
 
 server.get('/item/:itemId', async (req, res) => {
 	try {
-		let item = await DB.Item.findOne({ where: { itemId: req.params.itemId, removed: 0 } })
+		let item = await DB.Item.findOne({ 
+			include: [ {model: DB.File, as: 'itemImage', attributes: ['imgUrl'] } ],
+			where: { itemId: req.params.itemId, removed: 0 }
+		})
 		let earn = await DB.Earn.findAll({ where: { itemId: req.params.itemId } })
 		let usages = await DB.Usages.findAll({
 			include: [
 				{ model: DB.Item, as: 'Item', attributes: ['name'], where: {removed: 0} },
-				{ model: DB.Item, as: 'useItem', attributes: ['name'], where: {removed: 0} },
+				{ model: DB.Item, as: 'resultItem', attributes: ['name'], where: {removed: 0} },
 			],
-			where: { useItemId: req.params.itemId },
+			where: { itemId: req.params.itemId },
 		})
 
 		let html = await ejs.renderFile('src/main.ejs', { item, earn, usages })

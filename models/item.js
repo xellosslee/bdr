@@ -16,10 +16,14 @@ module.exports = (sq) => {
 				type: DataTypes.STRING,
 			},
 			desc: {
-				type: DataTypes.STRING,
+				type: DataTypes.TEXT,
 			},
 			fileId: {
 				type: DataTypes.BIGINT.UNSIGNED,
+			},
+			likeCount: {
+				type: DataTypes.BIGINT,
+				defaultValue: 0,
 			},
 			removed: {
 				type: DataTypes.TINYINT,

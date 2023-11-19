@@ -24,9 +24,9 @@ let DB = {
 }
 
 DB.Usages.belongsTo(DB.Item, { foreignKey: 'itemId', as: 'Item', constraints: false, foreignKeyConstraint: false })
-DB.Usages.belongsTo(DB.Item, { foreignKey: 'useItemId', as: 'useItem', constraints: false, foreignKeyConstraint: false })
+DB.Usages.belongsTo(DB.Item, { foreignKey: 'resultItemId', as: 'resultItem', constraints: false, foreignKeyConstraint: false })
 
-DB.File.belongsTo(DB.Item, { foreignKey: 'fileId', as: 'itemImage', constraints: false, foreignKeyConstraint: false })
+DB.Item.hasOne(DB.File, { foreignKey: 'fileId', as: 'itemImage', constraints: false, foreignKeyConstraint: false })
 
 // db connection 끊기지 않게 주기적으로 ping 수행
 function ping() {

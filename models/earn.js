@@ -17,7 +17,7 @@ module.exports = (sq) => {
 				comment: '획득 방식',
 			},
 			path: {
-				type: DataTypes.STRING,
+				type: DataTypes.TEXT,
 				comment: '획득 경로',
 			},
 			craftList: {

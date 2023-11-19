@@ -6,9 +6,11 @@ module.exports = (sq) => {
 		{
 			itemId: {
 				type: DataTypes.BIGINT.UNSIGNED,
+				comment: '재료 아이템',
 			},
-			useItemId: {
+			resultItemId: {
 				type: DataTypes.BIGINT.UNSIGNED,
+				comment: '제작 가능 아이템',
 			},
 		},
 		{
@@ -16,7 +18,7 @@ module.exports = (sq) => {
 			tableName: 'usages',
 			charset: 'utf8mb4',
 			collate: 'utf8mb4_0900_ai_ci',
-			indexes: [{ fields: ['itemId', 'useItemId'] }],
+			indexes: [{ fields: ['itemId', 'resultItemId'] }],
 		},
 	)
 	return Usages
