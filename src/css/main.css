@@ -1,3 +1,17 @@
 body {
     font-size: 14px;
 }
+
+.row {
+    display: flex;
+    flex-direction: row;
+}
+
+.col {
+    display: flex;
+    flex-direction: column;
+}
+
+input.count {
+    width: 20px;
+}

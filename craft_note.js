@@ -4,14 +4,19 @@ const ejs = require('ejs')
 const { encode, decode } = require('./crypt')
 const router = new Router()
 
+const defaultErrorHtml = `<p>일시적으로 장애가 발생할 수 있습니다.</p>
+                        <p>잠시 후 다시 시도해 주세요.</p>`
+const defJsonError = { status: 500, code: '99', message: '오류가 발생하였습니다.' }
+const jsonSuccess = { code: '00', message: '정상입니다.' }
+
 router.get('/', (req, res, next) => {
-	DB.Item.findOne({ attributes: ['itemId'], order: [sq.fn('rand')]}).then(item => {
-        let encoded = encode(JSON.stringify({itemId: item.itemId}))
-        let url = '/item/' + encoded
-        // res.redirect(url, next)
-        req.params.itemId = item.itemId
-        itemPageIn(req, res)
-    })
+	DB.Item.findOne({ attributes: ['itemId'], order: [sq.fn('rand')] }).then((item) => {
+		let encoded = encode(JSON.stringify({ itemId: item.itemId }))
+		let url = '/item/' + encoded
+		// res.redirect(url, next)
+		req.params.itemId = item.itemId
+		itemPageIn(req, res)
+	})
 })
 
 // 데이터 저장
@@ -20,7 +25,7 @@ router.post('/item/put', async function (req, res) {
 	try {
 		console.log(req.body)
 		if (req.body.item.itemId != null) {
-			await DB.Item.update(req.body.item, { where: {itemId: req.body.item.itemId}, transaction })
+			await DB.Item.update(req.body.item, { where: { itemId: req.body.item.itemId }, transaction })
 			await DB.Earn.destroy({ where: { itemId: req.body.item.itemId }, transaction })
 			await DB.Earn.bulkCreate(
 				req.body.item.earnList.map((e) => ({ ...e, itemId: req.body.item.itemId })),
@@ -61,64 +66,78 @@ router.post('/item/put', async function (req, res) {
 router.get('/item/:itemId', itemPageIn)
 
 async function itemPageIn(req, res) {
-    try {
-        let params = {itemId: req.params.itemId}
-        let item = await DB.Item.findOne({
-            include: [ {model: DB.File, as: 'itemImage', attributes: ['imgUrl'] } ],
-            where: { itemId: params.itemId, removed: 0 }
-        })
-        console.log(encode(JSON.stringify(params)))
-        if (!item) {
-            try {
-                let data = JSON.parse(decode(params.itemId))
-                params.itemId = data.itemId
-                params.search = data.search
-                item = await DB.Item.findOne({
-                    include: [ {model: DB.File, as: 'itemImage', attributes: ['imgUrl'] } ],
-                    where: { itemId: params.itemId, removed: 0 }
-                })
-            } catch (err) { console.error(err) }
-        }
-        let earn = await DB.Earn.findAll({ where: { itemId: params.itemId } })
-        if (earn.type == 'craft') {
-            let items = DB.Item.findAll({ attributes: ['itemId', 'name'], where: {itemId: earn.craftList.map(e => e.itemId)}})
+	try {
+		let params = { itemId: req.params.itemId }
+		let item = await DB.Item.findOne({
+			include: [{ model: DB.File, as: 'itemImage', attributes: ['imgUrl'] }],
+			where: { itemId: params.itemId, removed: 0 },
+		})
+		// console.log(encode(JSON.stringify(params)))
+		if (!item) {
+			try {
+				let data = JSON.parse(decode(params.itemId))
+				params.itemId = data.itemId
+				params.search = data.search
+				item = await DB.Item.findOne({
+					include: [{ model: DB.File, as: 'itemImage', attributes: ['imgUrl'] }],
+					where: { itemId: params.itemId, removed: 0 },
+				})
+			} catch (err) {
+				console.error(err)
+			}
+		}
+		let earn = await DB.Earn.findAll({ where: { itemId: params.itemId }, logging: false })
+		// console.log(earn)
+		for (let i = 0; i < earn.length; i++) {
+			let craftListTemp = earn[i].craftList
+			if (earn[i].type == 'craft') {
+				let items = await DB.Item.findAll({
+					attributes: ['itemId', 'name'],
+					where: { itemId: craftListTemp.map((e) => e.itemId) },
+					logging: false,
+				})
+				// console.dir(items[i])
 
-            for (let i = 0 ; i = items.length; i++) {
-                let idx = earn.craftList.findIndex(e => e.itemId == items[i].itemId)
-                earn.craftList[idx].url = '/item/' + encode(items[i].itemId)
-                earn.craftList[idx].name = items[i].name
-            }
-        }
-        let usages = await DB.Usages.findAll({
-            include: [
-                { model: DB.Item, as: 'resultItem', attributes: ['itemId', 'name'], where: {removed: 0} },
-            ],
-            where: { itemId: params.itemId },
-        })
-        let usagesList = []
-        for(let i = 0 ; i < usages.length; i++) {
-            let itemId = usages[i].resultItem.itemId
-            let encoded = encode(JSON.stringify({itemId}))
-            let url = '/item/' + encoded
-            // console.log(itemId, encoded, url)
-            // usages[i].setDataValue('url', url)
-            usagesList.push({
-                resultItemId: usages[i].resultItem.itemId,
-                resultItemName: usages[i].resultItem.name,
-                url: url,
-            })
-        }
+				for (let j = 0; j < items.length; j++) {
+					let idx = craftListTemp.findIndex((e) => e.itemId == items[j].itemId)
+					if (idx == -1) {
+						console.error('cannot found craft item !!!')
+						break
+					}
+					craftListTemp[idx].name = items[j].name
+					craftListTemp[idx].url = '/item/' + encode(JSON.stringify({ itemId: items[j].itemId }))
+				}
+			}
+		}
+		let usages = await DB.Usages.findAll({
+			include: [{ model: DB.Item, as: 'resultItem', attributes: ['itemId', 'name'], where: { removed: 0 } }],
+			where: { itemId: params.itemId },
+			logging: false,
+		})
+		let usagesList = []
+		for (let i = 0; i < usages.length; i++) {
+			let itemId = usages[i].resultItem.itemId
+			let encoded = encode(JSON.stringify({ itemId }))
+			let url = '/item/' + encoded
+			// console.log(itemId, encoded, url)
+			// usages[i].setDataValue('url', url)
+			usagesList.push({
+				resultItemId: usages[i].resultItem.itemId,
+				resultItemName: usages[i].resultItem.name,
+				url: url,
+			})
+		}
 
-        let html = await ejs.renderFile('src/main.ejs', { item, earn, usages: usagesList })
-        res.writeHead(200, { 'content-length': Buffer.byteLength(html), 'content-type': 'text/html' })
-        res.write(html)
-        res.end()
-    } catch (err) {
-        console.error(err)
-        let html = await ejs.renderFile('src/error.ejs', { errorHtml: defaultErrorHtml, ...err })
-        res.writeHead(200, { 'content-length': Buffer.byteLength(html), 'content-type': 'text/html' })
-        res.write(html)
-        res.end()
-    }
+		let html = await ejs.renderFile('src/main.ejs', { item, earn, usages: usagesList })
+		res.writeHead(200, { 'content-length': Buffer.byteLength(html), 'content-type': 'text/html' })
+		res.write(html)
+		res.end()
+	} catch (err) {
+		console.error(err)
+		let html = await ejs.renderFile('src/error.ejs', { errorHtml: defaultErrorHtml, ...err })
+		res.writeHead(200, { 'content-length': Buffer.byteLength(html), 'content-type': 'text/html' })
+		res.write(html)
+		res.end()
+	}
 }
 module.exports = router

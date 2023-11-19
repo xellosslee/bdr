@@ -3,11 +3,6 @@ const consoleStamp = require('console-stamp')
 const { createServer, plugins } = require('restify')
 const corsMiddleware = require('restify-cors-middleware2')
 
-const defaultErrorHtml = `<p>일시적으로 장애가 발생할 수 있습니다.</p>
-                        <p>잠시 후 다시 시도해 주세요.</p>`
-const defJsonError = { status: 500, code: '99', message: '오류가 발생하였습니다.' }
-const jsonSuccess = { code: '00', message: '정상입니다.' }
-
 consoleStamp(console, 'yyyy-mm-dd HH:MM:ss.l')
 
 var PORT = process.argv[2] || 7700

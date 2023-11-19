@@ -18,16 +18,18 @@
 		<div><%= item.name %></div>
 		<div><%- item.desc.replace('\n', '<br />') %></div>
 		<hr>
-		<div>획득경로</div>
+		<div>획득 방법</div>
 		<% for (var i = 0 ; Array.isArray(earn) && i < earn.length; i++) {%>
-		<div><%= earn[i].type == 'craft' ? '제작' : '습득' %></div>
-		<div><%= earn[i].work %></div>
-		<div><%= earn[i].path %></div>
+		<div class="row">
+			<!-- <div><%= earn[i].type == 'craft' ? '제작' : '습득' %></div> -->
+			<div><%= earn[i].work %></div>
+			<div><%= earn[i].path %></div>
 			<% for (var x = 0 ; Array.isArray(earn[i].craftList) && x < earn[i].craftList.length; x++) {%>
 				<div><a href="<%= earn[i].craftList[x].url %>"><%= earn[i].craftList[x].itemId %></a></div>
 				<div><%= earn[i].craftList[x].name %></div>
-				<div><%= earn[i].craftList[x].count %></div>
+				<div><%= earn[i].craftList[x].count %><input class=count type=text value=""></div>
 			<% } %>
+		</div>
 		<% } %>
 		<hr>
 		<div><%= item.name %> - 제작가능 아이템</div>
