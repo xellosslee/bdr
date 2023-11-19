@@ -1,7 +1,7 @@
 // import puppeteer from 'puppeteer'
 const puppeteer = require('puppeteer')
 
-let itemId = 221
+let itemId = 1
 main()
 var browser = null
 async function main() {

@@ -1,9 +1,7 @@
 require('dotenv').config()
-const { DB, sq, Op } = require('./mysql')
 const consoleStamp = require('console-stamp')
 const { createServer, plugins } = require('restify')
 const corsMiddleware = require('restify-cors-middleware2')
-const ejs = require('ejs')
 
 const defaultErrorHtml = `<p>일시적으로 장애가 발생할 수 있습니다.</p>
                         <p>잠시 후 다시 시도해 주세요.</p>`
@@ -45,74 +43,8 @@ process.on('SIGINT', async () => {
 	})
 })
 
-// 데이터 저장
-server.post('/item/put', async function (req, res) {
-	let transaction = await sq.transaction()
-	try {
-		console.log(req.body)
-		if (req.body.item.itemId != null) {
-			await DB.Item.update(req.body.item, { where: {itemId: req.body.item.itemId}, transaction })
-			await DB.Earn.destroy({ where: { itemId: req.body.item.itemId }, transaction })
-			await DB.Earn.bulkCreate(
-				req.body.item.earnList.map((e) => ({ ...e, itemId: req.body.item.itemId })),
-				{ transaction },
-			)
-			await DB.Usages.destroy({ where: { itemId: req.body.item.itemId }, transaction })
-			await DB.Usages.bulkCreate(
-				req.body.item.usageList.map((e) => ({ ...e, itemId: req.body.item.itemId })),
-				{ transaction },
-			)
-		} else {
-			let item = await DB.Item.create(req.body.item, { transaction })
-			if (item.itemId) {
-				req.body.item.itemId = item.itemId
-			}
-			await DB.Earn.bulkCreate(
-				req.body.item.earnList.map((e) => ({ ...e, itemId: req.body.item.itemId })),
-				{ transaction },
-			)
-			await DB.Usages.bulkCreate(
-				req.body.item.usageList.map((e) => ({ ...e, itemId: req.body.item.itemId })),
-				{ transaction },
-			)
-		}
-		await transaction.commit()
-		res.send(200, { ...jsonSuccess })
-	} catch (err) {
-		console.error(err.original || err)
-		await transaction.rollback()
-		if (typeof err == 'object') {
-			res.send({ ...defJsonError, ...err })
-		} else {
-			res.send(defJsonError)
-		}
-	}
-})
+require('./craft_note').applyRoutes(server)
 
-server.get('/item/:itemId', async (req, res) => {
-	try {
-		let item = await DB.Item.findOne({ 
-			include: [ {model: DB.File, as: 'itemImage', attributes: ['imgUrl'] } ],
-			where: { itemId: req.params.itemId, removed: 0 }
-		})
-		let earn = await DB.Earn.findAll({ where: { itemId: req.params.itemId } })
-		let usages = await DB.Usages.findAll({
-			include: [
-				{ model: DB.Item, as: 'Item', attributes: ['name'], where: {removed: 0} },
-				{ model: DB.Item, as: 'resultItem', attributes: ['name'], where: {removed: 0} },
-			],
-			where: { itemId: req.params.itemId },
-		})
-
-		let html = await ejs.renderFile('src/main.ejs', { item, earn, usages })
-		res.writeHead(200, { 'content-length': Buffer.byteLength(html), 'content-type': 'text/html' })
-		res.write(html)
-		res.end()
-	} catch (err) {
-		console.error(err)
-		let html = await ejs.renderFile('src/error.ejs', { errorHtml: defaultErrorHtml, ...err })
-		res.writeHead(200, { 'content-length': Buffer.byteLength(html), 'content-type': 'text/html' })
-		res.write(html)
-		res.end()
-	}
-})
+// FOR THE maxAge, IT IS COUNTED BY PER SECOND, THERE IS NO CASHING WHEN IT IS -1
+server.get('/css/*', plugins.serveStatic({directory: __dirname + '/src', maxAge: 6000}))
+server.get('/js/*', plugins.serveStatic({directory: __dirname + '/src', maxAge: 6000}))

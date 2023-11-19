@@ -17,6 +17,7 @@
     "puppeteer": "^21.5.1",
     "restify": "^11.1.0",
     "restify-cors-middleware2": "^2.2.1",
+    "restify-router": "^0.6.2",
     "sequelize": "^6.35.0",
     "vm": "^0.1.0"
   },
