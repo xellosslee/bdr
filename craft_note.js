@@ -1,3 +1,4 @@
+const { plugins } = require('restify')
 const { Router } = require('restify-router')
 const { DB, sq, Op } = require('./mysql')
 const ejs = require('ejs')
@@ -8,6 +9,10 @@ const defaultErrorHtml = `<p>일시적으로 장애가 발생할 수 있습니�
                         <p>잠시 후 다시 시도해 주세요.</p>`
 const defJsonError = { status: 500, code: '99', message: '오류가 발생하였습니다.' }
 const jsonSuccess = { code: '00', message: '정상입니다.' }
+const jsonFailed = { code: '99', message: '비정상입니다.' }
+
+router.use(plugins.bodyParser())
+router.use(plugins.queryParser())
 
 router.get('/', (req, res, next) => {
 	DB.Item.findOne({ attributes: ['itemId'], order: [sq.fn('rand')] }).then((item) => {
@@ -157,4 +162,34 @@ async function itemPageIn(req, res) {
 		res.end()
 	}
 }
+
+// 자동완성용 검색
+router.post('/item/fast/search', plugins.bodyParser(), async (req, res) => {
+	try {
+		req.body = JSON.parse(req.body)
+		if (req.body.search == '') {
+			throw {}
+		}
+		let data = []
+		let items = await DB.Item.findAll({
+			attributes: ['itemId', 'name'],
+			include: [{ model: DB.File, as: 'itemImage', attributes: ['imgUrl'] }],
+			where: { name: { [Op.like]: '%' + req.body.search + '%' }, removed: 0 },
+			limit: 10,
+		})
+		for (let i = 0; i < items.length; i++) {
+			console.log(items[i])
+			data.push({
+				itemUrl: '/item/' + encode(JSON.stringify({ itemId: items[i].itemId })),
+				name: items[i].name,
+				imgUrl: items[i].itemImage.imgUrl,
+			})
+		}
+		res.send(200, { ...jsonSuccess, data })
+	} catch (err) {
+		console.error(err)
+		res.send(403, jsonFailed)
+	}
+})
+
 module.exports = router
