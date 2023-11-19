@@ -13,29 +13,35 @@
 		<script type="text/javascript" src="/js/main.js"></script>
 	</head>
 	<body>
-		<div><input type="text" id="searchText"></div>
-		<div><img src="<%= item.imgUrl %>" /></div>
-		<div><%= item.name %></div>
-		<div><%- item.desc.replace('\n', '<br />') %></div>
-		<hr>
-		<div>획득 방법</div>
-		<% for (var i = 0 ; Array.isArray(earn) && i < earn.length; i++) {%>
-		<div class="row">
-			<!-- <div><%= earn[i].type == 'craft' ? '제작' : '습득' %></div> -->
-			<div><%= earn[i].work %></div>
-			<div><%= earn[i].path %></div>
-			<% for (var x = 0 ; Array.isArray(earn[i].craftList) && x < earn[i].craftList.length; x++) {%>
-				<div><a href="<%= earn[i].craftList[x].url %>"><%= earn[i].craftList[x].itemId %></a></div>
-				<div><%= earn[i].craftList[x].name %></div>
-				<div><%= earn[i].craftList[x].count %><input class=count type=text value=""></div>
-			<% } %>
+		<div class="container">
+			<div class="content">
+				<div class="searchWrap"><input type="text" id="searchText" placeholder="검색할 아이템명을 입력하세요."></div>
+				<div class="itemImg"><img src="<%= item.imgUrl %>" /></div>
+				<div class="itemName"><%= item.name %></div>
+				<div class="itemDesc"><%- item.desc.replace('\n', '<br />') %></div>
+				<hr>
+				<div class="subtitle">획득 방법</div>
+				<div class="earnList">
+					<% for (var i = 0 ; Array.isArray(earn) && i < earn.length; i++) {%>
+					<div class="row">
+						<!-- <div><%= earn[i].type == 'craft' ? '제작' : '습득' %></div> -->
+						<div><%= earn[i].work %></div>
+						<div><%= earn[i].path %></div>
+						<% for (var x = 0 ; Array.isArray(earn[i].craftList) && x < earn[i].craftList.length; x++) {%>
+							<div><a href="<%= earn[i].craftList[x].url %>"><%= earn[i].craftList[x].itemId %></a></div>
+							<div><%= earn[i].craftList[x].name %></div>
+							<div><%= earn[i].craftList[x].count %><input class=count type=text value=""></div>
+						<% } %>
+					</div>
+					<% } %>
+				</div>
+				<hr>
+				<div class="subtitle"><%= item.name %> - 제작가능 아이템</div>
+				<% for (var y = 0 ; Array.isArray(usages) && y < usages.length; y++) {%>
+				<div><%= usages[y].resultItemId %></div>
+				<div class="resultItemName"><a href="<%= usages[y].url %>"><%= usages[y].resultItemName %></a></div>
+				<% } %>
+			</div>
 		</div>
-		<% } %>
-		<hr>
-		<div><%= item.name %> - 제작가능 아이템</div>
-		<% for (var y = 0 ; Array.isArray(usages) && y < usages.length; y++) {%>
-		<div><%= usages[y].resultItemId %></div>
-		<div><a href="<%= usages[y].url %>"><%= usages[y].resultItemName %></a></div>
-		<% } %>
 	</body>
 </html>
