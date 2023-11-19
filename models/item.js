@@ -9,9 +9,6 @@ module.exports = (sq) => {
 				primaryKey: true,
 				allowNull: false,
 			},
-			imgUrl: {
-				type: DataTypes.STRING,
-			},
 			name: {
 				type: DataTypes.STRING,
 			},
