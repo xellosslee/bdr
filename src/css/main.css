@@ -1,10 +1,20 @@
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard-dynamic-subset.min.css");
+
 body {
-    font-size: 14px;
+    font-family: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
+    font-size: 16px;
+}
+
+div {
+    line-height: 1.4;
 }
 
 .row {
     display: flex;
     flex-direction: row;
+}
+.row:not(:first-child) {
+    margin-top: 4px;
 }
 
 .col {
@@ -12,6 +22,47 @@ body {
     flex-direction: column;
 }
 
+input {
+    font-family: pretendard, sans-serif;
+    outline: none;
+}
+
 input.count {
     width: 20px;
+}
+
+.container {
+    margin: 20px auto;
+    width: min(85%, 800px);
+}
+
+.content {
+    margin-top: 20px;
+    border: 1px solid #ddd;
+    padding: 30px 20px;
+    border-radius: 16px;
+    box-shadow: 5px 5px #888;
+}
+
+.searchWrap > input[id="searchText"] {
+    width: 100%;
+    font-size: 16px;
+    border: none;
+}
+
+.searchWrap {
+    border: 1px solid #bbb;
+    padding: 8px 10px;
+    border-radius: 4px;
+}
+
+.itemName {
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.subtitle {
+    font-size: 18px;
+    font-weight: 700;
+    margin: 8px 0 6px;
 }

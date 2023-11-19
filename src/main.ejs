@@ -14,12 +14,12 @@
 	</head>
 	<body>
 		<div class="container">
+			<div class="searchWrap"><input type="text" id="searchText" placeholder="검색할 아이템명을 입력하세요." spellcheck="false"></div>
 			<div class="content">
-				<div class="searchWrap"><input type="text" id="searchText" placeholder="검색할 아이템명을 입력하세요."></div>
 				<div class="itemImg"><img src="<%= item.imgUrl %>" /></div>
 				<div class="itemName"><%= item.name %></div>
 				<div class="itemDesc"><%- item.desc.replace('\n', '<br />') %></div>
-				<hr>
+				<hr class="separator">
 				<div class="subtitle">획득 방법</div>
 				<div class="earnList">
 					<% for (var i = 0 ; Array.isArray(earn) && i < earn.length; i++) {%>
@@ -35,7 +35,7 @@
 					</div>
 					<% } %>
 				</div>
-				<hr>
+				<hr class="separator">
 				<div class="subtitle"><%= item.name %> - 제작가능 아이템</div>
 				<% for (var y = 0 ; Array.isArray(usages) && y < usages.length; y++) {%>
 				<div><%= usages[y].resultItemId %></div>
