@@ -44,3 +44,4 @@ require('./craft_note').applyRoutes(server)
 // FOR THE maxAge, IT IS COUNTED BY PER SECOND, THERE IS NO CASHING WHEN IT IS -1
 server.get('/css/*', plugins.serveStatic({ directory: __dirname + '/src', maxAge: 6000 }))
 server.get('/js/*', plugins.serveStatic({ directory: __dirname + '/src', maxAge: 6000 }))
+server.get('/favicon/*', plugins.serveStatic({ directory: __dirname + '/src', maxAge: 6000 }))
