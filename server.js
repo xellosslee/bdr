@@ -11,6 +11,7 @@ let isDisableKeepAlive = false
 // set timeout 17 sec
 server.server.setTimeout(1000 * 17)
 server.use(plugins.bodyParser())
+server.use(plugins.queryParser())
 server.use((req, res, next) => {
 	if (isDisableKeepAlive) {
 		res.set('Connection', 'close')
@@ -41,5 +42,5 @@ process.on('SIGINT', async () => {
 require('./craft_note').applyRoutes(server)
 
 // FOR THE maxAge, IT IS COUNTED BY PER SECOND, THERE IS NO CASHING WHEN IT IS -1
-server.get('/css/*', plugins.serveStatic({directory: __dirname + '/src', maxAge: 6000}))
-server.get('/js/*', plugins.serveStatic({directory: __dirname + '/src', maxAge: 6000}))
+server.get('/css/*', plugins.serveStatic({ directory: __dirname + '/src', maxAge: 6000 }))
+server.get('/js/*', plugins.serveStatic({ directory: __dirname + '/src', maxAge: 6000 }))

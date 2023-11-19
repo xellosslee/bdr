@@ -25,7 +25,7 @@ router.post('/item/put', async function (req, res) {
 	try {
 		console.log(req.body)
 		if (req.body.item.itemId != null) {
-			await DB.Item.update(req.body.item, { where: { itemId: req.body.item.itemId }, transaction })
+			await DB.Item.upsert(req.body.item, { where: { itemId: req.body.item.itemId }, transaction })
 			await DB.Earn.destroy({ where: { itemId: req.body.item.itemId }, transaction })
 			await DB.Earn.bulkCreate(
 				req.body.item.earnList.map((e) => ({ ...e, itemId: req.body.item.itemId })),
@@ -67,26 +67,44 @@ router.get('/item/:itemId', itemPageIn)
 
 async function itemPageIn(req, res) {
 	try {
-		let params = { itemId: req.params.itemId }
-		let item = await DB.Item.findOne({
-			include: [{ model: DB.File, as: 'itemImage', attributes: ['imgUrl'] }],
-			where: { itemId: params.itemId, removed: 0 },
-		})
-		// console.log(encode(JSON.stringify(params)))
+		let params = { itemId: req.params.itemId, search: req.query.search }
+		let item = null
+		// 검색단어가 있을 경우
+		if (params.search) {
+			let items = await DB.Item.findAll({
+				include: [{ model: DB.File, as: 'itemImage', attributes: ['imgUrl'] }],
+				where: { name: { [Op.like]: '%' + params.search + '%' }, removed: 0 },
+			})
+			// 검색 결과 맵핑
+			item = items[0]
+		}
+		//
+		if (!item) {
+			if (!Number.isNaN(Number(params.itemId))) {
+				item = await DB.Item.findOne({
+					include: [{ model: DB.File, as: 'itemImage', attributes: ['imgUrl'] }],
+					where: { itemId: Number(params.itemId), removed: 0 },
+				})
+			}
+		}
 		if (!item) {
 			try {
 				let data = JSON.parse(decode(params.itemId))
+				console.debug(data)
 				params.itemId = data.itemId
 				params.search = data.search
 				item = await DB.Item.findOne({
 					include: [{ model: DB.File, as: 'itemImage', attributes: ['imgUrl'] }],
 					where: { itemId: params.itemId, removed: 0 },
+					logging: false,
 				})
 			} catch (err) {
-				console.error(err)
+				if (!item) {
+					throw {}
+				}
 			}
 		}
-		let earn = await DB.Earn.findAll({ where: { itemId: params.itemId }, logging: false })
+		let earn = await DB.Earn.findAll({ where: { itemId: item.itemId }, logging: false })
 		// console.log(earn)
 		for (let i = 0; i < earn.length; i++) {
 			let craftListTemp = earn[i].craftList
@@ -111,13 +129,12 @@ async function itemPageIn(req, res) {
 		}
 		let usages = await DB.Usages.findAll({
 			include: [{ model: DB.Item, as: 'resultItem', attributes: ['itemId', 'name'], where: { removed: 0 } }],
-			where: { itemId: params.itemId },
+			where: { itemId: item.itemId },
 			logging: false,
 		})
 		let usagesList = []
 		for (let i = 0; i < usages.length; i++) {
-			let itemId = usages[i].resultItem.itemId
-			let encoded = encode(JSON.stringify({ itemId }))
+			let encoded = encode(JSON.stringify({ itemId: usages[i].resultItem.itemId }))
 			let url = '/item/' + encoded
 			// console.log(itemId, encoded, url)
 			// usages[i].setDataValue('url', url)
