@@ -46,4 +46,5 @@ server.get('/css/*', plugins.serveStatic({ directory: __dirname + '/src', maxAge
 server.get('/lib/*', plugins.serveStatic({ directory: __dirname + '/src', maxAge: 6000 }))
 server.get('/js/*', plugins.serveStatic({ directory: __dirname + '/src', maxAge: 6000 }))
 server.get('/favicon/*', plugins.serveStatic({ directory: __dirname + '/src', maxAge: 6000 }))
-server.get('/images/*', plugins.serveStatic({ directory: __dirname + '/uploads', maxAge: 6000 }))
+server.get('/favicon.ico', plugins.serveStatic({ directory: __dirname + '/src/favicon', appendRequestPath: false, maxAge: 6000 }))
+server.get('/images/*', plugins.serveStatic({ directory: __dirname + '/uploads/items', appendRequestPath: false, maxAge: 6000 }))
