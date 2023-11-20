@@ -5,19 +5,23 @@
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0,  maximum-scale=1.0, shrink-to-fit=no" />
 		<meta name="format-detection" content="telephone=no" />
-		<link rel="icon" href="/favicon/favicon.ico" type="image/x-icon">
 		<title><%= item.name %> - BDR - 검은사막 레시피</title>
 
-		<link rel="stylesheet" href="/css/main.css" type="text/css" />
-		<script type="text/javascript" src="/lib/lodash.4.17.15.js"></script>
-		<script type="text/javascript" src="/js/main.js"></script>
+		<link rel="stylesheet" href="/css/main.css?v=<%= main_css %>" type="text/css" />
+		<script type="text/javascript" src="/lib/lodash.4.6.1.js"></script>
+		<script type="text/javascript" src="/js/main.js?v=<%= main_js %>"></script>
 	</head>
 	<body>
 		<div class="container">
-			<div class="searchWrap"><input type="text" id="searchText" placeholder="검색할 아이템명을 입력하세요." spellcheck="false"></div>
+			<div class="contentHeader">
+				<a href="/"><div class="homeLink"><img src="/img/blackSpirit.png"></div></a>
+				<div class="searchWrap"><input type="text" id="searchText" placeholder="검색할 아이템명을 입력하세요." spellcheck="false"></div>
+			</div>
 			<div class="content">
-				<div class="itemImg"><img src="<%= item.itemImage.imgUrl %>" /></div>
-				<div class="itemName"><%= item.name %></div>
+				<div class="itemHeader">
+					<div class="itemImg"><img src="<%= item.itemImage.imgUrl %>" /></div>
+					<div class="itemName"><%= item.name %></div>
+				</div>
 				<div class="itemDesc"><%- item.desc.replace('\n', '<br />') %></div>
 				<hr class="separator">
 				<div class="subtitle">획득 방법</div>

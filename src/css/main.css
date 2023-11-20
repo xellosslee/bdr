@@ -44,16 +44,38 @@ input.count {
     box-shadow: 5px 5px #888;
 }
 
-.searchWrap > input[id="searchText"] {
+.contentHeader {
+    display: flex;
+    align-items: center;
+}
+
+.contentHeader .homeLink {
+    width: 40px;
+    height: 40px;
+    margin-right: 10px;
+}
+
+.contentHeader .homeLink > img {
     width: 100%;
+}
+
+.contentHeader .searchWrap {
+    width: 100%;
+    border: 1px solid #bbb;
+    padding: 8px 10px;
+    border-radius: 4px;
+}
+.contentHeader .searchWrap > input[id="searchText"] {
+    width: calc(100% - 30px);
     font-size: 16px;
     border: none;
 }
 
-.searchWrap {
-    border: 1px solid #bbb;
-    padding: 8px 10px;
-    border-radius: 4px;
+
+.itemHeader {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
 }
 
 .itemName {
@@ -65,4 +87,17 @@ input.count {
     font-size: 18px;
     font-weight: 700;
     margin: 8px 0 6px;
+}
+
+.itemImg {
+    width: 36px;
+    height: 36px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-right: 10px;
+}
+
+.itemImg > img {
+    width: 100%;
 }

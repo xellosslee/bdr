@@ -2,6 +2,7 @@ const { plugins } = require('restify')
 const { Router } = require('restify-router')
 const { DB, sq, Op } = require('./mysql')
 const ejs = require('ejs')
+const fs = require('node:fs/promises')
 const { encode, decode } = require('./crypt')
 const router = new Router()
 
@@ -13,6 +14,13 @@ const jsonFailed = { code: '99', message: '비정상입니다.' }
 
 router.use(plugins.bodyParser())
 router.use(plugins.queryParser())
+
+async function getFileTimes() {
+	return {
+		main_js: Math.floor((await fs.stat(__dirname + '/src/js/main.js')).mtimeMs),
+		main_css: Math.floor((await fs.stat(__dirname + '/src/css/main.css')).mtimeMs),
+	}
+}
 
 router.get('/', (req, res, next) => {
 	DB.Item.findOne({ attributes: ['itemId'], order: [sq.fn('rand')] }).then((item) => {
@@ -150,7 +158,7 @@ async function itemPageIn(req, res) {
 			})
 		}
 
-		let html = await ejs.renderFile('src/main.ejs', { item, earn, usages: usagesList })
+		let html = await ejs.renderFile('src/main.ejs', { item, earn, usages: usagesList, ...(await getFileTimes()) })
 		res.writeHead(200, { 'content-length': Buffer.byteLength(html), 'content-type': 'text/html' })
 		res.write(html)
 		res.end()
@@ -178,7 +186,7 @@ router.post('/item/fast/search', plugins.bodyParser(), async (req, res) => {
 			limit: 10,
 		})
 		for (let i = 0; i < items.length; i++) {
-			console.log(items[i])
+			// console.debug(items[i])
 			data.push({
 				itemUrl: '/item/' + encode(JSON.stringify({ itemId: items[i].itemId })),
 				name: items[i].name,
