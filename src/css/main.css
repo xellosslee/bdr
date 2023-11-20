@@ -44,17 +44,33 @@ input.count {
     box-shadow: 5px 5px #888;
 }
 
-.searchWrap > input[id="searchText"] {
+.contentHeader {
+    display: flex;
+    align-items: center;
+}
+
+.contentHeader .homeLink {
+    width: 40px;
+    height: 40px;
+    margin-right: 10px;
+}
+
+.contentHeader .homeLink > img {
+    width: 100%;
+}
+
+.contentHeader .searchWrap {
+    width: 100%;
+    border: 1px solid #bbb;
+    padding: 8px 10px;
+    border-radius: 4px;
+}
+.contentHeader .searchWrap > input[id="searchText"] {
     width: 100%;
     font-size: 16px;
     border: none;
 }
 
-.searchWrap {
-    border: 1px solid #bbb;
-    padding: 8px 10px;
-    border-radius: 4px;
-}
 
 .itemHeader {
     display: flex;
