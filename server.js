@@ -5,7 +5,7 @@ const corsMiddleware = require('restify-cors-middleware2')
 
 consoleStamp(console, 'yyyy-mm-dd HH:MM:ss.l')
 
-var PORT = process.argv[2] || 80
+var PORT = process.argv[2] || 7700
 // var https_options = {
 // 	key: fs.readFileSync('/etc/ssl/self-signed/server.key'),
 // 	certificate: fs.readFileSync('/etc/ssl/self-signed/server.crt'),
