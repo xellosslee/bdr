@@ -178,7 +178,7 @@ router.post('/item/fast/search', plugins.bodyParser(), async (req, res) => {
 			limit: 10,
 		})
 		for (let i = 0; i < items.length; i++) {
-			console.log(items[i])
+			// console.debug(items[i])
 			data.push({
 				itemUrl: '/item/' + encode(JSON.stringify({ itemId: items[i].itemId })),
 				name: items[i].name,
