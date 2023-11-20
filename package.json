@@ -1,9 +1,9 @@
 {
   "version": "1.0.0",
   "scripts": {
-    "dev": "pm2 start ecosystem.config.js --only bdr-dev",
-    "start": "pm2 start ecosystem.config.js --only bdr-prod",
-    "del": "pm2 kill"
+    "dev": "pm2 start ecosystem.config.js --only bdr-dev && pm2 log bdr-dev",
+    "start": "pm2 start ecosystem.config.js --only bdr-prod && pm2 log bdr-prod",
+    "del": "pm2 delete ecosystem.config.js"
   },
   "dependencies": {
     "axios": "^1.6.2",
