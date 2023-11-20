@@ -141,7 +141,16 @@ async function itemPageIn(req, res) {
 			}
 		}
 		let usages = await DB.Usages.findAll({
-			include: [{ model: DB.Item, as: 'resultItem', attributes: ['itemId', 'name'], where: { removed: 0 } }],
+			include: [
+				{
+					model: DB.Item,
+					as: 'resultItem', 
+					attributes: ['itemId', 'name', 'fileId'], 
+					where: { removed: 0 }, 
+					include: [{ model: DB.File, as: 'itemImage', attributes: ['imgUrl'] }]
+				},
+			],
+				
 			where: { itemId: item.itemId },
 			logging: false,
 		})
@@ -155,6 +164,7 @@ async function itemPageIn(req, res) {
 				resultItemId: usages[i].resultItem.itemId,
 				resultItemName: usages[i].resultItem.name,
 				url: url,
+				imgUrl: usages[i].resultItem.itemImage.imgUrl
 			})
 		}
 
