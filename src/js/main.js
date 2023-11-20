@@ -1,23 +1,22 @@
 window.onload = () => {
 	var searchText = document.getElementById('searchText')
-	searchText.onkeyup = async function (evt) {
+	let fn = _.throttle(async (evt) => {
+		if (evt.key == 'Enter') {
+			location.href = location.protocol + '//' + location.host + location.pathname + '?search=' + evt.target.value
+		}
 		if (evt.target.value == '') {
 			return
 		}
 		if (evt.target.value) {
-			_.throttle(async () => {
-				let data = { search: evt.target.value }
-				console.log(data)
-				let res = await fetch('/item/fast/search', { method: 'POST', body: JSON.stringify(data) })
-				let result = await res.json()
-				// 검색결과 출력
-				console.log(result)
-			}, 500)()
+			let data = { search: evt.target.value }
+			console.log(data)
+			let res = await fetch('/item/fast/search', { method: 'POST', body: JSON.stringify(data) })
+			let result = await res.json()
+			// 검색결과 출력
+			console.log(result)
 		}
-		if (evt.key == 'Enter') {
-			location.href = location.protocol + '//' + location.host + location.pathname + '?search=' + evt.target.value
-		}
-	}
+	}, 500)
+	searchText.onkeyup = fn
 }
 
 function throttle(func, delay) {
