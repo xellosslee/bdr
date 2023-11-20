@@ -1,5 +1,6 @@
 window.onload = () => {
 	var searchText = document.getElementById('searchText')
+	var searchedText = ''
 	let fn = _.throttle(async (evt) => {
 		if (evt.key == 'Enter') {
 			location.href = location.protocol + '//' + location.host + location.pathname + '?search=' + evt.target.value
@@ -7,7 +8,9 @@ window.onload = () => {
 		if (evt.target.value == '') {
 			return
 		}
-		if (evt.target.value) {
+		if (evt.target.value && searchedText != evt.target.value) {
+			// 단어의 변경이 없으면 재조회 안하도록 수정
+			searchedText = evt.target.value
 			let data = { search: evt.target.value }
 			console.log(data)
 			let res = await fetch('/item/fast/search', { method: 'POST', body: JSON.stringify(data) })
@@ -15,7 +18,7 @@ window.onload = () => {
 			// 검색결과 출력
 			console.log(result)
 		}
-	}, 500)
+	}, 1000)
 	searchText.onkeyup = fn
 }
 
