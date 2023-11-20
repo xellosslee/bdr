@@ -5,7 +5,12 @@ const corsMiddleware = require('restify-cors-middleware2')
 
 consoleStamp(console, 'yyyy-mm-dd HH:MM:ss.l')
 
-var PORT = process.argv[2] || 7700
+var PORT = process.argv[2] || 80
+// var https_options = {
+// 	key: fs.readFileSync('/etc/ssl/self-signed/server.key'),
+// 	certificate: fs.readFileSync('/etc/ssl/self-signed/server.crt'),
+// }
+// var https_server = restify.createServer(https_options)
 var server = createServer()
 let isDisableKeepAlive = false
 // set timeout 17 sec
