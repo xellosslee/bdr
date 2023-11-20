@@ -16,8 +16,10 @@
 		<div class="container">
 			<div class="searchWrap"><input type="text" id="searchText" placeholder="검색할 아이템명을 입력하세요." spellcheck="false"></div>
 			<div class="content">
-				<div class="itemImg"><img src="<%= item.imgUrl %>" /></div>
-				<div class="itemName"><%= item.name %></div>
+				<div class="itemHeader">
+					<div class="itemImg"><img src="<%= item.imgUrl %>" /></div>
+					<div class="itemName"><%= item.name %></div>
+				</div>
 				<div class="itemDesc"><%- item.desc.replace('\n', '<br />') %></div>
 				<hr class="separator">
 				<div class="subtitle">획득 방법</div>
