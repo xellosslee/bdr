@@ -92,7 +92,7 @@ async function itemPageIn(req, res) {
 			item = items[0]
 		}
 		// 운영에서는 숫자 조회 불가능하게 방지
-		// 단, 랜덤 조회 일때에는 성공
+		// 단, 랜덤 조회 일때에는 itemId로 조회 시도
 		if (req.internal || (!item && process.env.NODE_ENV != 'prod')) {
 			if (!Number.isNaN(Number(params.itemId))) {
 				item = await DB.Item.findOne({
