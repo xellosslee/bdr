@@ -122,7 +122,8 @@ async function itemPageIn(req, res) {
 			let craftListTemp = earn[i].craftList
 			if (earn[i].type == 'craft') {
 				let items = await DB.Item.findAll({
-					attributes: ['itemId', 'name', 'removed'],
+					attributes: ['itemId', 'name'],
+					include: [{ model: DB.File, as: 'itemImage', attributes: ['imgUrl'] }],
 					where: { itemId: craftListTemp.map((e) => e.itemId) },
 					logging: false,
 				})
@@ -132,9 +133,9 @@ async function itemPageIn(req, res) {
 						console.error('cannot found craft item !!!')
 						break
 					}
-					craftListTemp[idx].removed = items[j].removed
 					craftListTemp[idx].name = items[j].name
 					craftListTemp[idx].url = '/item/' + encode(JSON.stringify({ itemId: items[j].itemId }))
+					craftListTemp[idx].imgUrl = items[j].itemImage.imgUrl
 				}
 			}
 		}
