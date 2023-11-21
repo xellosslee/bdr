@@ -2,6 +2,7 @@
 const puppeteer = require('puppeteer')
 
 let itemId = 1
+let isSingleRun = false
 main()
 var browser = null
 async function main() {
@@ -77,9 +78,12 @@ async function main() {
 		{ timeout: 50000 },
 		itemId,
 	)
+	if (isSingleRun) {
+		process.exit(0)
+	}
 	// 다음 아이템 검색
 	itemId += 1
-	if (itemId >= 2700) {
+	if (itemId >= 2800) {
 		process.exit(0)
 	}
 	setTimeout(main, 10)
