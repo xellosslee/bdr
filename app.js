@@ -1,8 +1,11 @@
 // import puppeteer from 'puppeteer'
 const puppeteer = require('puppeteer')
-
-let itemId = 1334
-let isSingleRun = true
+// let itemArray = [816, 1344, 1432, 1432, 1439, 1962, 1962, 1965]
+// let arrayIdx = 0
+let arrayVersion = false
+// let itemId = itemArray[arrayIdx]
+let itemId = 1
+let isSingleRun = false
 main()
 var browser = null
 async function main() {
@@ -82,9 +85,17 @@ async function main() {
 		process.exit(0)
 	}
 	// 다음 아이템 검색
-	itemId += 1
-	if (itemId >= 2800) {
-		process.exit(0)
+	if (arrayVersion) {
+		arrayIdx++
+		if (itemArray.length <= arrayIdx) {
+			process.exit(0)
+		}
+		itemId = itemArray[arrayIdx]
+	} else {
+		itemId += 1
+		if (itemId >= 2800) {
+			process.exit(0)
+		}
 	}
-	setTimeout(main, 10)
+	setTimeout(main, 100)
 }
