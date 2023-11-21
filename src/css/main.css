@@ -196,6 +196,7 @@ img.miniItem {
 
 .usageList > div {
 	margin-right: 10px;
+	min-width: 22%;
 }
 
 .miniItemLabel {

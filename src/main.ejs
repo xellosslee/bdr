@@ -38,7 +38,7 @@
 								<% if (earn[i].path != null) { %>
 									<%= earn[i].path %>
 								<% } %>
-								<%= earn[i].work %>
+								<%= earn[i].work %></br>
 								x <input type=text class=count data-earn-input="<%= i %>" value="1">
 							<% } else { %>
 								<%= earn[i].work %>
@@ -51,14 +51,14 @@
 								<% } %>
 							<% } %>
 							<% for (var x = 0 ; Array.isArray(earn[i].craftList) && x < earn[i].craftList.length; x++) {%>
-								<div class="col">
+								<div class="col" style="align-items: center;">
 									<div class="miniItemLabel">
 										<a href="<%= earn[i].craftList[x].url %>">
 											<img class="miniItem" src="<%= earn[i].craftList[x].imgUrl %>" />
 											<span><%= earn[i].craftList[x].name %></span>
 										</a>
 									</div>
-									<div><%= earn[i].craftList[x].count %>x<input class=count type=text data-earn-id="<%= i %>" data-ori-value="<%= earn[i].craftList[x].count %>" readonly></div>
+									<div><%= earn[i].craftList[x].count %> x <input class=count type=text data-earn-id="<%= i %>" data-ori-value="<%= earn[i].craftList[x].count %>" readonly></div>
 								</div>
 							<% } %>
 						</div>
