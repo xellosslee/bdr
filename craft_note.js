@@ -90,8 +90,8 @@ async function itemPageIn(req, res) {
 			// 검색 결과 맵핑
 			item = items[0]
 		}
-		//
-		if (!item) {
+		// 운영에서는 숫자 조회 불가능하게 방지
+		if (!item && process.env.NODE_ENV != 'prod') {
 			if (!Number.isNaN(Number(params.itemId))) {
 				item = await DB.Item.findOne({
 					include: [{ model: DB.File, as: 'itemImage', attributes: ['imgUrl'] }],
