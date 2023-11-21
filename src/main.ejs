@@ -30,22 +30,24 @@
 				<div class="earnList">
 					<% for (var i = 0 ; Array.isArray(earn) && i < earn.length; i++) {%>
 					<div class="row">
-						<div class="col1 colHeader">
+						<div class="colHeader">
 							<!-- <div><%= earn[i].type == 'craft' ? '제작' : '습득' %></div> -->
-							<div><%= earn[i].work %></div>
-							<% if (earn[i].path != null) { %>
-							<div><%= earn[i].path %></div>
-							<% } %>
-							<div>x <input type=text class=count data-earn-input="<%= i %>" value="1"></div>
+							<div>
+								<%= earn[i].work %>
+								<% if (earn[i].path != null) { %>
+									<%= earn[i].path %>
+								<% } %>
+								x <input type=text class=count data-earn-input="<%= i %>" value="1">
+							</div>
 						</div>
 						<div class="row recipe">
 							<% for (var x = 0 ; Array.isArray(earn[i].craftList) && x < earn[i].craftList.length; x++) {%>
 								<div class="col">
-									<div>
+									<div class="miniItemLabel">
 										<a href="<%= earn[i].craftList[x].url %>">
 											<img class="miniItem" src="<%= earn[i].craftList[x].imgUrl %>" /><%= earn[i].craftList[x].name %>
 										</a>
-										<%= earn[i].craftList[x].count %>x<input class=count type=text data-earn-id="<%= i %>" data-ori-value="<%= earn[i].craftList[x].count %>" value="<%= earn[i].craftList[x].count %>">
+										<%= earn[i].craftList[x].count %>x<input class=count type=text data-earn-id="<%= i %>" data-ori-value="<%= earn[i].craftList[x].count %>" readonly>
 									</div>
 								</div>
 							<% } %>
@@ -58,7 +60,7 @@
 					<div class="subtitle"><%= item.name %> - 제작가능 아이템</div>
 					<% for (var y = 0 ; Array.isArray(usages) && y < usages.length; y++) {%>
 					<!-- <div><%= usages[y].resultItemId %></div> -->
-					<div class="resultItemName"><a href="<%= usages[y].url %>"><img class="miniItem" src="<%= usages[y].imgUrl %>" /><%= usages[y].resultItemName %></a></div>
+					<div class="miniItemLabel"><a href="<%= usages[y].url %>"><img class="miniItem" src="<%= usages[y].imgUrl %>" /><%= usages[y].resultItemName %></a></div>
 					<% } %>
 				<% }%>
 			</div>

@@ -137,12 +137,15 @@ input.count {
 }
 
 .earnList .colHeader {
+	width: 130px;
+	text-align: center;
 	background-color: #ddd;
 	vertical-align: middle;
 }
 
 .earnList .recipe {
 	width: 100%;
+	flex-wrap: wrap;
 }
 
 .earnList .recipe > .col {
@@ -152,4 +155,8 @@ input.count {
 img.miniItem {
 	width: 22px;
 	height: 22px;
+}
+
+.miniItemLabel {
+	line-height: 22px;
 }
