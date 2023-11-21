@@ -29,7 +29,7 @@ window.onload = () => {
 				searchedItemUrl = result.data[0].itemUrl
 				autoComplete.innerHTML = result.data
 					.map((e) => {
-						return `<div class="miniItemLabel"><a href="${e.itemUrl}"><img class="miniItem" src=${e.imgUrl}/>${e.name}</a></div>`
+						return `<div class="miniItemLabel"><a href="${e.itemUrl}"><img class="miniItem" src=${e.imgUrl}/><span>${e.name}</span></a></div>`
 					})
 					.join('')
 			} else {
