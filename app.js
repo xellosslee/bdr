@@ -1,8 +1,8 @@
 // import puppeteer from 'puppeteer'
 const puppeteer = require('puppeteer')
 
-let itemId = 1
-let isSingleRun = false
+let itemId = 686
+let isSingleRun = true
 main()
 var browser = null
 async function main() {

@@ -26,7 +26,7 @@ const decode = (str) => {
 			console.error('복호화 되지 않은 데이터')
 			return str
 		} else {
-			console.error(err)
+			console.error('암호화 된 값이 아님')
 			return null
 		}
 	}
