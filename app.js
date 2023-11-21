@@ -1,7 +1,7 @@
 // import puppeteer from 'puppeteer'
 const puppeteer = require('puppeteer')
 
-let itemId = 693
+let itemId = 1334
 let isSingleRun = true
 main()
 var browser = null
