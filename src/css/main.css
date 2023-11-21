@@ -95,15 +95,31 @@ input.count {
 }
 
 .contentHeader .searchWrap {
+	position: relative;
 	width: 100%;
 	border: 1px solid #bbb;
 	padding: 8px 10px;
 	border-radius: 4px;
 }
 .contentHeader .searchWrap > input[id='searchText'] {
-	width: calc(100% - 30px);
+	width: 100%;
 	font-size: 16px;
 	border: none;
+}
+.contentHeader .searchWrap > div#autoComplete {
+	position: absolute;
+	background: white;
+	left: 0;
+	top: 100%;
+	width: calc(100% - 22px);
+	padding: 8px 10px;
+	font-size: 16px;
+	line-height: 44px;
+	border: 1px solid #bbb;
+	border-radius: 4px;
+}
+.contentHeader .searchWrap > div#autoComplete.empty {
+	display: none;
 }
 
 .itemHeader {
