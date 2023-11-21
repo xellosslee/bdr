@@ -31,17 +31,22 @@
 					<% for (var i = 0 ; Array.isArray(earn) && i < earn.length; i++) {%>
 					<div class="row">
 						<div class="colHeader">
-							<div>
-								<%= earn[i].work %>
+							<% if (earn[i].type == 'craft') { %>
 								<% if (earn[i].path != null) { %>
 									<%= earn[i].path %>
 								<% } %>
-								<% if (earn[i].type == 'craft') { %>
-									x <input type=text class=count data-earn-input="<%= i %>" value="1">
-								<% } %>
-							</div>
+								<%= earn[i].work %>
+								x <input type=text class=count data-earn-input="<%= i %>" value="1">
+							<% } else { %>
+								<%= earn[i].work %>
+							<% } %>
 						</div>
 						<div class="row recipe">
+							<% if (earn[i].type != 'craft') { %>
+								<% if (earn[i].path != null) { %>
+									<%= earn[i].path %>
+								<% } %>
+							<% } %>
 							<% for (var x = 0 ; Array.isArray(earn[i].craftList) && x < earn[i].craftList.length; x++) {%>
 								<div class="col">
 									<div class="miniItemLabel">
