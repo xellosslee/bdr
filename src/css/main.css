@@ -21,20 +21,35 @@ body {
 }
 
 div {
-	line-height: 1.4;
+	line-height: 26px;
 }
 
 .row {
 	display: flex;
 	flex-direction: row;
+	align-items: center;
 }
 .row:not(:first-child) {
 	margin-top: 4px;
 }
 
 .col {
+	flex: 1 0 auto;
 	display: flex;
 	flex-direction: column;
+	align-items: center;
+}
+.col1 {
+	width: 8.333333%;
+}
+.col3 {
+	width: 25%;
+}
+.col6 {
+	width: 50%;
+}
+.col12 {
+	width: 100%;
 }
 
 input {
@@ -119,4 +134,17 @@ input.count {
 
 .itemImg > img {
 	width: 100%;
+}
+
+.earnList .colHeader {
+	background-color: #ddd;
+	vertical-align: middle;
+}
+
+.earnList .recipe {
+	width: 100%;
+}
+
+.earnList .recipe > .col {
+	flex: 1 0 auto;
 }

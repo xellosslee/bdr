@@ -30,14 +30,23 @@
 				<div class="earnList">
 					<% for (var i = 0 ; Array.isArray(earn) && i < earn.length; i++) {%>
 					<div class="row">
-						<!-- <div><%= earn[i].type == 'craft' ? '제작' : '습득' %></div> -->
-						<div><%= earn[i].work %></div>
-						<div><%= earn[i].path %></div>
-						<% for (var x = 0 ; Array.isArray(earn[i].craftList) && x < earn[i].craftList.length; x++) {%>
-							<div><a href="<%= earn[i].craftList[x].url %>"><%= earn[i].craftList[x].itemId %></a></div>
-							<div><%= earn[i].craftList[x].name %></div>
-							<div><%= earn[i].craftList[x].count %><input class=count type=text value=""></div>
-						<% } %>
+						<div class="col1 colHeader">
+							<!-- <div><%= earn[i].type == 'craft' ? '제작' : '습득' %></div> -->
+							<div><%= earn[i].work %></div>
+							<% if (earn[i].path != null) { %>
+							<div><%= earn[i].path %></div>
+							<% } %>
+							<div>x <input type=text class=count data-earn-input="<%= i %>" value="1"></div>
+						</div>
+						<div class="row recipe">
+							<% for (var x = 0 ; Array.isArray(earn[i].craftList) && x < earn[i].craftList.length; x++) {%>
+								<div class="col">
+									<div><a href="<%= earn[i].craftList[x].url %>"><%= earn[i].craftList[x].itemId %></a></div>
+									<div><%= earn[i].craftList[x].name %></div>
+									<div><%= earn[i].craftList[x].count %>x<input class=count type=text data-earn-id="<%= i %>" data-ori-value="<%= earn[i].craftList[x].count %>" value="<%= earn[i].craftList[x].count %>"></div>
+								</div>
+							<% } %>
+						</div>
 					</div>
 					<% } %>
 				</div>

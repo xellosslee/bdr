@@ -20,6 +20,18 @@ window.onload = () => {
 		}
 	}, 1000)
 	searchText.onkeyup = fn
+
+	let inputCounts = document.querySelectorAll('input[data-earn-input]')
+	for (let i = 0; i < inputCounts.length; i++) {
+		inputCounts[i].onkeyup = changeInput
+	}
+	function changeInput(evt) {
+		let earnId = evt.target.dataset.earnInput
+		let inputCounts = document.querySelectorAll('input[data-earn-id="' + earnId + '"]')
+		for (let i = 0; i < inputCounts.length; i++) {
+			inputCounts[i].value = Number(inputCounts[i].dataset.oriValue) * Number(evt.target.value)
+		}
+	}
 }
 
 function throttle(func, delay) {
