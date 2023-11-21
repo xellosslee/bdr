@@ -41,9 +41,12 @@
 						<div class="row recipe">
 							<% for (var x = 0 ; Array.isArray(earn[i].craftList) && x < earn[i].craftList.length; x++) {%>
 								<div class="col">
-									<div><a href="<%= earn[i].craftList[x].url %>"><%= earn[i].craftList[x].itemId %></a></div>
-									<div><%= earn[i].craftList[x].name %></div>
-									<div><%= earn[i].craftList[x].count %>x<input class=count type=text data-earn-id="<%= i %>" data-ori-value="<%= earn[i].craftList[x].count %>" value="<%= earn[i].craftList[x].count %>"></div>
+									<div>
+										<a href="<%= earn[i].craftList[x].url %>">
+											<%= earn[i].craftList[x].name %>
+										</a>
+										<%= earn[i].craftList[x].count %>x<input class=count type=text data-earn-id="<%= i %>" data-ori-value="<%= earn[i].craftList[x].count %>" value="<%= earn[i].craftList[x].count %>">
+									</div>
 								</div>
 							<% } %>
 						</div>
@@ -54,8 +57,8 @@
 					<hr class="separator">
 					<div class="subtitle"><%= item.name %> - 제작가능 아이템</div>
 					<% for (var y = 0 ; Array.isArray(usages) && y < usages.length; y++) {%>
-					<div><%= usages[y].resultItemId %></div>
-					<div class="resultItemName"><a href="<%= usages[y].url %>"><img src="<%= usages[y].imgUrl %>" /><%= usages[y].resultItemName %></a></div>
+					<!-- <div><%= usages[y].resultItemId %></div> -->
+					<div class="resultItemName"><a href="<%= usages[y].url %>"><img class="miniItem" src="<%= usages[y].imgUrl %>" /><%= usages[y].resultItemName %></a></div>
 					<% } %>
 				<% }%>
 			</div>

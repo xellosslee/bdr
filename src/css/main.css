@@ -148,3 +148,8 @@ input.count {
 .earnList .recipe > .col {
 	flex: 1 0 auto;
 }
+
+img.miniItem {
+	width: 22px;
+	height: 22px;
+}

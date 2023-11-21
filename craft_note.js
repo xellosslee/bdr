@@ -24,8 +24,7 @@ async function getFileTimes() {
 
 router.get('/', (req, res, next) => {
 	DB.Item.findOne({ attributes: ['itemId'], order: [sq.fn('rand')] }).then((item) => {
-		let encoded = encode(JSON.stringify({ itemId: item.itemId }))
-		let url = '/item/' + encoded
+		let url = '/item/' + encode(JSON.stringify({ itemId: item.itemId }))
 		// res.redirect(url, next)
 		req.params.itemId = item.itemId
 		itemPageIn(req, res)
@@ -123,18 +122,17 @@ async function itemPageIn(req, res) {
 			let craftListTemp = earn[i].craftList
 			if (earn[i].type == 'craft') {
 				let items = await DB.Item.findAll({
-					attributes: ['itemId', 'name'],
+					attributes: ['itemId', 'name', 'removed'],
 					where: { itemId: craftListTemp.map((e) => e.itemId) },
 					logging: false,
 				})
-				// console.dir(items[i])
-
 				for (let j = 0; j < items.length; j++) {
 					let idx = craftListTemp.findIndex((e) => e.itemId == items[j].itemId)
 					if (idx == -1) {
 						console.error('cannot found craft item !!!')
 						break
 					}
+					craftListTemp[idx].removed = items[j].removed
 					craftListTemp[idx].name = items[j].name
 					craftListTemp[idx].url = '/item/' + encode(JSON.stringify({ itemId: items[j].itemId }))
 				}
@@ -144,27 +142,26 @@ async function itemPageIn(req, res) {
 			include: [
 				{
 					model: DB.Item,
-					as: 'resultItem', 
-					attributes: ['itemId', 'name', 'fileId'], 
-					where: { removed: 0 }, 
-					include: [{ model: DB.File, as: 'itemImage', attributes: ['imgUrl'] }]
+					as: 'resultItem',
+					attributes: ['itemId', 'name', 'fileId'],
+					where: { removed: 0 },
+					include: [{ model: DB.File, as: 'itemImage', attributes: ['imgUrl'] }],
 				},
 			],
-				
+
 			where: { itemId: item.itemId },
 			logging: false,
 		})
 		let usagesList = []
 		for (let i = 0; i < usages.length; i++) {
-			let encoded = encode(JSON.stringify({ itemId: usages[i].resultItem.itemId }))
-			let url = '/item/' + encoded
+			let url = '/item/' + encode(JSON.stringify({ itemId: usages[i].resultItem.itemId }))
 			// console.log(itemId, encoded, url)
 			// usages[i].setDataValue('url', url)
 			usagesList.push({
 				resultItemId: usages[i].resultItem.itemId,
 				resultItemName: usages[i].resultItem.name,
 				url: url,
-				imgUrl: usages[i].resultItem.itemImage.imgUrl
+				imgUrl: usages[i].resultItem.itemImage.imgUrl,
 			})
 		}
 
