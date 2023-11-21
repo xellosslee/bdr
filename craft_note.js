@@ -23,12 +23,12 @@ async function getFileTimes() {
 }
 
 router.get('/', (req, res, next) => {
-	DB.Item.findOne({ attributes: ['itemId'], order: [sq.fn('rand')] }).then((item) => {
+	DB.Item.findOne({ attributes: ['itemId'], order: [sq.fn('rand')] }).then(async (item) => {
 		let url = '/item/' + encode(JSON.stringify({ itemId: item.itemId }))
 		// res.redirect(url, next)
 		req.params.itemId = item.itemId.toString()
 		req.internal = true
-		itemPageIn(req, res)
+		await itemPageIn(req, res)
 	})
 })
 
@@ -93,7 +93,7 @@ async function itemPageIn(req, res) {
 		}
 		// 운영에서는 숫자 조회 불가능하게 방지
 		// 단, 랜덤 조회 일때에는 성공
-		if (!item && !req.internal && process.env.NODE_ENV != 'prod') {
+		if (req.internal || (!item && process.env.NODE_ENV != 'prod')) {
 			if (!Number.isNaN(Number(params.itemId))) {
 				item = await DB.Item.findOne({
 					include: [{ model: DB.File, as: 'itemImage', attributes: ['imgUrl'] }],
