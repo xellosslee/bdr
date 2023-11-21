@@ -31,13 +31,14 @@
 					<% for (var i = 0 ; Array.isArray(earn) && i < earn.length; i++) {%>
 					<div class="row">
 						<div class="colHeader">
-							<!-- <div><%= earn[i].type == 'craft' ? '제작' : '습득' %></div> -->
 							<div>
 								<%= earn[i].work %>
 								<% if (earn[i].path != null) { %>
 									<%= earn[i].path %>
 								<% } %>
-								x <input type=text class=count data-earn-input="<%= i %>" value="1">
+								<% if (earn[i].type == 'craft') { %>
+									x <input type=text class=count data-earn-input="<%= i %>" value="1">
+								<% } %>
 							</div>
 						</div>
 						<div class="row recipe">
@@ -58,10 +59,11 @@
 				<% if (Array.isArray(usages) && usages.length > 0) { %>
 					<hr class="separator">
 					<div class="subtitle"><%= item.name %> - 제작가능 아이템</div>
+					<div class="usageList">
 					<% for (var y = 0 ; Array.isArray(usages) && y < usages.length; y++) {%>
-					<!-- <div><%= usages[y].resultItemId %></div> -->
-					<div class="miniItemLabel"><a href="<%= usages[y].url %>"><img class="miniItem" src="<%= usages[y].imgUrl %>" /><%= usages[y].resultItemName %></a></div>
+						<div class="miniItemLabel"><a href="<%= usages[y].url %>"><img class="miniItem" src="<%= usages[y].imgUrl %>" /><%= usages[y].resultItemName %></a></div>
 					<% } %>
+					</div>
 				<% }%>
 			</div>
 		</div>

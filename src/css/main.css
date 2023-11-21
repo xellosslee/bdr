@@ -157,6 +157,15 @@ img.miniItem {
 	height: 22px;
 }
 
+.usageList {
+	display: flex;
+	flex-wrap: wrap;
+}
+
+.usageList > div {
+	margin-right: 10px;
+}
+
 .miniItemLabel {
 	line-height: 22px;
 }
