@@ -8,6 +8,10 @@ window.onload = () => {
 			location.href = location.protocol + '//' + location.host + searchedItemUrl
 		}
 		if (evt.target.value == '') {
+			if (searchText.value == '') {
+				searchedItemUrl = ''
+				autoComplete.classList.add('empty')
+			}
 			return
 		}
 		var pattern = /([^가-힣\x20])/i
