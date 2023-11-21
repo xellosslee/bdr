@@ -41,7 +41,7 @@ window.onload = () => {
 				autoComplete.classList.add('empty')
 			}
 		}
-	}, 300)
+	}, 100)
 	searchText.onkeyup = fn
 
 	let inputCounts = document.querySelectorAll('input[data-earn-input]')
