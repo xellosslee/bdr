@@ -41,12 +41,14 @@
 					</div>
 					<% } %>
 				</div>
-				<hr class="separator">
-				<div class="subtitle"><%= item.name %> - 제작가능 아이템</div>
-				<% for (var y = 0 ; Array.isArray(usages) && y < usages.length; y++) {%>
-				<div><%= usages[y].resultItemId %></div>
-				<div class="resultItemName"><a href="<%= usages[y].url %>"><img src="<%= usages[y].imgUrl %>" /><%= usages[y].resultItemName %></a></div>
-				<% } %>
+				<% if (Array.isArray(usages) && usages.length > 0) { %>
+					<hr class="separator">
+					<div class="subtitle"><%= item.name %> - 제작가능 아이템</div>
+					<% for (var y = 0 ; Array.isArray(usages) && y < usages.length; y++) {%>
+					<div><%= usages[y].resultItemId %></div>
+					<div class="resultItemName"><a href="<%= usages[y].url %>"><img src="<%= usages[y].imgUrl %>" /><%= usages[y].resultItemName %></a></div>
+					<% } %>
+				<% }%>
 			</div>
 		</div>
 	</body>
