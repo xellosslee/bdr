@@ -53,6 +53,15 @@ window.onload = () => {
 	function changeInput(evt) {
 		let earnId = evt.target.dataset.earnInput
 		let inputCounts = document.querySelectorAll('input[data-earn-id="' + earnId + '"]')
+		evt.target.value = evt.target.value.replace(/[^0-9]/g, '')
+		if (evt.target.value < 0) {
+			evt.target.value = 0
+			return
+		}
+		if (evt.target.value > 99999) {
+			evt.target.value = 99999
+			return
+		}
 		for (let i = 0; i < inputCounts.length; i++) {
 			inputCounts[i].value = Number(inputCounts[i].dataset.oriValue) * Number(evt.target.value)
 		}
