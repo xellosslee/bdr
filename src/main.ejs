@@ -72,7 +72,7 @@
 									<%= item.Earns[i].path %>
 								<% } %>
 								<%= item.Earns[i].work %></br>
-								x <input type=text class=count data-earn-input="<%= i %>" value="1">
+								x <input type="text" class="count" data-earn-input="<%= i %>" value="1">회
 							<% } else { %>
 								<%= item.Earns[i].work %>
 							<% } %>
@@ -91,7 +91,7 @@
 											<span><%= item.Earns[i].craftList[x].name %></span>
 										</a>
 									</div>
-									<div><%= item.Earns[i].craftList[x].count %> x <input class=count type=text data-earn-id="<%= i %>" data-ori-value="<%= item.Earns[i].craftList[x].count %>" readonly></div>
+									<div><%= item.Earns[i].craftList[x].count %> x <input class="count" type="text" data-earn-id="<%= i %>" data-ori-value="<%= item.Earns[i].craftList[x].count %>" readonly></div>
 								</div>
 							<% } %>
 						</div>
