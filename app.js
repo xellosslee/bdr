@@ -65,7 +65,7 @@ async function main() {
 				var usageList = []
 				usageTemp.forEach((e) => {
 					usageList.push({
-						resultItemId: e.querySelector('a').href.substring(e.querySelector('a').href.lastIndexOf('/') + 1),
+						resultItemCd: e.querySelector('a').href.substring(e.querySelector('a').href.lastIndexOf('/') + 1),
 						name: e.querySelector('span').textContent.trim(),
 					})
 				})

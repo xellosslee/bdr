@@ -23,7 +23,7 @@ module.exports = (sq) => {
 			tableName: 'usages',
 			charset: 'utf8mb4',
 			collate: 'utf8mb4_0900_ai_ci',
-			indexes: [{ fields: ['itemId', 'resultItemId'] }, { fields: ['itemId', 'resultItemCd'] }],
+			indexes: [{ fields: ['itemId', 'resultItemCd'] }],
 		},
 	)
 	return Usages

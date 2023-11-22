@@ -23,93 +23,51 @@ async function getFileTimes() {
 }
 
 router.get('/', (req, res, next) => {
-	DB.Item.findOne({ attributes: ['itemId'], order: [sq.fn('rand')] }).then(async (item) => {
-		let url = '/item/' + encode(JSON.stringify({ itemId: item.itemId }))
+	DB.Item.findOne({ attributes: ['itemCd'], order: [sq.fn('rand')] }).then(async (item) => {
+		let url = '/item/' + encode(JSON.stringify({ itemCd: item.itemCd }))
 		// res.redirect(url, next)
-		req.params.itemId = item.itemId.toString()
+		req.params.itemCd = item.itemCd.toString()
 		req.internal = true
 		await itemPageIn(req, res)
 	})
 })
 
-// 데이터 저장
-router.post('/item/put', async function (req, res) {
-	let transaction = await sq.transaction()
-	try {
-		console.log(req.body)
-		if (req.body.item.itemId != null) {
-			await DB.Item.upsert(req.body.item, { where: { itemId: req.body.item.itemId }, transaction })
-			await DB.Earn.destroy({ where: { itemId: req.body.item.itemId }, transaction })
-			await DB.Earn.bulkCreate(
-				req.body.item.earnList.map((e) => ({ ...e, itemId: req.body.item.itemId })),
-				{ transaction },
-			)
-			await DB.Usages.destroy({ where: { itemId: req.body.item.itemId }, transaction })
-			await DB.Usages.bulkCreate(
-				req.body.item.usageList.map((e) => ({ ...e, itemId: req.body.item.itemId })),
-				{ transaction },
-			)
-		} else {
-			let item = await DB.Item.create(req.body.item, { transaction })
-			if (item.itemId) {
-				req.body.item.itemId = item.itemId
-			}
-			await DB.Earn.bulkCreate(
-				req.body.item.earnList.map((e) => ({ ...e, itemId: req.body.item.itemId })),
-				{ transaction },
-			)
-			await DB.Usages.bulkCreate(
-				req.body.item.usageList.map((e) => ({ ...e, itemId: req.body.item.itemId })),
-				{ transaction },
-			)
-		}
-		await transaction.commit()
-		res.send(200, { ...jsonSuccess })
-	} catch (err) {
-		console.error(err.original || err)
-		await transaction.rollback()
-		if (typeof err == 'object') {
-			res.send({ ...defJsonError, ...err })
-		} else {
-			res.send(defJsonError)
-		}
-	}
-})
-
-router.get('/item/:itemId', itemPageIn)
+router.get('/item/:itemCd', itemPageIn)
 
 async function itemPageIn(req, res) {
 	try {
-		let params = { itemId: req.params.itemId, search: req.query.search }
+		let params = { itemCd: req.params.itemCd, search: req.query.search }
 		let item = null
-		// 검색단어가 있을 경우
-		if (params.search) {
-			let items = await DB.Item.findAll({
-				include: [{ model: DB.File, as: 'itemImage', attributes: ['imgUrl'] }],
-				where: { name: { [Op.like]: '%' + params.search + '%' }, removed: 0 },
-			})
-			// 검색 결과 맵핑
-			item = items[0]
-		}
+		// // 검색단어가 있을 경우
+		// if (params.search) {
+		// 	let items = await DB.Item.findAll({
+		// 		include: [{ model: DB.File, as: 'itemImage', attributes: ['imgUrl'] }],
+		// 		where: { name: { [Op.like]: '%' + params.search + '%' }, removed: 0 },
+		// 	})
+		// 	// 검색 결과 맵핑
+		// 	item = items[0]
+		// }
 		// 운영에서는 숫자 조회 불가능하게 방지
-		// 단, 랜덤 조회 일때에는 itemId로 조회 시도
+		// 단, 랜덤 조회 일때에는 itemCd로 조회 시도
 		if (req.internal || (!item && process.env.NODE_ENV != 'prod')) {
-			if (!Number.isNaN(Number(params.itemId))) {
+			if (!Number.isNaN(Number(params.itemCd))) {
 				item = await DB.Item.findOne({
 					include: [{ model: DB.File, as: 'itemImage', attributes: ['imgUrl'] }],
-					where: { itemId: Number(params.itemId), removed: 0 },
+					where: { itemCd: Number(params.itemCd), removed: 0 },
+					order: [['likeCount', 'desc']],
 				})
 			}
 		}
 		if (!item) {
 			try {
-				let data = JSON.parse(decode(params.itemId))
+				let data = JSON.parse(decode(params.itemCd))
 				console.debug(data)
-				params.itemId = data.itemId
+				params.itemCd = data.itemCd
 				params.search = data.search
 				item = await DB.Item.findOne({
 					include: [{ model: DB.File, as: 'itemImage', attributes: ['imgUrl'] }],
-					where: { itemId: params.itemId, removed: 0 },
+					where: { itemCd: params.itemCd, removed: 0 },
+					order: [['likeCount', 'desc']],
 					logging: false,
 				})
 			} catch (err) {
@@ -146,7 +104,7 @@ async function itemPageIn(req, res) {
 				{
 					model: DB.Item,
 					as: 'resultItem',
-					attributes: ['itemId', 'name', 'fileId'],
+					attributes: ['itemCd', 'name', 'fileId'],
 					where: { removed: 0 },
 					include: [{ model: DB.File, as: 'itemImage', attributes: ['imgUrl'] }],
 				},
@@ -156,11 +114,11 @@ async function itemPageIn(req, res) {
 		})
 		let usagesList = []
 		for (let i = 0; i < usages.length; i++) {
-			let url = '/item/' + encode(JSON.stringify({ itemId: usages[i].resultItem.itemId }))
+			let url = '/item/' + encode(JSON.stringify({ itemCd: usages[i].resultItem.itemCd }))
 			// console.log(itemId, encoded, url)
 			// usages[i].setDataValue('url', url)
 			usagesList.push({
-				resultItemId: usages[i].resultItem.itemId,
+				resultItemCd: usages[i].resultItem.itemCd,
 				resultItemName: usages[i].resultItem.name,
 				url: url,
 				imgUrl: usages[i].resultItem.itemImage.imgUrl,
@@ -206,6 +164,50 @@ router.post('/item/fast/search', plugins.bodyParser(), async (req, res) => {
 	} catch (err) {
 		console.error(err)
 		res.send(403, jsonFailed)
+	}
+})
+
+// 데이터 저장
+router.post('/item/put', async function (req, res) {
+	let transaction = await sq.transaction()
+	try {
+		console.log(req.body)
+		if (req.body.item.itemId != null) {
+			await DB.Item.upsert(req.body.item, { where: { itemId: req.body.item.itemId }, transaction })
+			await DB.Earn.destroy({ where: { itemId: req.body.item.itemId }, transaction })
+			await DB.Earn.bulkCreate(
+				req.body.item.earnList.map((e) => ({ ...e, itemId: req.body.item.itemId })),
+				{ transaction },
+			)
+			await DB.Usages.destroy({ where: { itemId: req.body.item.itemId }, transaction })
+			await DB.Usages.bulkCreate(
+				req.body.item.usageList.map((e) => ({ ...e, itemId: req.body.item.itemId })),
+				{ transaction },
+			)
+		} else {
+			let item = await DB.Item.create(req.body.item, { transaction })
+			if (item.itemId) {
+				req.body.item.itemId = item.itemId
+			}
+			await DB.Earn.bulkCreate(
+				req.body.item.earnList.map((e) => ({ ...e, itemId: req.body.item.itemId })),
+				{ transaction },
+			)
+			await DB.Usages.bulkCreate(
+				req.body.item.usageList.map((e) => ({ ...e, itemId: req.body.item.itemId })),
+				{ transaction },
+			)
+		}
+		await transaction.commit()
+		res.send(200, { ...jsonSuccess })
+	} catch (err) {
+		console.error(err.original || err)
+		await transaction.rollback()
+		if (typeof err == 'object') {
+			res.send({ ...defJsonError, ...err })
+		} else {
+			res.send(defJsonError)
+		}
 	}
 })
 
