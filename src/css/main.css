@@ -79,7 +79,7 @@ input.count {
 
 .container {
 	margin: 20px auto;
-	width: min(85%, 1024px);
+	width: min(95%, 1024px);
 }
 
 .content {
