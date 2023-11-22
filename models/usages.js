@@ -13,10 +13,6 @@ module.exports = (sq) => {
 				type: DataTypes.BIGINT.UNSIGNED,
 				comment: '재료 아이템',
 			},
-			resultItemId: {
-				type: DataTypes.BIGINT.UNSIGNED,
-				comment: '제작 가능 아이템',
-			},
 			resultItemCd: {
 				type: DataTypes.BIGINT.UNSIGNED,
 				comment: '제작 가능 아이템 코드',
