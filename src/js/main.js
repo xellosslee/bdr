@@ -3,6 +3,7 @@ window.onload = () => {
 	var searchedText = ''
 	var searchedItemUrl = ''
 	var autoComplete = document.getElementById('autoComplete')
+	let likeCntLabel = document.getElementById('likeCnt')
 	let fn = _.debounce(async (evt) => {
 		if (evt.key == 'Enter' && searchedItemUrl != '') {
 			location.href = location.protocol + '//' + location.host + searchedItemUrl
@@ -70,6 +71,12 @@ window.onload = () => {
 		let res = await fetch('/item/like-set', { method: 'POST', body: JSON.stringify({ itemId: a, like: b }), headers: { 'Content-Type': 'application/json' } })
 		let result = await res.json()
 		console.log(result)
-		// TODO : result가 성공이면 좋아요, 싫어요 숫자 화면에 반영 필요
+		if (result.code == '00') {
+			if (b == '1') {
+				likeCntLabel.textContent = (Number(likeCntLabel.textContent) + 1).toString()
+			} else {
+				likeCntLabel.textContent = (Number(likeCntLabel.textContent) - 1).toString()
+			}
+		}
 	}
 }

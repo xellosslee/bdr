@@ -273,7 +273,7 @@ router.post('/item/like-set', async (req, res) => {
 			limit: 10,
 		})
 		if (item) {
-			await item.increment({ likeCount: req.body.like == '1' ? 1 : 0 })
+			await item.increment({ likeCount: req.body.like == '1' ? 1 : -1 })
 		} else {
 			throw { message: '해당 아이템을 찾을 수 없습니다.' }
 		}
