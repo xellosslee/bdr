@@ -25,7 +25,7 @@ window.onload = () => {
 			searchedText = evt.target.value
 			let data = { search: evt.target.value }
 			console.log(data)
-			let res = await fetch('/item/fast/search', { method: 'POST', body: JSON.stringify(data) })
+			let res = await fetch('/item/fast/search', { method: 'POST', body: JSON.stringify(data), headers: { 'Content-Type': 'application/json' } })
 			let result = await res.json()
 			// 검색결과 출력
 			console.log(result)
@@ -55,5 +55,21 @@ window.onload = () => {
 		for (let i = 0; i < inputCounts.length; i++) {
 			inputCounts[i].value = Number(inputCounts[i].dataset.oriValue) * Number(evt.target.value)
 		}
+	}
+
+	let likeButton = document.querySelector('button.btn.success')
+	let dislikeButton = document.querySelector('button.btn.reverse')
+	dislikeButton.onclick = likeButton.onclick = likeSet
+	async function likeSet(evt) {
+		let a = evt.currentTarget.dataset.itemId
+		let b = evt.currentTarget.dataset.value
+		console.log(a, b)
+		if (!a || !b) {
+			return
+		}
+		let res = await fetch('/item/like-set', { method: 'POST', body: JSON.stringify({ itemId: a, like: b }), headers: { 'Content-Type': 'application/json' } })
+		let result = await res.json()
+		console.log(result)
+		// TODO : result가 성공이면 좋아요, 싫어요 숫자 화면에 반영 필요
 	}
 }

@@ -97,8 +97,8 @@ async function itemPageIn(req, res) {
 			e.url = url
 			e.imgUrl = e.resultItem.itemImage.imgUrl
 		}
-		// console.log(item.dataValues)
-		let html = await ejs.renderFile('src/main.ejs', { item, ...(await getFileTimes()) })
+		item.dataValues.itemIdEnc = encode(item.dataValues.itemId.toString())
+		let html = await ejs.renderFile('src/main.ejs', { item: item.dataValues, ...(await getFileTimes()) })
 		res.writeHead(200, { 'content-length': Buffer.byteLength(html), 'content-type': 'text/html' })
 		res.write(html)
 		res.end()
@@ -191,7 +191,7 @@ async function itemListFromItemCd(req, res) {
 }
 
 // 자동완성용 검색
-router.post('/item/fast/search', plugins.bodyParser(), async (req, res) => {
+router.post('/item/fast/search', async (req, res) => {
 	try {
 		req.body = JSON.parse(req.body)
 		if (req.body.search == '') {
@@ -260,6 +260,27 @@ router.post('/item/put', async function (req, res) {
 		} else {
 			res.send(defJsonError)
 		}
+	}
+})
+
+// 좋아요, 싫어요 저장
+router.post('/item/like-set', async (req, res) => {
+	try {
+		console.log(req.body)
+		let item = await DB.Item.findOne({
+			attributes: ['itemId'],
+			where: { itemId: decode(req.body.itemId) },
+			limit: 10,
+		})
+		if (item) {
+			await item.increment({ likeCount: req.body.like == '1' ? 1 : 0 })
+		} else {
+			throw { message: '해당 아이템을 찾을 수 없습니다.' }
+		}
+		res.send(200, { ...jsonSuccess })
+	} catch (err) {
+		console.error(err)
+		res.send(403, jsonFailed)
 	}
 })
 
