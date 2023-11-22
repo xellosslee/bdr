@@ -26,7 +26,7 @@ window.onload = () => {
 			searchedText = evt.target.value
 			let data = { search: evt.target.value }
 			console.log(data)
-			let res = await fetch('/item/fast/search', { method: 'POST', body: JSON.stringify(data), headers: { 'Content-Type': 'application/json' } })
+			let res = await Api({ url: '/item/fast/search', data })
 			let result = await res.json()
 			// 검색결과 출력
 			console.log(result)
@@ -64,19 +64,53 @@ window.onload = () => {
 	async function likeSet(evt) {
 		let a = evt.currentTarget.dataset.itemId
 		let b = evt.currentTarget.dataset.value
-		console.log(a, b)
 		if (!a || !b) {
 			return
 		}
-		let res = await fetch('/item/like-set', { method: 'POST', body: JSON.stringify({ itemId: a, like: b }), headers: { 'Content-Type': 'application/json' } })
+		let res = await Api({ url: '/item/like-set', data: { itemId: a, like: b } })
 		let result = await res.json()
-		console.log(result)
 		if (result.code == '00') {
 			if (b == '1') {
 				likeCntLabel.textContent = (Number(likeCntLabel.textContent) + 1).toString()
 			} else {
 				likeCntLabel.textContent = (Number(likeCntLabel.textContent) - 1).toString()
 			}
+		} else if (result.code == '01') {
+			alert(result.message)
+		}
+	}
+}
+
+async function Api(param) {
+	return await fetch(param.url, {
+		method: param.method || 'POST',
+		body: JSON.stringify(param.data || {}),
+		headers: {
+			'Content-Type': 'application/json',
+			bdrId: getCookie('bdrId'),
+		},
+	})
+}
+function setCookie(p) {
+	if (typeof p !== 'object' || !p.key || !p.value || !p.expiresDay) {
+		throw 'setCookie 파라미터는 { key, value, expiresDay } 오브젝트로 전달해야 합니다.'
+	}
+	if (p.expiresDay == null) {
+		let d = new Date()
+		d.setDate(d.getDate() + p.expiresDay)
+		p.expires = d.toUTCString()
+	}
+	document.cookie = p.key + '=' + p.value + '; expires=' + p.expires
+}
+function getCookie(p) {
+	if (typeof p !== 'string' && (typeof p !== 'object' || !p.key)) {
+		throw 'getCookie 파라미터는 string 혹은 { key } 오브젝트로 전달해야 합니다.'
+	}
+	let key = typeof p === 'object' ? p.key : p
+	let cookies = document.cookie.split(';')
+	for (let i = 0; i < cookies.length; i++) {
+		if (cookies[i].indexOf(key) > -1) {
+			return cookies[i].split('=')[1]
 		}
 	}
 }

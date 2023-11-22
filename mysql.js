@@ -21,6 +21,7 @@ let DB = {
 	Earn: require('./models/earn.js')(sq),
 	Usages: require('./models/usages.js')(sq),
 	File: require('./models/file.js')(sq),
+	LikeHistory: require('./models/like_history.js')(sq),
 }
 
 DB.Usages.belongsTo(DB.Item, { foreignKey: 'itemId', as: 'Item', constraints: false, foreignKeyConstraint: false })

@@ -1,30 +1,31 @@
 const { Model, DataTypes } = require('sequelize')
-class Usages extends Model {}
+class LikeHistory extends Model {}
 
 module.exports = (sq) => {
-	Usages.init(
+	LikeHistory.init(
 		{
-			id: {
+			likeHistoryId: {
 				type: DataTypes.BIGINT.UNSIGNED,
 				primaryKey: true,
 				autoIncrement: true,
 			},
 			itemId: {
 				type: DataTypes.BIGINT.UNSIGNED,
-				comment: '재료 아이템',
+				allowNull: false,
 			},
-			resultItemCd: {
-				type: DataTypes.BIGINT.UNSIGNED,
-				comment: '제작 가능 아이템 코드',
+			bdrId: {
+				type: DataTypes.STRING,
+				allowNull: false,
 			},
 		},
 		{
+			updatedAt: false,
 			sequelize: sq,
-			tableName: 'usages',
+			tableName: 'like_history',
 			charset: 'utf8mb4',
 			collate: 'utf8mb4_0900_ai_ci',
-			indexes: [{ fields: ['itemId', 'resultItemCd'] }],
+			indexes: [{ fields: ['itemId'] }, { fields: ['bdrId', 'createdAt', 'itemId'] }],
 		},
 	)
-	return Usages
+	return LikeHistory
 }

@@ -5,15 +5,34 @@ const ejs = require('ejs')
 const fs = require('node:fs/promises')
 const { encode, decode } = require('./crypt')
 const router = new Router()
+const uuid4 = require('uuid4')
+const dayjs = require('dayjs')
 
 const defaultErrorHtml = `<p>일시적으로 장애가 발생할 수 있습니다.</p>
                         <p>잠시 후 다시 시도해 주세요.</p>`
-const defJsonError = { status: 500, code: '99', message: '오류가 발생하였습니다.' }
+const defJsonError = { status: 200, code: '99', message: '오류가 발생하였습니다.' }
 const jsonSuccess = { code: '00', message: '정상입니다.' }
 const jsonFailed = { code: '99', message: '비정상입니다.' }
 
 router.use(plugins.bodyParser())
 router.use(plugins.queryParser())
+
+function toCookieObj(cookieInput) {
+	if (typeof cookieInput != 'string') {
+		console.error('toCookieObj parameter must string')
+		return null
+	}
+	let arr = cookieInput.split(';')
+	let result = {}
+	if (Array.isArray(arr)) {
+		arr.forEach((e) => {
+			result[e.split('=')[0]] = e.split('=')[1]
+		})
+		return result
+	} else {
+		return null
+	}
+}
 
 async function getFileTimes() {
 	return {
@@ -98,6 +117,11 @@ async function itemPageIn(req, res) {
 			e.imgUrl = e.resultItem.itemImage.imgUrl
 		}
 		item.dataValues.itemIdEnc = encode(item.dataValues.itemId.toString())
+		let cookie = toCookieObj(req.headers.cookie)
+		if (cookie.bdrId == null) {
+			let expire = dayjs().valueOf() + 1000 * 60 * 60 * 24 * 365
+			res.header('Set-Cookie', 'bdrId=' + uuid4() + '; expires=' + expire)
+		}
 		let html = await ejs.renderFile('src/main.ejs', { item: item.dataValues, ...(await getFileTimes()) })
 		res.writeHead(200, { 'content-length': Buffer.byteLength(html), 'content-type': 'text/html' })
 		res.write(html)
@@ -266,21 +290,31 @@ router.post('/item/put', async function (req, res) {
 // 좋아요, 싫어요 저장
 router.post('/item/like-set', async (req, res) => {
 	try {
-		console.log(req.body)
+		let cookie = toCookieObj(req.headers.cookie)
+		if (!cookie.bdrId) {
+			throw { code: '97', message: '비정상 적인 접근입니다.' }
+		}
 		let item = await DB.Item.findOne({
 			attributes: ['itemId'],
 			where: { itemId: decode(req.body.itemId) },
 			limit: 10,
 		})
 		if (item) {
+			let checkOver = await DB.LikeHistory.count({
+				where: { bdrId: cookie.bdrId, itemId: item.itemId, createdAt: { [Op.between]: [dayjs().format('YYYY-MM-DD 00:00:00'), dayjs().format('YYYY-MM-DD 23:59:59')] } },
+			})
+			if (checkOver > 0) {
+				throw { code: '01', message: '좋아요, 싫어요는 게시글별 하루 한번만 가능합니다.' }
+			}
 			await item.increment({ likeCount: req.body.like == '1' ? 1 : -1 })
+			await DB.LikeHistory.create({ bdrId: cookie.bdrId, itemId: item.itemId })
 		} else {
-			throw { message: '해당 아이템을 찾을 수 없습니다.' }
+			throw { code: '02', message: '해당 아이템을 찾을 수 없습니다.' }
 		}
 		res.send(200, { ...jsonSuccess })
 	} catch (err) {
 		console.error(err)
-		res.send(403, jsonFailed)
+		res.send(200, { ...jsonFailed, ...err })
 	}
 })
 

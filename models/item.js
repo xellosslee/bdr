@@ -7,7 +7,7 @@ module.exports = (sq) => {
 			itemId: {
 				type: DataTypes.BIGINT.UNSIGNED,
 				primaryKey: true,
-				allowNull: false,
+				autoIncrement: true,
 			},
 			itemCd: {
 				type: DataTypes.BIGINT.UNSIGNED,

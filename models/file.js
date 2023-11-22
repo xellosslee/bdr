@@ -7,7 +7,7 @@ module.exports = (sq) => {
 			fileId: {
 				type: DataTypes.BIGINT.UNSIGNED,
 				primaryKey: true,
-				allowNull: false,
+				autoIncrement: true,
 			},
 			imgUrl: {
 				type: DataTypes.STRING,
