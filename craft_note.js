@@ -36,17 +36,8 @@ router.get('/item/:itemCd', itemPageIn)
 
 async function itemPageIn(req, res) {
 	try {
-		let params = { itemCd: req.params.itemCd, search: req.query.search }
+		let params = { itemCd: req.params.itemCd }
 		let item = null
-		// // 검색단어가 있을 경우
-		// if (params.search) {
-		// 	let items = await DB.Item.findAll({
-		// 		include: [{ model: DB.File, as: 'itemImage', attributes: ['imgUrl'] }],
-		// 		where: { name: { [Op.like]: '%' + params.search + '%' }, removed: 0 },
-		// 	})
-		// 	// 검색 결과 맵핑
-		// 	item = items[0]
-		// }
 		// 운영에서는 숫자 조회 불가능하게 방지
 		// 단, 랜덤 조회 일때에는 itemCd로 조회 시도
 		if (req.internal || (!item && process.env.NODE_ENV != 'prod')) {
@@ -63,7 +54,85 @@ async function itemPageIn(req, res) {
 				let data = JSON.parse(decode(params.itemCd))
 				// console.debug(params.itemCd, decode(params.itemCd), data)
 				params.itemCd = data.itemCd
-				params.search = data.search
+				item = await DB.Item.findOne({
+					include: [{ model: DB.File, as: 'itemImage', attributes: ['imgUrl'] }, { model: DB.Earn }, { model: DB.Usages }],
+					where: { itemCd: params.itemCd, removed: 0 },
+					order: [['likeCount', 'desc']],
+					logging: false,
+				})
+			} catch (err) {
+				if (!item) {
+					throw {}
+				}
+			}
+		}
+		for (let i = 0; i < item.Earns.length; i++) {
+			let craftListTemp = item.Earns[i].craftList
+			if (item.Earns[i].type == 'craft') {
+				let items = await DB.Item.findAll({
+					attributes: ['itemId', 'itemCd', 'name'],
+					include: [{ model: DB.File, as: 'itemImage', attributes: ['imgUrl'] }],
+					where: { itemId: craftListTemp.map((e) => e.itemId) },
+					logging: false,
+				})
+				for (let j = 0; j < items.length; j++) {
+					let idx = craftListTemp.findIndex((e) => e.itemId == items[j].itemId)
+					if (idx == -1) {
+						console.error('cannot found craft item !!!')
+						break
+					}
+					craftListTemp[idx].name = items[j].name
+					craftListTemp[idx].url = '/item/' + encode(JSON.stringify({ itemCd: items[j].itemCd }))
+					craftListTemp[idx].imgUrl = items[j].itemImage.imgUrl
+				}
+			}
+		}
+		// let usagesList = []
+		for (let i = 0; i < item.Usages.length; i++) {
+			let e = item.Usages[i]
+			let url = '/item/' + encode(JSON.stringify({ itemCd: e.resultItem.itemCd }))
+			// console.log(itemId, encoded, url)
+			e.resultItemCd = e.resultItem.itemCd
+			e.resultItemName = e.resultItem.name
+			e.url = url
+			e.imgUrl = e.resultItem.itemImage.imgUrl
+		}
+		// console.log(item.dataValues)
+		let html = await ejs.renderFile('src/main.ejs', { item, ...(await getFileTimes()) })
+		res.writeHead(200, { 'content-length': Buffer.byteLength(html), 'content-type': 'text/html' })
+		res.write(html)
+		res.end()
+	} catch (err) {
+		console.error(err)
+		let html = await ejs.renderFile('src/error.ejs', { errorHtml: defaultErrorHtml, ...err })
+		res.writeHead(200, { 'content-length': Buffer.byteLength(html), 'content-type': 'text/html' })
+		res.write(html)
+		res.end()
+	}
+}
+
+router.get('/item/append/:itemCd', itemListFromItemCd)
+
+async function itemListFromItemCd(req, res) {
+	try {
+		let params = { itemCd: req.params.itemCd }
+		let item = null
+		// 운영에서는 숫자 조회 불가능하게 방지
+		// 단, 랜덤 조회 일때에는 itemCd로 조회 시도
+		if (req.internal || (!item && process.env.NODE_ENV != 'prod')) {
+			if (!Number.isNaN(Number(params.itemCd))) {
+				item = await DB.Item.findOne({
+					include: [{ model: DB.File, as: 'itemImage', attributes: ['imgUrl'] }, { model: DB.Earn }, { model: DB.Usages }],
+					where: { itemCd: Number(params.itemCd), removed: 0 },
+					order: [['likeCount', 'desc']],
+				})
+			}
+		}
+		if (!item) {
+			try {
+				let data = JSON.parse(decode(params.itemCd))
+				// console.debug(params.itemCd, decode(params.itemCd), data)
+				params.itemCd = data.itemCd
 				item = await DB.Item.findOne({
 					include: [{ model: DB.File, as: 'itemImage', attributes: ['imgUrl'] }, { model: DB.Earn }, { model: DB.Usages }],
 					where: { itemCd: params.itemCd, removed: 0 },
@@ -130,7 +199,7 @@ router.post('/item/fast/search', plugins.bodyParser(), async (req, res) => {
 		}
 		let data = []
 		let items = await DB.Item.findAll({
-			attributes: ['itemId', 'name'],
+			attributes: ['itemId', 'itemCd', 'name'],
 			include: [{ model: DB.File, as: 'itemImage', attributes: ['imgUrl'] }],
 			where: { name: { [Op.like]: '%' + req.body.search + '%' }, removed: 0 },
 			limit: 10,
@@ -138,7 +207,7 @@ router.post('/item/fast/search', plugins.bodyParser(), async (req, res) => {
 		for (let i = 0; i < items.length; i++) {
 			// console.debug(items[i])
 			data.push({
-				itemUrl: '/item/' + encode(JSON.stringify({ itemId: items[i].itemId })),
+				itemUrl: '/item/' + encode(JSON.stringify({ itemCd: items[i].itemCd })),
 				name: items[i].name,
 				imgUrl: items[i].itemImage.imgUrl,
 			})
