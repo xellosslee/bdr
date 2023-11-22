@@ -91,11 +91,11 @@ async function itemPageIn(req, res) {
 				let items = await DB.Item.findAll({
 					attributes: ['itemId', 'itemCd', 'name'],
 					include: [{ model: DB.File, as: 'itemImage', attributes: ['imgUrl'] }],
-					where: { itemId: craftListTemp.map((e) => e.itemId) },
+					where: { itemCd: craftListTemp.map((e) => e.itemCd) },
 					logging: false,
 				})
 				for (let j = 0; j < items.length; j++) {
-					let idx = craftListTemp.findIndex((e) => e.itemId == items[j].itemId)
+					let idx = craftListTemp.findIndex((e) => e.itemCd == items[j].itemCd)
 					if (idx == -1) {
 						console.error('cannot found craft item !!!')
 						break
