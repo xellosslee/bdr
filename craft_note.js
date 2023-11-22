@@ -151,7 +151,6 @@ async function itemPageIn(req, res) {
 					include: [{ model: DB.File, as: 'itemImage', attributes: ['imgUrl'] }],
 				},
 			],
-
 			where: { itemId: item.itemId },
 			logging: false,
 		})

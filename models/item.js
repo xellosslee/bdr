@@ -9,6 +9,10 @@ module.exports = (sq) => {
 				primaryKey: true,
 				allowNull: false,
 			},
+			itemCd: {
+				type: DataTypes.BIGINT.UNSIGNED,
+				allowNull: false,
+			},
 			name: {
 				type: DataTypes.STRING,
 			},
