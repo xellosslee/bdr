@@ -217,7 +217,6 @@ async function itemListFromItemCd(req, res) {
 // 자동완성용 검색
 router.post('/item/fast/search', async (req, res) => {
 	try {
-		req.body = JSON.parse(req.body)
 		if (req.body.search == '') {
 			throw {}
 		}
