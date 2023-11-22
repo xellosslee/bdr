@@ -167,23 +167,23 @@ input.count {
 }
 
 .itemName {
-	font-size: 20px;
+	font-size: min(20px, 5.1282051vw);
 	font-weight: 700;
 }
 
 .subtitle {
-	font-size: 18px;
+	font-size: min(18px, 4.6153846vw);
 	font-weight: 700;
 	margin: 8px 0 6px;
 }
 
 .itemImg {
-	width: 36px;
-	height: 36px;
+	width: min(36px, 9.2307692vw);
+	height: min(36px, 9.2307692vw);
 	border: 1px solid var(--gray-color3);
 	border-radius: 4px;
 	overflow: hidden;
-	margin-right: 10px;
+	margin-right: min(10px, 2.5641026vw);
 }
 
 .itemImg > img {
@@ -191,7 +191,7 @@ input.count {
 }
 
 .earnList .colHeader {
-	width: 130px;
+	width: min(130px, 33.3333333vw);
 	text-align: center;
 	background-color: var(--gray-color3);
 	vertical-align: middle;
@@ -209,8 +209,8 @@ input.count {
 }
 
 img.miniItem {
-	width: 22px;
-	height: 22px;
+	width: min(22px, 5.6410256vw);
+	height: min(22px, 5.6410256vw);
 	border: 1px solid var(--gray-color3);
 	border-radius: 4px;
 }
@@ -221,15 +221,15 @@ img.miniItem {
 }
 
 .usageList > div {
-	margin-right: 10px;
+	margin-right: min(10px, 2.5641026vw);
 	min-width: 22%;
 }
 
 .miniItemLabel {
-	line-height: 22px;
+	line-height: min(22px, 5.6410256vw);
 	padding: 4px 6px;
 	color: var(--point-color);
-	font-size: 15px;
+	font-size: min(15px, 3.8461538vw);
 	border-radius: 4px;
 }
 
@@ -259,11 +259,12 @@ img.miniItem {
 .btn {
 	display: flex;
 	align-items: center;
-	padding: 4px 7px;
+	padding: min(4px, 1.025641vw) min(7px, 1.7948718vw);
 	background: #fff;
 	border: 1px solid var(--gray-color);
 	color: var(--gray-color);
 	border-radius: 4px;
+    font-size: min(12px, 3.0769231vw);
 	cursor: pointer;
 }
 .btn:hover {
