@@ -3,6 +3,9 @@
 :root {
 	--text: #333;
 	--point-color: indianred; /* 흑정령 눈색 */
+	--success-color: rgb(0, 140, 255);
+    --gold-color: rgb(255, 179, 0);
+    --gray-color: #666;
 }
 
 body {
@@ -231,18 +234,44 @@ img.miniItem {
 	margin-left: 4px;
 }
 
+.btnWrap {
+    display: flex;
+}
+
+.btnWrap > .btn:not(:first-child) {
+    margin-left: 6px;
+}
+
 /* btn 기본 */
 .btn {
     display: flex;
     align-items: center;
     padding: 4px 7px;
     background: #fff;
-    border: 1px solid #666;
+    border: 1px solid var(--gray-color);
+    color: var(--gray-color);
     border-radius: 4px;
+    cursor: pointer;
+}
+.btn:hover {
+    background: var(--gray-color);
+    border-color: #fff;
+    color: #fff;
 }
 
-.btn > svg.bi {
+.btn > svg.bi:not(:only-child) {
     margin-right: 4px;
+}
+
+.btn.reverse {
+    background:  var(--gray-color);
+    border-color:  var(--gray-color);
+    color:  #fff;
+}
+.btn.reverse:hover {
+    background: #fff;
+    border-color: var(--gray-color);
+    color: var(--gray-color);
 }
 
 .btn.main {
@@ -254,4 +283,26 @@ img.miniItem {
     background: #fff;
     border-color: var(--point-color);
     color: var(--point-color);
+}
+
+.btn.success {
+    background: var(--success-color);
+    border-color: var(--success-color);
+    color: #fff;
+}
+.btn.success:hover {
+    background: #fff;
+    border-color: var(--success-color);
+    color: var(--success-color);
+}
+
+.btn.gold {
+    background: var(--gold-color);
+    border-color: var(--gold-color);
+    color: #fff;
+}
+.btn.gold:hover {
+    background: #fff;
+    border-color: var(--gold-color);
+    color: var(--gold-color);
 }
