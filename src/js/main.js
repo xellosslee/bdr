@@ -4,6 +4,7 @@ window.onload = () => {
 	var searchedItemUrl = ''
 	var autoComplete = document.getElementById('autoComplete')
 	let likeCntLabel = document.getElementById('likeCnt')
+	let bookmarkBtn = document.getElementById('bookmarkBtn')
 	let fn = _.debounce(async (evt) => {
 		if (evt.key == 'Enter' && searchedItemUrl != '') {
 			location.href = location.protocol + '//' + location.host + searchedItemUrl
@@ -92,6 +93,12 @@ window.onload = () => {
 			alert(result.message)
 		}
 	}
+
+	function bookmark(item) {
+		let data = { item }
+		localStorage.setItem('bookmark', JSON.stringify(data))
+	}
+	bookmarkBtn.onclick = bookmark
 }
 
 async function Api(param) {
