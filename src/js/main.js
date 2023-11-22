@@ -52,19 +52,23 @@ window.onload = () => {
 	}
 	function changeInput(evt) {
 		let earnId = evt.target.dataset.earnInput
+		let tempValue = 0
 		let inputCounts = document.querySelectorAll('input[data-earn-id="' + earnId + '"]')
-		evt.target.value = evt.target.value.replace(/[^0-9]/g, '')
-		if (evt.target.value < 0) {
-			evt.target.value = 0
+		tempValue = evt.target.value.replace(/[^0-9]/g, '')
+		if (tempValue < 0) {
+			tempValue = 0
+			evt.target.value = tempValue
 			return
 		}
-		if (evt.target.value > 99999) {
-			evt.target.value = 99999
+		if (tempValue > 99999) {
+			tempValue = 99999
+			evt.target.value = comma(tempValue)
 			return
 		}
 		for (let i = 0; i < inputCounts.length; i++) {
-			inputCounts[i].value = Number(inputCounts[i].dataset.oriValue) * Number(evt.target.value)
+			inputCounts[i].value = comma(Number(inputCounts[i].dataset.oriValue) * Number(tempValue))
 		}
+		evt.target.value = comma(tempValue)		
 	}
 
 	let likeButton = document.querySelector('button.btn.success')
@@ -122,4 +126,11 @@ function getCookie(p) {
 			return cookies[i].split('=')[1]
 		}
 	}
+}
+
+function comma(x) {
+	if (typeof parseInt(x) != 'number') {
+		return
+	}
+	return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }

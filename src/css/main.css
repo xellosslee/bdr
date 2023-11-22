@@ -86,9 +86,10 @@ input {
 input.count {
 	width: 64%;
 	min-width: min(40px, 10.2564103vw);
-	max-width: min(50px, 12.8205128vw);
+	max-width: min(60px, 15.3846154vw);
 	font-size: min(13px, 3.3333333vw);
 	padding: 2px 4px;
+	text-align: right;
 }
 
 .container {
