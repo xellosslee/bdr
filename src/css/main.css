@@ -6,6 +6,9 @@
 	--success-color: rgb(0, 140, 255);
 	--gold-color: rgb(255, 179, 0);
 	--gray-color: #666;
+	--gray-color1: #999;
+	--gray-color2: #bbb;
+	--gray-color3: #ddd;
 }
 
 body {
@@ -26,7 +29,7 @@ body {
 		'Segoe UI Symbol',
 		sans-serif;
 	font-size: 16px;
-	color: --text;
+	color: var(--text);
 }
 
 div {
@@ -88,7 +91,7 @@ input.count {
 
 .content {
 	margin-top: 20px;
-	border: 1px solid #ddd;
+	border: 1px solid var(--gray-color3);
 	padding: 30px 20px;
 	border-radius: 16px;
 	box-shadow: 5px 5px #888;
@@ -118,7 +121,7 @@ input.count {
 	position: relative;
 	width: 100%;
 	position: relative;
-	border: 1px solid #bbb;
+	border: 1px solid var(--gray-color2);
 	padding: 8px 10px;
 	border-radius: 4px;
 }
@@ -135,7 +138,7 @@ input.count {
 	width: 100%;
 	font-size: 16px;
 	line-height: 44px;
-	border: 1px solid #bbb;
+	border: 1px solid var(--gray-color2);
 	border-radius: 4px;
 }
 .contentHeader .searchWrap > div#autoComplete.empty {
@@ -147,11 +150,13 @@ input.count {
 	align-items: center;
 	margin-bottom: 10px;
 	justify-content: space-between;
+    flex-wrap: wrap;
 }
 
 .itemHeader > div {
 	display: flex;
 	align-items: center;
+    margin-bottom: 4px;
 }
 
 .itemName {
@@ -168,7 +173,7 @@ input.count {
 .itemImg {
 	width: 36px;
 	height: 36px;
-	border: 1px solid #ddd;
+	border: 1px solid var(--gray-color3);
 	border-radius: 4px;
 	overflow: hidden;
 	margin-right: 10px;
@@ -181,7 +186,7 @@ input.count {
 .earnList .colHeader {
 	width: 130px;
 	text-align: center;
-	background-color: #ddd;
+	background-color: var(--gray-color3);
 	vertical-align: middle;
 }
 
@@ -199,7 +204,7 @@ input.count {
 img.miniItem {
 	width: 22px;
 	height: 22px;
-	border: 1px solid #ddd;
+	border: 1px solid var(--gray-color3);
 	border-radius: 4px;
 }
 
@@ -306,4 +311,29 @@ img.miniItem {
 	background: #fff;
 	border-color: var(--gold-color);
 	color: var(--gold-color);
+}
+
+.likeWrap {
+    display: flex;
+    border: 1px solid var(--gray-color2);
+    border-radius: 4px;
+    margin-left: 6px;
+}
+
+.likeWrap .likeCnt {
+    font-size: 13px;
+    color: #999;
+}
+
+.btn.solid {
+    background: transparent;
+    border:none;
+}
+
+.btn.solid.success {
+    color: var(--success-color);
+}
+
+.btn.solid.reverse {
+    color: var(--gray-color);
 }
