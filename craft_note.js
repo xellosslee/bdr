@@ -52,7 +52,7 @@ async function itemPageIn(req, res) {
 		if (req.internal || (!item && process.env.NODE_ENV != 'prod')) {
 			if (!Number.isNaN(Number(params.itemCd))) {
 				item = await DB.Item.findOne({
-					include: [{ model: DB.File, as: 'itemImage', attributes: ['imgUrl'] }],
+					include: [{ model: DB.File, as: 'itemImage', attributes: ['imgUrl'] }, { model: DB.Earn }, { model: DB.Usages }],
 					where: { itemCd: Number(params.itemCd), removed: 0 },
 					order: [['likeCount', 'desc']],
 				})
@@ -61,11 +61,11 @@ async function itemPageIn(req, res) {
 		if (!item) {
 			try {
 				let data = JSON.parse(decode(params.itemCd))
-				console.debug(data)
+				// console.debug(params.itemCd, decode(params.itemCd), data)
 				params.itemCd = data.itemCd
 				params.search = data.search
 				item = await DB.Item.findOne({
-					include: [{ model: DB.File, as: 'itemImage', attributes: ['imgUrl'] }],
+					include: [{ model: DB.File, as: 'itemImage', attributes: ['imgUrl'] }, { model: DB.Earn }, { model: DB.Usages }],
 					where: { itemCd: params.itemCd, removed: 0 },
 					order: [['likeCount', 'desc']],
 					logging: false,
@@ -76,13 +76,11 @@ async function itemPageIn(req, res) {
 				}
 			}
 		}
-		let earn = await DB.Earn.findAll({ where: { itemId: item.itemId }, logging: false })
-		// console.log(earn)
-		for (let i = 0; i < earn.length; i++) {
-			let craftListTemp = earn[i].craftList
-			if (earn[i].type == 'craft') {
+		for (let i = 0; i < item.Earns.length; i++) {
+			let craftListTemp = item.Earns[i].craftList
+			if (item.Earns[i].type == 'craft') {
 				let items = await DB.Item.findAll({
-					attributes: ['itemId', 'name'],
+					attributes: ['itemId', 'itemCd', 'name'],
 					include: [{ model: DB.File, as: 'itemImage', attributes: ['imgUrl'] }],
 					where: { itemId: craftListTemp.map((e) => e.itemId) },
 					logging: false,
@@ -94,38 +92,23 @@ async function itemPageIn(req, res) {
 						break
 					}
 					craftListTemp[idx].name = items[j].name
-					craftListTemp[idx].url = '/item/' + encode(JSON.stringify({ itemId: items[j].itemId }))
+					craftListTemp[idx].url = '/item/' + encode(JSON.stringify({ itemCd: items[j].itemCd }))
 					craftListTemp[idx].imgUrl = items[j].itemImage.imgUrl
 				}
 			}
 		}
-		let usages = await DB.Usages.findAll({
-			include: [
-				{
-					model: DB.Item,
-					as: 'resultItem',
-					attributes: ['itemCd', 'name', 'fileId'],
-					where: { removed: 0 },
-					include: [{ model: DB.File, as: 'itemImage', attributes: ['imgUrl'] }],
-				},
-			],
-			where: { itemId: item.itemId },
-			logging: false,
-		})
-		let usagesList = []
-		for (let i = 0; i < usages.length; i++) {
-			let url = '/item/' + encode(JSON.stringify({ itemCd: usages[i].resultItem.itemCd }))
+		// let usagesList = []
+		for (let i = 0; i < item.Usages.length; i++) {
+			let e = item.Usages[i]
+			let url = '/item/' + encode(JSON.stringify({ itemCd: e.resultItem.itemCd }))
 			// console.log(itemId, encoded, url)
-			// usages[i].setDataValue('url', url)
-			usagesList.push({
-				resultItemCd: usages[i].resultItem.itemCd,
-				resultItemName: usages[i].resultItem.name,
-				url: url,
-				imgUrl: usages[i].resultItem.itemImage.imgUrl,
-			})
+			e.resultItemCd = e.resultItem.itemCd
+			e.resultItemName = e.resultItem.name
+			e.url = url
+			e.imgUrl = e.resultItem.itemImage.imgUrl
 		}
-
-		let html = await ejs.renderFile('src/main.ejs', { item, earn, usages: usagesList, ...(await getFileTimes()) })
+		// console.log(item.dataValues)
+		let html = await ejs.renderFile('src/main.ejs', { item, ...(await getFileTimes()) })
 		res.writeHead(200, { 'content-length': Buffer.byteLength(html), 'content-type': 'text/html' })
 		res.write(html)
 		res.end()

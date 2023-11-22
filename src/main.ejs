@@ -41,46 +41,46 @@
 				<hr class="separator">
 				<div class="subtitle">획득 방법</div>
 				<div class="earnList">
-					<% for (var i = 0 ; Array.isArray(earn) && i < earn.length; i++) {%>
+					<% for (var i = 0 ; Array.isArray(item.Earns) && i < item.Earns.length; i++) {%>
 					<div class="row">
 						<div class="colHeader">
-							<% if (earn[i].type == 'craft') { %>
-								<% if (earn[i].path != null) { %>
-									<%= earn[i].path %>
+							<% if (item.Earns[i].type == 'craft') { %>
+								<% if (item.Earns[i].path != null) { %>
+									<%= item.Earns[i].path %>
 								<% } %>
-								<%= earn[i].work %></br>
+								<%= item.Earns[i].work %></br>
 								x <input type=text class=count data-earn-input="<%= i %>" value="1">
 							<% } else { %>
-								<%= earn[i].work %>
+								<%= item.Earns[i].work %>
 							<% } %>
 						</div>
 						<div class="row recipe">
-							<% if (earn[i].type != 'craft') { %>
-								<% if (earn[i].path != null) { %>
-									<%= earn[i].path %>
+							<% if (item.Earns[i].type != 'craft') { %>
+								<% if (item.Earns[i].path != null) { %>
+									<%= item.Earns[i].path %>
 								<% } %>
 							<% } %>
-							<% for (var x = 0 ; Array.isArray(earn[i].craftList) && x < earn[i].craftList.length; x++) {%>
+							<% for (var x = 0 ; Array.isArray(item.Earns[i].craftList) && x < item.Earns[i].craftList.length; x++) {%>
 								<div class="col" style="align-items: center;">
 									<div class="miniItemLabel">
-										<a href="<%= earn[i].craftList[x].url %>">
-											<img class="miniItem" src="<%= earn[i].craftList[x].imgUrl %>" />
-											<span><%= earn[i].craftList[x].name %></span>
+										<a href="<%= item.Earns[i].craftList[x].url %>">
+											<img class="miniItem" src="<%= item.Earns[i].craftList[x].imgUrl %>" />
+											<span><%= item.Earns[i].craftList[x].name %></span>
 										</a>
 									</div>
-									<div><%= earn[i].craftList[x].count %> x <input class=count type=text data-earn-id="<%= i %>" data-ori-value="<%= earn[i].craftList[x].count %>" readonly></div>
+									<div><%= item.Earns[i].craftList[x].count %> x <input class=count type=text data-earn-id="<%= i %>" data-ori-value="<%= item.Earns[i].craftList[x].count %>" readonly></div>
 								</div>
 							<% } %>
 						</div>
 					</div>
 					<% } %>
 				</div>
-				<% if (Array.isArray(usages) && usages.length > 0) { %>
+				<% if (Array.isArray(item.Usages) && item.Usages.length > 0) { %>
 					<hr class="separator">
 					<div class="subtitle"><%= item.name %> - 제작가능 아이템</div>
 					<div class="usageList">
-					<% for (var y = 0 ; Array.isArray(usages) && y < usages.length; y++) {%>
-						<div class="miniItemLabel"><a href="<%= usages[y].url %>"><img class="miniItem" src="<%= usages[y].imgUrl %>" /><span><%= usages[y].resultItemName %></span></a></div>
+					<% for (var y = 0 ; Array.isArray(item.Usages) && y < item.Usages.length; y++) {%>
+						<div class="miniItemLabel"><a href="<%= item.Usages[y].url %>"><img class="miniItem" src="<%= item.Usages[y].imgUrl %>" /><span><%= item.Usages[y].resultItemName %></span></a></div>
 					<% } %>
 					</div>
 				<% }%>

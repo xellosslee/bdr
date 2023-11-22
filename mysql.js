@@ -28,6 +28,9 @@ DB.Usages.belongsTo(DB.Item, { foreignKey: 'resultItemCd', targetKey: 'itemCd', 
 
 DB.Item.hasOne(DB.File, { foreignKey: 'fileId', as: 'itemImage', constraints: false, foreignKeyConstraint: false })
 
+DB.Item.hasMany(DB.Usages, { foreignKey: 'itemCd', targetKey: 'resultItemCd', constraints: false, foreignKeyConstraint: false })
+DB.Item.hasMany(DB.Earn, { foreignKey: 'itemId', targetKey: 'itemId', constraints: false, foreignKeyConstraint: false })
+
 // db connection 끊기지 않게 주기적으로 ping 수행
 function ping() {
 	sq.query('SELECT 1', { logging: false })
