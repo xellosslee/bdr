@@ -9,6 +9,8 @@
 	--gray-color1: #999;
 	--gray-color2: #bbb;
 	--gray-color3: #ddd;
+	--gray-color3: #ddd;
+	--gray-color4: #eeeeee;
 }
 
 body {
@@ -28,12 +30,12 @@ body {
 		'Segoe UI Emoji',
 		'Segoe UI Symbol',
 		sans-serif;
-	font-size: 16px;
+	font-size: min(16px, 4.10256vw);
 	color: var(--text);
 }
 
 div {
-	line-height: 26px;
+	line-height: min(26px, 6.6666667vw);
 	color: var(--text);
 }
 
@@ -77,11 +79,16 @@ input {
 	font-family: pretendard, sans-serif;
 	outline: none;
 	color: var(--text);
+	border: 1px solid var(--gray-color2);
+	border-radius: 4px;
 }
 
 input.count {
 	width: 64%;
-	min-width: 40px;
+	min-width: min(40px, 10.2564103vw);
+	max-width: min(50px, 12.8205128vw);
+	font-size: min(13px, 3.3333333vw);
+	padding: 2px 4px;
 }
 
 .container {
@@ -92,8 +99,8 @@ input.count {
 .content {
 	margin-top: 20px;
 	border: 1px solid var(--gray-color3);
-	padding: 30px 20px;
-	border-radius: 16px;
+	padding: min(30px, 7.6923077vw) min(20px, 5.1282051vw);
+	border-radius: min(16px, 4.1025641vw);
 	box-shadow: 5px 5px #888;
 }
 
@@ -108,8 +115,8 @@ input.count {
 }
 
 .contentHeader .homeLink {
-	width: 40px;
-	height: 40px;
+	width: min(40px, 10.26vw);
+	height: min(40px, 10.26vw);
 	margin-right: 10px;
 }
 
@@ -122,12 +129,12 @@ input.count {
 	width: 100%;
 	position: relative;
 	border: 1px solid var(--gray-color2);
-	padding: 8px 10px;
+	padding: min(8px, 2.0512821vw) min(10px, 2.5641026vw);
 	border-radius: 4px;
 }
 .contentHeader .searchWrap > input[id='searchText'] {
 	width: 100%;
-	font-size: 16px;
+	font-size: min(16px, 4.10256vw);
 	border: none;
 }
 .contentHeader .searchWrap > div#autoComplete {
@@ -136,7 +143,7 @@ input.count {
 	left: 0;
 	top: 120%;
 	width: 100%;
-	font-size: 16px;
+	font-size: min(16px, 4.1025641vw);
 	line-height: 44px;
 	border: 1px solid var(--gray-color2);
 	border-radius: 4px;
@@ -317,14 +324,14 @@ img.miniItem {
     display: flex;
     border: 1px solid var(--gray-color2);
     border-radius: 4px;
-    margin-left: 6px;
+    margin-left: min(6px, 1.5384615vw);
     align-items: center;
 }
 
 .likeWrap .likeCnt {
-    font-size: 12px;
+    font-size: min(12px, 3.0769231vw);
     color: var(--gray-color1);
-    min-width: 15px;
+    min-width: min(15px, 3.8461538vw);
     text-align: center;
 }
 
