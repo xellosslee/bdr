@@ -318,6 +318,7 @@ img.miniItem {
     border: 1px solid var(--gray-color2);
     border-radius: 4px;
     margin-left: 6px;
+    align-items: center;
 }
 
 .likeWrap .likeCnt {
@@ -326,8 +327,12 @@ img.miniItem {
 }
 
 .btn.solid {
-    background: transparent;
+    height: 20px;
+    background: none;
     border:none;
+    padding: 0;
+    margin: 0 5px;
+    transition: opacity .3s, transform .3s;
 }
 
 .btn.solid.success {
@@ -336,4 +341,13 @@ img.miniItem {
 
 .btn.solid.reverse {
     color: var(--gray-color);
+}
+
+button.btn.solid:hover,
+button.btn.solid:focus {
+    opacity: .6;
+}
+
+button.btn.solid:active {
+    transform: scale(1.2);
 }
