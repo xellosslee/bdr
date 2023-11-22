@@ -142,6 +142,12 @@ input.count {
 	display: flex;
 	align-items: center;
 	margin-bottom: 10px;
+    justify-content: space-between;
+}
+
+.itemHeader > div {
+    display: flex;
+    align-items: center;
 }
 
 .itemName {
@@ -189,6 +195,8 @@ input.count {
 img.miniItem {
 	width: 22px;
 	height: 22px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
 }
 
 .usageList {
@@ -221,4 +229,29 @@ img.miniItem {
 
 .miniItemLabel a span {
 	margin-left: 4px;
+}
+
+/* btn 기본 */
+.btn {
+    display: flex;
+    align-items: center;
+    padding: 4px 7px;
+    background: #fff;
+    border: 1px solid #666;
+    border-radius: 4px;
+}
+
+.btn > svg.bi {
+    margin-right: 4px;
+}
+
+.btn.main {
+    background: var(--point-color);
+    border-color: var(--point-color);
+    color: #fff;
+}
+.btn.main:hover {
+    background: #fff;
+    border-color: var(--point-color);
+    color: var(--point-color);
 }
