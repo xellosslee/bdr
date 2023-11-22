@@ -34,6 +34,10 @@ body {
 	color: var(--text);
 }
 
+input:read-only {
+	background-color: #eee;
+}
+
 div {
 	line-height: min(26px, 6.6666667vw);
 	color: var(--text);
@@ -158,13 +162,13 @@ input.count {
 	align-items: center;
 	margin-bottom: 10px;
 	justify-content: space-between;
-    flex-wrap: wrap;
+	flex-wrap: wrap;
 }
 
 .itemHeader > div {
 	display: flex;
 	align-items: center;
-    margin-bottom: 4px;
+	margin-bottom: 4px;
 }
 
 .itemName {
@@ -265,7 +269,7 @@ img.miniItem {
 	border: 1px solid var(--gray-color);
 	color: var(--gray-color);
 	border-radius: 4px;
-    font-size: min(12px, 3.0769231vw);
+	font-size: min(12px, 3.0769231vw);
 	cursor: pointer;
 }
 .btn:hover {
@@ -323,42 +327,44 @@ img.miniItem {
 }
 
 .likeWrap {
-    display: flex;
-    border: 1px solid var(--gray-color2);
-    border-radius: 4px;
-    margin-left: min(6px, 1.5384615vw);
-    align-items: center;
+	display: flex;
+	border: 1px solid var(--gray-color2);
+	border-radius: 4px;
+	margin-left: min(6px, 1.5384615vw);
+	align-items: center;
 }
 
 .likeWrap .likeCnt {
-    font-size: min(12px, 3.0769231vw);
-    color: var(--gray-color1);
-    min-width: min(15px, 3.8461538vw);
-    text-align: center;
+	font-size: min(12px, 3.0769231vw);
+	color: var(--gray-color1);
+	min-width: min(15px, 3.8461538vw);
+	text-align: center;
 }
 
 .btn.solid {
-    height: 20px;
-    background: none;
-    border:none;
-    padding: 0;
-    margin: 0 5px;
-    transition: opacity .3s, transform .3s;
+	height: 20px;
+	background: none;
+	border: none;
+	padding: 0;
+	margin: 0 5px;
+	transition:
+		opacity 0.3s,
+		transform 0.3s;
 }
 
 .btn.solid.success {
-    color: var(--success-color);
+	color: var(--success-color);
 }
 
 .btn.solid.reverse {
-    color: var(--gray-color);
+	color: var(--gray-color);
 }
 
 button.btn.solid:hover,
 button.btn.solid:focus {
-    opacity: .6;
+	opacity: 0.6;
 }
 
 button.btn.solid:active {
-    transform: scale(1.2);
+	transform: scale(1.2);
 }
