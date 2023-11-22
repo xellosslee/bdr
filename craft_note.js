@@ -117,10 +117,13 @@ async function itemPageIn(req, res) {
 			e.imgUrl = e.resultItem.itemImage.imgUrl
 		}
 		item.dataValues.itemIdEnc = encode(item.dataValues.itemId.toString())
-		let cookie = toCookieObj(req.headers.cookie)
-		if (cookie.bdrId == null) {
-			let expire = dayjs().valueOf() + 1000 * 60 * 60 * 24 * 365
-			res.header('Set-Cookie', 'bdrId=' + uuid4() + '; expires=' + expire)
+		let cookie
+		if (req.headers.cookie) {
+			cookie = toCookieObj(req.headers.cookie)
+		}
+		if (cookie?.bdrId == null) {
+			let maxAge = 1000 * 60 * 60 * 24 * 365
+			res.header('Set-Cookie', `bdrId=${uuid4()}; Max-age=${maxAge}; HttpOnly;`)
 		}
 		let html = await ejs.renderFile('src/main.ejs', { item: item.dataValues, ...(await getFileTimes()) })
 		res.writeHead(200, { 'content-length': Buffer.byteLength(html), 'content-type': 'text/html' })

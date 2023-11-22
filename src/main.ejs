@@ -68,11 +68,13 @@
 					<div class="row">
 						<div class="colHeader">
 							<% if (item.Earns[i].type == 'craft') { %>
-								<% if (item.Earns[i].path != null) { %>
-									<%= item.Earns[i].path %>
-								<% } %>
-								<%= item.Earns[i].work %></br>
-								x <input type="text" class="count" data-earn-input="<%= i %>" value="1">회
+								<label>
+									<% if (item.Earns[i].path != null) { %>
+										<%= item.Earns[i].path %>
+									<% } %>
+									<%= item.Earns[i].work %></br>
+									x <input type="text" class="count" data-earn-input="<%= i %>" value="1">회
+								</label>
 							<% } else { %>
 								<%= item.Earns[i].work %>
 							<% } %>
