@@ -178,6 +178,8 @@ input.count {
 .earnList .recipe {
 	width: 100%;
 	flex-wrap: wrap;
+	max-height: 200px;
+	overflow: auto;
 }
 
 .earnList .recipe > .col {
