@@ -217,8 +217,8 @@ async function itemListFromItemCd(req, res) {
 // 자동완성용 검색
 router.post('/item/fast/search', async (req, res) => {
 	try {
-		if (req.body.search == '') {
-			throw {}
+		if (req.body.search == null || req.body.search == '') {
+			throw { message: '검색단어가 없습니다.' }
 		}
 		let data = []
 		let items = await DB.Item.findAll({
@@ -246,7 +246,6 @@ router.post('/item/fast/search', async (req, res) => {
 router.post('/item/put', async function (req, res) {
 	let transaction = await sq.transaction()
 	try {
-		console.log(req.body)
 		if (req.body.item.itemId != null) {
 			await DB.Item.upsert(req.body.item, { where: { itemId: req.body.item.itemId }, transaction })
 			await DB.Earn.destroy({ where: { itemId: req.body.item.itemId }, transaction })
