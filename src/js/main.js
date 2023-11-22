@@ -6,6 +6,7 @@ window.onload = () => {
 	let fn = _.debounce(async (evt) => {
 		if (evt.key == 'Enter' && searchedItemUrl != '') {
 			location.href = location.protocol + '//' + location.host + searchedItemUrl
+			return
 		}
 		if (evt.target.value == '') {
 			if (searchText.value == '') {
