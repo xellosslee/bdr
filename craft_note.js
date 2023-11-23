@@ -89,20 +89,23 @@ async function itemPageIn(req, res) {
 			let craftListTemp = item.Earns[i].craftList
 			if (item.Earns[i].type == 'craft') {
 				let items = await DB.Item.findAll({
-					attributes: ['itemId', 'itemCd', 'name'],
+					attributes: ['itemId', 'itemCd', 'name', 'likeCount'],
 					include: [{ model: DB.File, as: 'itemImage', attributes: ['imgUrl'] }],
-					where: { itemCd: craftListTemp.map((e) => e.itemCd) },
+					where: { itemCd: craftListTemp.map((e) => e.itemCd), removed: 0 },
 					logging: false,
 				})
-				for (let j = 0; j < items.length; j++) {
-					let idx = craftListTemp.findIndex((e) => e.itemCd == items[j].itemCd)
-					if (idx == -1) {
+				for (let j = 0; j < craftListTemp.length; j++) {
+					let filterItems = items.filter((e) => e.itemCd == craftListTemp[j].itemCd)
+					if (filterItems.length == 0) {
 						console.error('cannot found craft item !!!')
 						break
 					}
-					craftListTemp[idx].name = items[j].name
-					craftListTemp[idx].url = '/item/' + encode(JSON.stringify({ itemCd: items[j].itemCd }))
-					craftListTemp[idx].imgUrl = items[j].itemImage.imgUrl
+					// 동일 itemCd 중 가장 likeCount가 높은 항목을 earns에서 링크 표시
+					filterItems = filterItems.sort((a, b) => b.likeCount - a.likeCount)
+					// console.log(filterItems)
+					craftListTemp[j].name = filterItems[0].name
+					craftListTemp[j].url = '/item/' + encode(JSON.stringify({ itemCd: filterItems[0].itemCd }))
+					craftListTemp[j].imgUrl = filterItems[0].itemImage?.imgUrl
 				}
 			}
 		}
