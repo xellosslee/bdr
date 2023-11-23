@@ -4,7 +4,7 @@ window.onload = () => {
 	var searchedItemUrl = ''
 	var autoComplete = document.getElementById('autoComplete')
 	let likeCntLabel = document.getElementById('likeCnt')
-	let bookmarkBtn = document.getElementById('bookmarkBtn')
+	let bookmarkBtn = document.getElementById('bookmark')
 	let fn = _.debounce(async (evt) => {
 		if (evt.key == 'Enter' && searchedItemUrl != '') {
 			location.href = location.protocol + '//' + location.host + searchedItemUrl
@@ -69,7 +69,7 @@ window.onload = () => {
 		for (let i = 0; i < inputCounts.length; i++) {
 			inputCounts[i].value = comma(Number(inputCounts[i].dataset.oriValue) * Number(tempValue))
 		}
-		evt.target.value = comma(tempValue)		
+		evt.target.value = comma(tempValue)
 	}
 
 	let likeButton = document.querySelector('button.btn.success')
@@ -139,5 +139,5 @@ function comma(x) {
 	if (typeof parseInt(x) != 'number') {
 		return
 	}
-	return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+	return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
 }
