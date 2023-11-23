@@ -6,10 +6,7 @@ module.exports = {
 			script: 'server.js',
 			cwd: './',
 			autorestart: false,
-			env: {
-				NODE_ENV: 'dev',
-			},
-			watch: ['server.js', 'models', 'mysql.js', 'crypto.js', 'craft_note.js'],
+			watch: ['server.js', 'models', 'mysql.js', 'crypto.js', 'craft_note.js', 'cron.js'],
 		},
 		{
 			namespace: 'bdr',

@@ -130,7 +130,7 @@ async function itemPageIn(req, res) {
 			let maxAge = 1000 * 60 * 60 * 24 * 365
 			res.header('Set-Cookie', `bdrId=${uuid4()}; Max-age=${maxAge}; HttpOnly;`)
 		}
-		console.log(items.map((e) => e.dataValues))
+		// console.log(items.map((e) => e.dataValues))
 		let html = await ejs.renderFile('src/main.ejs', { items: items.map((e) => e.dataValues), ...(await getFileTimes()) })
 		res.writeHead(200, { 'content-length': Buffer.byteLength(html), 'content-type': 'text/html' })
 		res.write(html)
@@ -144,77 +144,77 @@ async function itemPageIn(req, res) {
 	}
 }
 
-router.post('/item/append', itemListFromItemCd)
+// router.post('/item/append', itemListFromItemCd)
 
-async function itemListFromItemCd(req, res) {
-	try {
-		let itemId = decode(req.body.itemId)
-		let itemCd = req.body.itemCd
-		let items = null
-		// 운영에서는 숫자 조회 불가능하게 방지
-		// 단, 랜덤 조회 일때에는 itemCd로 조회 시도
-		if (req.internal || process.env.NODE_ENV != 'prod') {
-			if (!Number.isNaN(Number(itemCd))) {
-				items = await DB.Item.findAll({
-					include: [{ model: DB.File, as: 'itemImage', attributes: ['imgUrl'] }, { model: DB.Earn }, { model: DB.Usages }],
-					where: { itemCd: Number(itemCd), itemId: { [Op.ne]: itemId }, removed: 0 },
-				})
-			}
-		}
-		if (!items) {
-			try {
-				let data = decode(itemCd)
-				itemCd = data
-				items = await DB.Item.findAll({
-					include: [{ model: DB.File, as: 'itemImage', attributes: ['imgUrl'] }, { model: DB.Earn }, { model: DB.Usages }],
-					where: { itemCd: Number(itemCd), itemId: { [Op.ne]: itemId }, removed: 0 },
-				})
-			} catch (err) {
-				throw { code: '01' }
-			}
-		}
-		if (!items) {
-			throw { code: '02' }
-		}
-		items.forEach(async (item) => {
-			for (let i = 0; i < item.Earns.length; i++) {
-				let craftListTemp = item.Earns[i].craftList
-				if (item.Earns[i].type == 'craft') {
-					let items = await DB.Item.findAll({
-						attributes: ['itemId', 'itemCd', 'name'],
-						include: [{ model: DB.File, as: 'itemImage', attributes: ['imgUrl'] }],
-						where: { itemId: craftListTemp.map((e) => e.itemId) },
-					})
-					for (let j = 0; j < items.length; j++) {
-						let idx = craftListTemp.findIndex((e) => e.itemId == items[j].itemId)
-						if (idx == -1) {
-							console.error('cannot found craft item !!!')
-							break
-						}
-						craftListTemp[idx].name = items[j].name
-						craftListTemp[idx].url = '/item/' + encode(items[j].itemCd.toString())
-						craftListTemp[idx].imgUrl = items[j].itemImage.imgUrl
-					}
-				}
-			}
-			// let usagesList = []
-			for (let i = 0; i < item.Usages.length; i++) {
-				let e = item.Usages[i]
-				let url = '/item/' + encode(e.resultItem.itemCd.toString())
-				// console.log(itemId, encoded, url)
-				e.resultItemCd = e.resultItem.itemCd
-				e.resultItemName = e.resultItem.name
-				e.url = url
-				e.imgUrl = e.resultItem.itemImage.imgUrl
-			}
-		})
-		// console.log(item.dataValues)
-		res.send(200, { ...jsonSuccess, data: items })
-	} catch (err) {
-		console.error(err)
-		res.send(200, { ...jsonFailed, ...err })
-	}
-}
+// async function itemListFromItemCd(req, res) {
+// 	try {
+// 		let itemId = decode(req.body.itemId)
+// 		let itemCd = req.body.itemCd
+// 		let items = null
+// 		// 운영에서는 숫자 조회 불가능하게 방지
+// 		// 단, 랜덤 조회 일때에는 itemCd로 조회 시도
+// 		if (req.internal || process.env.NODE_ENV != 'prod') {
+// 			if (!Number.isNaN(Number(itemCd))) {
+// 				items = await DB.Item.findAll({
+// 					include: [{ model: DB.File, as: 'itemImage', attributes: ['imgUrl'] }, { model: DB.Earn }, { model: DB.Usages }],
+// 					where: { itemCd: Number(itemCd), itemId: { [Op.ne]: itemId }, removed: 0 },
+// 				})
+// 			}
+// 		}
+// 		if (!items) {
+// 			try {
+// 				let data = decode(itemCd)
+// 				itemCd = data
+// 				items = await DB.Item.findAll({
+// 					include: [{ model: DB.File, as: 'itemImage', attributes: ['imgUrl'] }, { model: DB.Earn }, { model: DB.Usages }],
+// 					where: { itemCd: Number(itemCd), itemId: { [Op.ne]: itemId }, removed: 0 },
+// 				})
+// 			} catch (err) {
+// 				throw { code: '01' }
+// 			}
+// 		}
+// 		if (!items) {
+// 			throw { code: '02' }
+// 		}
+// 		items.forEach(async (item) => {
+// 			for (let i = 0; i < item.Earns.length; i++) {
+// 				let craftListTemp = item.Earns[i].craftList
+// 				if (item.Earns[i].type == 'craft') {
+// 					let items = await DB.Item.findAll({
+// 						attributes: ['itemId', 'itemCd', 'name'],
+// 						include: [{ model: DB.File, as: 'itemImage', attributes: ['imgUrl'] }],
+// 						where: { itemId: craftListTemp.map((e) => e.itemId) },
+// 					})
+// 					for (let j = 0; j < items.length; j++) {
+// 						let idx = craftListTemp.findIndex((e) => e.itemId == items[j].itemId)
+// 						if (idx == -1) {
+// 							console.error('cannot found craft item !!!')
+// 							break
+// 						}
+// 						craftListTemp[idx].name = items[j].name
+// 						craftListTemp[idx].url = '/item/' + encode(items[j].itemCd.toString())
+// 						craftListTemp[idx].imgUrl = items[j].itemImage.imgUrl
+// 					}
+// 				}
+// 			}
+// 			// let usagesList = []
+// 			for (let i = 0; i < item.Usages.length; i++) {
+// 				let e = item.Usages[i]
+// 				let url = '/item/' + encode(e.resultItem.itemCd.toString())
+// 				// console.log(itemId, encoded, url)
+// 				e.resultItemCd = e.resultItem.itemCd
+// 				e.resultItemName = e.resultItem.name
+// 				e.url = url
+// 				e.imgUrl = e.resultItem.itemImage.imgUrl
+// 			}
+// 		})
+// 		// console.log(item.dataValues)
+// 		res.send(200, { ...jsonSuccess, data: items })
+// 	} catch (err) {
+// 		console.error(err)
+// 		res.send(200, { ...jsonFailed, ...err })
+// 	}
+// }
 
 // 자동완성용 검색
 router.post('/item/fast/search', async (req, res) => {
@@ -224,9 +224,10 @@ router.post('/item/fast/search', async (req, res) => {
 		}
 		let data = []
 		let items = await DB.Item.findAll({
-			attributes: ['itemId', 'itemCd', 'name'],
+			attributes: ['itemCd', { [sq.fn('MAX')]: 'name' }],
 			include: [{ model: DB.File, as: 'itemImage', attributes: ['imgUrl'] }],
 			where: { name: { [Op.like]: '%' + req.body.search + '%' }, removed: 0 },
+			group: ['itemCd'],
 			limit: 10,
 		})
 		for (let i = 0; i < items.length; i++) {
@@ -301,7 +302,6 @@ router.post('/item/like-set', async (req, res) => {
 		let item = await DB.Item.findOne({
 			attributes: ['itemId'],
 			where: { itemId: decode(req.body.itemId) },
-			limit: 10,
 		})
 		if (item) {
 			let checkOver = await DB.LikeHistory.count({
