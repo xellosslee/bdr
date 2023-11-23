@@ -43,7 +43,7 @@ async function getFileTimes() {
 
 router.get('/', (req, res, next) => {
 	DB.Item.findOne({ attributes: ['itemCd'], order: [sq.fn('rand')] }).then(async (item) => {
-		let url = '/item/' + encode(JSON.stringify({ itemCd: item.itemCd }))
+		let url = '/item/' + encode(item.itemCd)
 		// res.redirect(url, next)
 		req.params.itemCd = item.itemCd.toString()
 		req.internal = true
@@ -70,9 +70,8 @@ async function itemPageIn(req, res) {
 		}
 		if (!items) {
 			try {
-				let data = JSON.parse(decode(params.itemCd))
 				// console.debug(params.itemCd, decode(params.itemCd), data)
-				params.itemCd = data.itemCd
+				params.itemCd = decode(params.itemCd)
 				items = await DB.Item.findAll({
 					include: [{ model: DB.File, as: 'itemImage', attributes: ['imgUrl'] }, { model: DB.Earn }, { model: DB.Usages }],
 					where: { itemCd: params.itemCd, removed: 0 },
@@ -106,7 +105,7 @@ async function itemPageIn(req, res) {
 						filterItems = filterItems.sort((a, b) => b.likeCount - a.likeCount)
 						// console.log(filterItems)
 						craftListTemp[j].name = filterItems[0].name
-						craftListTemp[j].url = '/item/' + encode(JSON.stringify({ itemCd: filterItems[0].itemCd }))
+						craftListTemp[j].url = '/item/' + encode(filterItems[0].itemCd.toString())
 						craftListTemp[j].imgUrl = filterItems[0].itemImage?.imgUrl
 					}
 				}
@@ -114,11 +113,10 @@ async function itemPageIn(req, res) {
 			// let usagesList = []
 			for (let i = 0; i < item.Usages.length; i++) {
 				let e = item.Usages[i]
-				let url = '/item/' + encode(JSON.stringify({ itemCd: e.resultItem.itemCd }))
 				// console.log(itemId, encoded, url)
 				e.resultItemCd = e.resultItem.itemCd
 				e.resultItemName = e.resultItem.name
-				e.url = url
+				e.url = '/item/' + encode(e.resultItem.itemCd.toString())
 				e.imgUrl = e.resultItem.itemImage.imgUrl
 			}
 			item.dataValues.itemIdEnc = encode(item.dataValues.itemId.toString())
@@ -194,7 +192,7 @@ async function itemListFromItemCd(req, res) {
 							break
 						}
 						craftListTemp[idx].name = items[j].name
-						craftListTemp[idx].url = '/item/' + encode(JSON.stringify({ itemCd: items[j].itemCd }))
+						craftListTemp[idx].url = '/item/' + encode(items[j].itemCd.toString())
 						craftListTemp[idx].imgUrl = items[j].itemImage.imgUrl
 					}
 				}
@@ -202,7 +200,7 @@ async function itemListFromItemCd(req, res) {
 			// let usagesList = []
 			for (let i = 0; i < item.Usages.length; i++) {
 				let e = item.Usages[i]
-				let url = '/item/' + encode(JSON.stringify({ itemCd: e.resultItem.itemCd }))
+				let url = '/item/' + encode(e.resultItem.itemCd.toString())
 				// console.log(itemId, encoded, url)
 				e.resultItemCd = e.resultItem.itemCd
 				e.resultItemName = e.resultItem.name
@@ -234,7 +232,7 @@ router.post('/item/fast/search', async (req, res) => {
 		for (let i = 0; i < items.length; i++) {
 			// console.debug(items[i])
 			data.push({
-				itemUrl: '/item/' + encode(JSON.stringify({ itemCd: items[i].itemCd })),
+				itemUrl: '/item/' + encode(items[i].itemCd.toString()),
 				name: items[i].name,
 				imgUrl: items[i].itemImage.imgUrl,
 			})

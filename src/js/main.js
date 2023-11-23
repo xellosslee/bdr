@@ -3,8 +3,8 @@ window.onload = () => {
 	var searchedText = ''
 	var searchedItemUrl = ''
 	var autoComplete = document.getElementById('autoComplete')
-	let likeCntLabel = document.getElementById('likeCnt')
-	let bookmarkBtn = document.getElementById('bookmark')
+	let likeCntLabel = document.querySelector('div.likeCnt')
+	let bookmarkBtn = document.querySelector('button.bookmark')
 	let append = document.getElementById('append')
 	let fn = _.debounce(async (evt) => {
 		if (evt.key == 'Enter' && searchedItemUrl != '') {
@@ -73,9 +73,14 @@ window.onload = () => {
 		evt.target.value = comma(tempValue)
 	}
 
-	let likeButton = document.querySelector('button.btn.success')
-	let dislikeButton = document.querySelector('button.btn.reverse')
-	dislikeButton.onclick = likeButton.onclick = likeSet
+	let likeButton = document.querySelectorAll('button.btn.success')
+	let dislikeButton = document.querySelectorAll('button.btn.reverse')
+	for (let i = 0; i < likeButton.length; i++) {
+		likeButton[i].onclick = likeSet
+	}
+	for (let i = 0; i < dislikeButton.length; i++) {
+		dislikeButton[i].onclick = likeSet
+	}
 	async function likeSet(evt) {
 		let a = evt.currentTarget.dataset.itemId
 		let b = evt.currentTarget.dataset.value
@@ -95,25 +100,26 @@ window.onload = () => {
 		}
 	}
 
+	let bookmarkBtns = document.querySelectorAll('button.btn.bookmark')
 	function bookmark(item) {
-		let data = { item }
-		localStorage.setItem('bookmark', JSON.stringify(data))
+		localStorage.setItem('bookmark', JSON.stringify(evt.currentTarget.dataset))
 	}
-	bookmarkBtn.onclick = bookmark
-
-	async function appendFn(evt) {
-		let a = evt.currentTarget.dataset.itemId
-		let b = evt.currentTarget.dataset.itemCd
-		if (!a) {
-			return
-		}
-		let res = await Api({ url: '/item/append', data: { itemId: a, itemCd: b } })
-		let result = await res.json()
-		if (result.code == '00') {
-			console.log(result.data)
-		}
+	for (let i = 0; i < bookmarkBtns.length; i++) {
+		bookmarkBtns[i].onclick = bookmark
 	}
-	append.onclick = appendFn
+	// async function appendFn(evt) {
+	// 	let a = evt.currentTarget.dataset.itemId
+	// 	let b = evt.currentTarget.dataset.itemCd
+	// 	if (!a) {
+	// 		return
+	// 	}
+	// 	let res = await Api({ url: '/item/append', data: { itemId: a, itemCd: b } })
+	// 	let result = await res.json()
+	// 	if (result.code == '00') {
+	// 		console.log(result.data)
+	// 	}
+	// }
+	// append.onclick = appendFn
 }
 
 async function Api(param) {
