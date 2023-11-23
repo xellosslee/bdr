@@ -136,15 +136,46 @@ window.onload = () => {
 	// Api({ url: '/file/list', data: { page: 0, name: '뾰족' } }).then(async (e) => console.log(await e.json()))
 }
 
+// 이미지 파일명에서 이름 추출
+function setImageName(idx) {
+	let image = document.getElementById('image' + idx)
+	let imageName = document.getElementById('imageName' + idx)
+	if (image.files.length > 0) {
+		imageName.value = image.files[0].name.split('.')[0].replace(/ /gi, '_')
+	} else {
+		imageName.value = ''
+	}
+}
+// 이미지 업로드
+async function doUpload(idx) {
+	let image = document.getElementById('image' + idx)
+	let imageName = document.getElementById('imageName' + idx)
+	if (image.files.length == 0) {
+		return alert('이미지가 없습니다.')
+	}
+	if (imageName.value == '') {
+		return alert('이미지 명칭을 적어주세요.')
+	}
+	let data = new FormData()
+	data.append('image', image.files[0])
+	data.append('name', imageName.value)
+	let res = await Api({ url: '/file/put', data })
+	let result = await res.json()
+	console.log(result)
+}
+
 async function Api(param) {
-	return await fetch(param.url, {
-		method: param.method || 'POST',
-		body: param.method == 'GET' ? null : JSON.stringify(param.data || {}),
-		headers: {
-			'Content-Type': 'application/json',
-			bdrId: getCookie('bdrId'),
-		},
-	})
+	let body
+	let headers = {
+		bdrId: getCookie('bdrId'),
+	}
+	if (param.data instanceof FormData) {
+		body = param.data
+	} else {
+		body = param.method == 'GET' ? null : JSON.stringify(param.data || {})
+		headers['Content-Type'] = 'application/json'
+	}
+	return await fetch(param.url, { method: param.method || 'POST', body, headers })
 }
 function setCookie(p) {
 	if (typeof p !== 'object' || !p.key || !p.value || !p.expiresDay) {
@@ -169,7 +200,6 @@ function getCookie(p) {
 		}
 	}
 }
-
 function comma(x) {
 	if (typeof parseInt(x) != 'number') {
 		return
