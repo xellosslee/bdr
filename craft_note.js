@@ -43,8 +43,6 @@ async function getFileTimes() {
 
 router.get('/', (req, res, next) => {
 	DB.Item.findOne({ attributes: ['itemCd'], order: [sq.fn('rand')] }).then(async (item) => {
-		let url = '/item/' + encode(item.itemCd)
-		// res.redirect(url, next)
 		req.params.itemCd = item.itemCd.toString()
 		req.internal = true
 		await itemPageIn(req, res)
@@ -346,5 +344,26 @@ router.post('/file/list', async (req, res) => {
 		res.send(200, { ...jsonFailed, ...err })
 	}
 })
+
+// 이미지 등록
+router.post('/file/put', async (req, res) => {
+	let transaction = await sq.transaction()
+	try {
+		let data = await DB.File.create(
+			{
+				name: req.body.name,
+			},
+			{ transaction },
+		)
+		req.files.image
+		await transaction.commit()
+		res.send(200, { ...jsonSuccess, data })
+	} catch (err) {
+		console.error(err)
+		res.send(200, { ...jsonFailed, ...err })
+	}
+})
+
+function uploadFile(file, path = '/item') {}
 
 module.exports = router
