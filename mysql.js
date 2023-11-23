@@ -1,7 +1,11 @@
 const { Sequelize, Op } = require('sequelize')
 
 let logging = (...msg) => {
-	console.log(msg[0], msg[1]?.bind || '')
+	if (process.env.NODE_ENV == 'local' || process.env.QUERY_PARAM_LOG == 1) {
+		console.log(msg[0], msg[1]?.bind || '')
+	} else {
+		return false
+	}
 }
 const sq = new Sequelize(process.env.DB_NAME || 'wing', process.env.DB_USER || 'root', process.env.DB_PASS, {
 	host: process.env.DB_HOST || 'localhost',

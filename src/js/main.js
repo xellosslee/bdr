@@ -5,6 +5,7 @@ window.onload = () => {
 	var autoComplete = document.getElementById('autoComplete')
 	let likeCntLabel = document.getElementById('likeCnt')
 	let bookmarkBtn = document.getElementById('bookmark')
+	let append = document.getElementById('append')
 	let fn = _.debounce(async (evt) => {
 		if (evt.key == 'Enter' && searchedItemUrl != '') {
 			location.href = location.protocol + '//' + location.host + searchedItemUrl
@@ -99,12 +100,26 @@ window.onload = () => {
 		localStorage.setItem('bookmark', JSON.stringify(data))
 	}
 	bookmarkBtn.onclick = bookmark
+
+	async function appendFn(evt) {
+		let a = evt.currentTarget.dataset.itemId
+		let b = evt.currentTarget.dataset.itemCd
+		if (!a) {
+			return
+		}
+		let res = await Api({ url: '/item/append', data: { itemId: a, itemCd: b } })
+		let result = await res.json()
+		if (result.code == '00') {
+			console.log(result.data)
+		}
+	}
+	append.onclick = appendFn
 }
 
 async function Api(param) {
 	return await fetch(param.url, {
 		method: param.method || 'POST',
-		body: JSON.stringify(param.data || {}),
+		body: param.method == 'GET' ? null : JSON.stringify(param.data || {}),
 		headers: {
 			'Content-Type': 'application/json',
 			bdrId: getCookie('bdrId'),

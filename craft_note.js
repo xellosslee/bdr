@@ -77,7 +77,6 @@ async function itemPageIn(req, res) {
 					include: [{ model: DB.File, as: 'itemImage', attributes: ['imgUrl'] }, { model: DB.Earn }, { model: DB.Usages }],
 					where: { itemCd: params.itemCd, removed: 0 },
 					order: [['likeCount', 'desc']],
-					logging: false,
 				})
 			} catch (err) {
 				if (!item) {
@@ -92,7 +91,6 @@ async function itemPageIn(req, res) {
 					attributes: ['itemId', 'itemCd', 'name', 'likeCount'],
 					include: [{ model: DB.File, as: 'itemImage', attributes: ['imgUrl'] }],
 					where: { itemCd: craftListTemp.map((e) => e.itemCd), removed: 0 },
-					logging: false,
 				})
 				for (let j = 0; j < craftListTemp.length; j++) {
 					let filterItems = items.filter((e) => e.itemCd == craftListTemp[j].itemCd)
@@ -120,6 +118,7 @@ async function itemPageIn(req, res) {
 			e.imgUrl = e.resultItem.itemImage.imgUrl
 		}
 		item.dataValues.itemIdEnc = encode(item.dataValues.itemId.toString())
+		item.dataValues.itemCdEnc = encode(item.dataValues.itemCd.toString())
 		let cookie
 		if (req.headers.cookie) {
 			cookie = toCookieObj(req.headers.cookie)
@@ -141,82 +140,75 @@ async function itemPageIn(req, res) {
 	}
 }
 
-router.get('/item/append/:itemCd', itemListFromItemCd)
+router.post('/item/append', itemListFromItemCd)
 
 async function itemListFromItemCd(req, res) {
 	try {
-		let params = { itemCd: req.params.itemCd }
-		let item = null
+		let itemId = decode(req.body.itemId)
+		let itemCd = req.body.itemCd
+		let items = null
 		// 운영에서는 숫자 조회 불가능하게 방지
 		// 단, 랜덤 조회 일때에는 itemCd로 조회 시도
-		if (req.internal || (!item && process.env.NODE_ENV != 'prod')) {
-			if (!Number.isNaN(Number(params.itemCd))) {
-				item = await DB.Item.findOne({
+		if (req.internal || process.env.NODE_ENV != 'prod') {
+			if (!Number.isNaN(Number(itemCd))) {
+				items = await DB.Item.findAll({
 					include: [{ model: DB.File, as: 'itemImage', attributes: ['imgUrl'] }, { model: DB.Earn }, { model: DB.Usages }],
-					where: { itemCd: Number(params.itemCd), removed: 0 },
-					order: [['likeCount', 'desc']],
+					where: { itemCd: Number(itemCd), itemId: { [Op.ne]: itemId }, removed: 0 },
 				})
 			}
 		}
-		if (!item) {
+		if (!items) {
 			try {
-				let data = JSON.parse(decode(params.itemCd))
-				// console.debug(params.itemCd, decode(params.itemCd), data)
-				params.itemCd = data.itemCd
-				item = await DB.Item.findOne({
+				let data = decode(itemCd)
+				itemCd = data
+				items = await DB.Item.findAll({
 					include: [{ model: DB.File, as: 'itemImage', attributes: ['imgUrl'] }, { model: DB.Earn }, { model: DB.Usages }],
-					where: { itemCd: params.itemCd, removed: 0 },
-					order: [['likeCount', 'desc']],
-					logging: false,
+					where: { itemCd: Number(itemCd), itemId: { [Op.ne]: itemId }, removed: 0 },
 				})
 			} catch (err) {
-				if (!item) {
-					throw {}
-				}
+				throw { code: '01' }
 			}
 		}
-		for (let i = 0; i < item.Earns.length; i++) {
-			let craftListTemp = item.Earns[i].craftList
-			if (item.Earns[i].type == 'craft') {
-				let items = await DB.Item.findAll({
-					attributes: ['itemId', 'itemCd', 'name'],
-					include: [{ model: DB.File, as: 'itemImage', attributes: ['imgUrl'] }],
-					where: { itemId: craftListTemp.map((e) => e.itemId) },
-					logging: false,
-				})
-				for (let j = 0; j < items.length; j++) {
-					let idx = craftListTemp.findIndex((e) => e.itemId == items[j].itemId)
-					if (idx == -1) {
-						console.error('cannot found craft item !!!')
-						break
+		if (!items) {
+			throw { code: '02' }
+		}
+		items.forEach(async (item) => {
+			for (let i = 0; i < item.Earns.length; i++) {
+				let craftListTemp = item.Earns[i].craftList
+				if (item.Earns[i].type == 'craft') {
+					let items = await DB.Item.findAll({
+						attributes: ['itemId', 'itemCd', 'name'],
+						include: [{ model: DB.File, as: 'itemImage', attributes: ['imgUrl'] }],
+						where: { itemId: craftListTemp.map((e) => e.itemId) },
+					})
+					for (let j = 0; j < items.length; j++) {
+						let idx = craftListTemp.findIndex((e) => e.itemId == items[j].itemId)
+						if (idx == -1) {
+							console.error('cannot found craft item !!!')
+							break
+						}
+						craftListTemp[idx].name = items[j].name
+						craftListTemp[idx].url = '/item/' + encode(JSON.stringify({ itemCd: items[j].itemCd }))
+						craftListTemp[idx].imgUrl = items[j].itemImage.imgUrl
 					}
-					craftListTemp[idx].name = items[j].name
-					craftListTemp[idx].url = '/item/' + encode(JSON.stringify({ itemCd: items[j].itemCd }))
-					craftListTemp[idx].imgUrl = items[j].itemImage.imgUrl
 				}
 			}
-		}
-		// let usagesList = []
-		for (let i = 0; i < item.Usages.length; i++) {
-			let e = item.Usages[i]
-			let url = '/item/' + encode(JSON.stringify({ itemCd: e.resultItem.itemCd }))
-			// console.log(itemId, encoded, url)
-			e.resultItemCd = e.resultItem.itemCd
-			e.resultItemName = e.resultItem.name
-			e.url = url
-			e.imgUrl = e.resultItem.itemImage.imgUrl
-		}
+			// let usagesList = []
+			for (let i = 0; i < item.Usages.length; i++) {
+				let e = item.Usages[i]
+				let url = '/item/' + encode(JSON.stringify({ itemCd: e.resultItem.itemCd }))
+				// console.log(itemId, encoded, url)
+				e.resultItemCd = e.resultItem.itemCd
+				e.resultItemName = e.resultItem.name
+				e.url = url
+				e.imgUrl = e.resultItem.itemImage.imgUrl
+			}
+		})
 		// console.log(item.dataValues)
-		let html = await ejs.renderFile('src/main.ejs', { item, ...(await getFileTimes()) })
-		res.writeHead(200, { 'content-length': Buffer.byteLength(html), 'content-type': 'text/html' })
-		res.write(html)
-		res.end()
+		res.send(200, { ...jsonSuccess, data: items })
 	} catch (err) {
 		console.error(err)
-		let html = await ejs.renderFile('src/error.ejs', { errorHtml: defaultErrorHtml, ...err })
-		res.writeHead(200, { 'content-length': Buffer.byteLength(html), 'content-type': 'text/html' })
-		res.write(html)
-		res.end()
+		res.send(200, { ...jsonFailed, ...err })
 	}
 }
 
