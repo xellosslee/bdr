@@ -56,69 +56,74 @@ router.get('/item/:itemCd', itemPageIn)
 async function itemPageIn(req, res) {
 	try {
 		let params = { itemCd: req.params.itemCd }
-		let item = null
+		let items = null
 		// 운영에서는 숫자 조회 불가능하게 방지
 		// 단, 랜덤 조회 일때에는 itemCd로 조회 시도
-		if (req.internal || (!item && process.env.NODE_ENV != 'prod')) {
+		if (req.internal || process.env.NODE_ENV != 'prod') {
 			if (!Number.isNaN(Number(params.itemCd))) {
-				item = await DB.Item.findOne({
+				items = await DB.Item.findAll({
 					include: [{ model: DB.File, as: 'itemImage', attributes: ['imgUrl'] }, { model: DB.Earn }, { model: DB.Usages }],
 					where: { itemCd: Number(params.itemCd), removed: 0 },
 					order: [['likeCount', 'desc']],
 				})
 			}
 		}
-		if (!item) {
+		if (!items) {
 			try {
 				let data = JSON.parse(decode(params.itemCd))
 				// console.debug(params.itemCd, decode(params.itemCd), data)
 				params.itemCd = data.itemCd
-				item = await DB.Item.findOne({
+				items = await DB.Item.findAll({
 					include: [{ model: DB.File, as: 'itemImage', attributes: ['imgUrl'] }, { model: DB.Earn }, { model: DB.Usages }],
 					where: { itemCd: params.itemCd, removed: 0 },
 					order: [['likeCount', 'desc']],
 				})
 			} catch (err) {
-				if (!item) {
-					throw {}
-				}
+				console.error(err)
+				throw { code: '01' }
 			}
 		}
-		for (let i = 0; i < item.Earns.length; i++) {
-			let craftListTemp = item.Earns[i].craftList
-			if (item.Earns[i].type == 'craft') {
-				let items = await DB.Item.findAll({
-					attributes: ['itemId', 'itemCd', 'name', 'likeCount'],
-					include: [{ model: DB.File, as: 'itemImage', attributes: ['imgUrl'] }],
-					where: { itemCd: craftListTemp.map((e) => e.itemCd), removed: 0 },
-				})
-				for (let j = 0; j < craftListTemp.length; j++) {
-					let filterItems = items.filter((e) => e.itemCd == craftListTemp[j].itemCd)
-					if (filterItems.length == 0) {
-						console.error('cannot found craft item !!!')
-						break
+		if (!items) {
+			throw { code: '02' }
+		}
+		for (let x = 0; x < items.length; x++) {
+			let item = items[x]
+			for (let i = 0; i < item.Earns.length; i++) {
+				let craftListTemp = item.Earns[i].craftList
+				if (item.Earns[i].type == 'craft') {
+					let items = await DB.Item.findAll({
+						attributes: ['itemId', 'itemCd', 'name', 'likeCount'],
+						include: [{ model: DB.File, as: 'itemImage', attributes: ['imgUrl'] }],
+						where: { itemCd: craftListTemp.map((e) => e.itemCd), removed: 0 },
+					})
+					for (let j = 0; j < craftListTemp.length; j++) {
+						let filterItems = items.filter((e) => e.itemCd == craftListTemp[j].itemCd)
+						if (filterItems.length == 0) {
+							console.error('cannot found craft item !!!')
+							break
+						}
+						// 동일 itemCd 중 가장 likeCount가 높은 항목을 earns에서 링크 표시
+						filterItems = filterItems.sort((a, b) => b.likeCount - a.likeCount)
+						// console.log(filterItems)
+						craftListTemp[j].name = filterItems[0].name
+						craftListTemp[j].url = '/item/' + encode(JSON.stringify({ itemCd: filterItems[0].itemCd }))
+						craftListTemp[j].imgUrl = filterItems[0].itemImage?.imgUrl
 					}
-					// 동일 itemCd 중 가장 likeCount가 높은 항목을 earns에서 링크 표시
-					filterItems = filterItems.sort((a, b) => b.likeCount - a.likeCount)
-					// console.log(filterItems)
-					craftListTemp[j].name = filterItems[0].name
-					craftListTemp[j].url = '/item/' + encode(JSON.stringify({ itemCd: filterItems[0].itemCd }))
-					craftListTemp[j].imgUrl = filterItems[0].itemImage?.imgUrl
 				}
 			}
+			// let usagesList = []
+			for (let i = 0; i < item.Usages.length; i++) {
+				let e = item.Usages[i]
+				let url = '/item/' + encode(JSON.stringify({ itemCd: e.resultItem.itemCd }))
+				// console.log(itemId, encoded, url)
+				e.resultItemCd = e.resultItem.itemCd
+				e.resultItemName = e.resultItem.name
+				e.url = url
+				e.imgUrl = e.resultItem.itemImage.imgUrl
+			}
+			item.dataValues.itemIdEnc = encode(item.dataValues.itemId.toString())
+			item.dataValues.itemCdEnc = encode(item.dataValues.itemCd.toString())
 		}
-		// let usagesList = []
-		for (let i = 0; i < item.Usages.length; i++) {
-			let e = item.Usages[i]
-			let url = '/item/' + encode(JSON.stringify({ itemCd: e.resultItem.itemCd }))
-			// console.log(itemId, encoded, url)
-			e.resultItemCd = e.resultItem.itemCd
-			e.resultItemName = e.resultItem.name
-			e.url = url
-			e.imgUrl = e.resultItem.itemImage.imgUrl
-		}
-		item.dataValues.itemIdEnc = encode(item.dataValues.itemId.toString())
-		item.dataValues.itemCdEnc = encode(item.dataValues.itemCd.toString())
 		let cookie
 		if (req.headers.cookie) {
 			cookie = toCookieObj(req.headers.cookie)
@@ -127,7 +132,8 @@ async function itemPageIn(req, res) {
 			let maxAge = 1000 * 60 * 60 * 24 * 365
 			res.header('Set-Cookie', `bdrId=${uuid4()}; Max-age=${maxAge}; HttpOnly;`)
 		}
-		let html = await ejs.renderFile('src/main.ejs', { item: item.dataValues, ...(await getFileTimes()) })
+		console.log(items.map((e) => e.dataValues))
+		let html = await ejs.renderFile('src/main.ejs', { items: items.map((e) => e.dataValues), ...(await getFileTimes()) })
 		res.writeHead(200, { 'content-length': Buffer.byteLength(html), 'content-type': 'text/html' })
 		res.write(html)
 		res.end()
@@ -244,6 +250,10 @@ router.post('/item/fast/search', async (req, res) => {
 router.post('/item/put', async function (req, res) {
 	let transaction = await sq.transaction()
 	try {
+		let cnt = await DB.Item.count({ where: { itemCd: req.body.item.itemCd, removed: 0 } })
+		if (cnt >= 3) {
+			throw { code: '01', message: '3개 이상 동일한 아이템을 생성할 순 없습니다.' }
+		}
 		if (req.body.item.itemId != null) {
 			await DB.Item.upsert(req.body.item, { where: { itemId: req.body.item.itemId }, transaction })
 			await DB.Earn.destroy({ where: { itemId: req.body.item.itemId }, transaction })
