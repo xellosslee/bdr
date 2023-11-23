@@ -326,4 +326,25 @@ router.post('/item/like-set', async (req, res) => {
 	}
 })
 
+// 이미지 파일 목록
+router.post('/file/list', async (req, res) => {
+	try {
+		let limit = 10
+		let offset = 0
+		if (req.body?.page && Number.isInteger(req.body.page)) {
+			offset = (req.body.page - 1) * limit
+		}
+		let data = await DB.File.findAndCountAll({
+			where: req.body.name ? { name: { [Op.like]: '%' + req.body.name + '%' } } : {},
+			offset,
+			limit,
+			order: [['fileId', 'DESC']],
+		})
+		res.send(200, { ...jsonSuccess, data })
+	} catch (err) {
+		console.error(err)
+		res.send(200, { ...jsonFailed, ...err })
+	}
+})
+
 module.exports = router

@@ -106,7 +106,8 @@ window.onload = () => {
 		if (!Array.isArray(bookmark)) {
 			bookmark = []
 		}
-		if (bookmark.indexOf(newBookmark) != -1) { // 중복 추가 방지
+		if (bookmark.indexOf(newBookmark) != -1) {
+			// 중복 추가 방지
 			return
 		}
 		bookmark.push(newBookmark)
@@ -128,6 +129,11 @@ window.onload = () => {
 	// 	}
 	// }
 	// append.onclick = appendFn
+
+	// 이미지 목록 조회
+	// Api({ url: '/file/list', data: { page: 0 } }).then(async (e) => console.log(await e.json()))
+	// 이미지 목록 검색
+	// Api({ url: '/file/list', data: { page: 0, name: '뾰족' } }).then(async (e) => console.log(await e.json()))
 }
 
 async function Api(param) {
