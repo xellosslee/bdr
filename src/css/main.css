@@ -118,7 +118,8 @@ input.count {
 .contentHeader {
 	display: flex;
 	align-items: center;
-	margin: 20px;
+	margin: 20px auto;
+	width: min(95%, 1024px);
 }
 
 .contentHeader .homeLink {
