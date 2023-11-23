@@ -4,7 +4,6 @@ window.onload = () => {
 	var searchedItemUrl = ''
 	var autoComplete = document.getElementById('autoComplete')
 	let likeCntLabel = document.querySelector('div.likeCnt')
-	let bookmarkBtn = document.querySelector('button.bookmark')
 	let append = document.getElementById('append')
 	let fn = _.debounce(async (evt) => {
 		if (evt.key == 'Enter' && searchedItemUrl != '') {
@@ -101,8 +100,17 @@ window.onload = () => {
 	}
 
 	let bookmarkBtns = document.querySelectorAll('button.btn.bookmark')
-	function bookmark(item) {
-		localStorage.setItem('bookmark', JSON.stringify(evt.currentTarget.dataset))
+	function bookmark(evt) {
+		let bookmark = JSON.parse(localStorage.getItem('bookmark'))
+		let newBookmark = JSON.stringify(evt.currentTarget.dataset)
+		if (!Array.isArray(bookmark)) {
+			bookmark = []
+		}
+		if (bookmark.indexOf(newBookmark) != -1) { // 중복 추가 방지
+			return
+		}
+		bookmark.push(newBookmark)
+		localStorage.setItem('bookmark', JSON.stringify(bookmark))
 	}
 	for (let i = 0; i < bookmarkBtns.length; i++) {
 		bookmarkBtns[i].onclick = bookmark
