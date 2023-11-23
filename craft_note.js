@@ -224,16 +224,20 @@ router.post('/item/fast/search', async (req, res) => {
 		}
 		let data = []
 		let items = await DB.Item.findAll({
-			attributes: ['itemCd', { [sq.fn('MAX')]: 'name' }],
+			attributes: ['itemCd', 'name'],
 			include: [{ model: DB.File, as: 'itemImage', attributes: ['imgUrl'] }],
 			where: { name: { [Op.like]: '%' + req.body.search + '%' }, removed: 0 },
-			group: ['itemCd'],
 			limit: 10,
 		})
 		for (let i = 0; i < items.length; i++) {
-			// console.debug(items[i])
+			let url = '/item/' + encode(items[i].itemCd.toString())
+			let exists = data.find((e) => e.itemUrl == url)
+			// 동일 아이템이 이미 검색 되었다면 두번째 이상은 제거
+			if (exists) {
+				continue
+			}
 			data.push({
-				itemUrl: '/item/' + encode(items[i].itemCd.toString()),
+				itemUrl: url,
 				name: items[i].name,
 				imgUrl: items[i].itemImage.imgUrl,
 			})
