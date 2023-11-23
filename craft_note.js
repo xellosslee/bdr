@@ -361,7 +361,7 @@ router.post('/file/put', async (req, res) => {
 		if (!req.body.name) {
 			throw { code: '02', message: '이미지 명칭은 필수입니다.' }
 		}
-		let data = await DB.File.create({ name: req.body.name }, { transaction })
+		let data = await DB.File.create({ name: req.body.name, imgUrl: '/images/items/' + req.body.name + '.png' }, { transaction })
 		if (!data) {
 			throw { code: '03', message: '시스템 오류 발생.' }
 		}
