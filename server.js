@@ -2,6 +2,7 @@ require('dotenv').config()
 const consoleStamp = require('console-stamp')
 const { createServer, plugins } = require('restify')
 const corsMiddleware = require('restify-cors-middleware2')
+const { DB, sq, Op } = require('./mysql')
 
 consoleStamp(console, 'yyyy-mm-dd HH:MM:ss.l')
 
@@ -30,12 +31,29 @@ const cors = corsMiddleware({
 })
 server.pre(cors.preflight)
 server.use(cors.actual)
-server.listen(PORT, '0.0.0.0', async () => {
-	if (typeof process.send == 'function') {
-		process.send('ready')
+waitForDBSync()
+function waitForDBSync() {
+	if (!DB.initialized) {
+		setTimeout(waitForDBSync, 500)
+	} else {
+		server.listen(PORT, '0.0.0.0', () => {
+			if (typeof process.send == 'function') {
+				process.send('ready')
+			}
+			console.log('%s listening at %s', server.name, server.url)
+		})
+		// 운영 에서만 cron job 실행
+		if (process.env.NODE_ENV == 'prod') {
+			require('./cron')
+		}
 	}
-	console.log('%s listening at %s', server.name, server.url)
-})
+}
+// server.listen(PORT, '0.0.0.0', async () => {
+// 	if (typeof process.send == 'function') {
+// 		process.send('ready')
+// 	}
+// 	console.log('%s listening at %s', server.name, server.url)
+// })
 process.on('SIGINT', async () => {
 	isDisableKeepAlive = true
 	server.close(() => {
