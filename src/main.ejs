@@ -19,7 +19,7 @@
 	</head>
 	<body>
 		<header class="contentHeader">
-			<a href="/"><div class="homeLink"><img src="/img/blackSpirit.png"></div></a>
+			<a href="/"><div class="homeLink"><img src="/img/blackSpirit.png" alt="흑정령(홈아이콘)"></div></a>
 			<div class="searchWrap">
 				<input type="text" id="searchText" placeholder="파트너! 어서 궁금한 아이템명을 입력해봐!" spellcheck="false">
 				<div id="autoComplete" class="empty"></div>
@@ -30,7 +30,7 @@
 			<div class="content">
 				<div class="itemHeader">
 					<div class="left">
-						<div class="itemImg"><img src="<%= item.itemImage && item.itemImage.imgUrl %>" /></div>
+						<div class="itemImg"><img src="<%= item.itemImage && item.itemImage.imgUrl %>" alt="<%= item.name %>" /></div>
 						<div class="itemName"><%= item.name %></div>
 					</div>
 					<div class="right">
@@ -81,7 +81,7 @@
 								<div class="col" style="align-items: center;">
 									<div class="miniItemLabel">
 										<a href="<%= craft.craftItems[0].url %>">
-											<img class="miniItem" src="<%= craft.craftItems[0] && craft.craftItems[0].imgUrl %>" />
+											<img class="miniItem" src="<%= craft.craftItems[0] && craft.craftItems[0].imgUrl %>" alt="<%= craft.craftItems[0].name %>" />
 											<span><%= craft.craftItems[0].name %></span>
 										</a>
 									</div>
@@ -100,7 +100,7 @@
 						<% if (!usage.usageItems || usage.usageItems.length == 0) { continue } %>
 						<div class="miniItemLabel">
 							<a href="<%= usage.usageItems[0].url %>">
-							<img class="miniItem" src="<%= usage.usageItems[0] && usage.usageItems[0].imgUrl %>" />
+							<img class="miniItem" src="<%= usage.usageItems[0] && usage.usageItems[0].imgUrl %>" alt="<%= usage.usageItems[0].name %>" />
 							<span><%= usage.usageItems[0].name %></span>
 							</a>
 						</div>
