@@ -77,10 +77,11 @@
 								<% } %>
 							<% } %>
 							<% for (let craft of item.Earns[i].Crafts) { %>
+								<% if (!craft.craftItems || craft.craftItems.length == 0) { continue } %>
 								<div class="col" style="align-items: center;">
 									<div class="miniItemLabel">
 										<a href="<%= craft.craftItems[0].url %>">
-											<img class="miniItem" src="<%= craft.craftItems[0].imgUrl %>" />
+											<img class="miniItem" src="<%= craft.craftItems[0] && craft.craftItems[0].imgUrl %>" />
 											<span><%= craft.craftItems[0].name %></span>
 										</a>
 									</div>
@@ -96,9 +97,10 @@
 					<div class="subtitle"><%= item.name %> - 제작가능 아이템</div>
 					<div class="usageList">
 					<% for (let usage of item.Usages) { %>
+						<% if (!usage.usageItems || usage.usageItems.length == 0) { continue } %>
 						<div class="miniItemLabel">
 							<a href="<%= usage.usageItems[0].url %>">
-							<img class="miniItem" src="<%= usage.usageItems[0].imgUrl %>" />
+							<img class="miniItem" src="<%= usage.usageItems[0] && usage.usageItems[0].imgUrl %>" />
 							<span><%= usage.usageItems[0].name %></span>
 							</a>
 						</div>

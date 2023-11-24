@@ -119,7 +119,7 @@ async function itemPageIn(req, res) {
 				for (let x = 0; x < item.Earns[i].Crafts.length; x++) {
 					if (item.Earns[i].Crafts[x].craftItems.length > 0) {
 						item.Earns[i].Crafts[x].craftItems[0].url = '/item/' + encode(item.Earns[i].Crafts[x].craftItems[0].itemCd.toString())
-						item.Earns[i].Crafts[x].craftItems[0].imgUrl = item.Earns[i].Crafts[x].craftItems[0].itemImage.imgUrl
+						item.Earns[i].Crafts[x].craftItems[0].imgUrl = item.Earns[i].Crafts[x].craftItems[0]?.itemImage?.imgUrl
 					}
 				}
 			}
@@ -127,7 +127,7 @@ async function itemPageIn(req, res) {
 				if (item.Usages[i].usageItems.length > 0) {
 					console.log(item.Usages[i].usageItems[0])
 					item.Usages[i].usageItems[0].url = '/item/' + encode(item.Usages[i].usageItems[0].itemCd.toString())
-					item.Usages[i].usageItems[0].imgUrl = item.Usages[i].usageItems[0].itemImage.imgUrl
+					item.Usages[i].usageItems[0].imgUrl = item.Usages[i].usageItems[0]?.itemImage?.imgUrl
 				}
 			}
 			item.dataValues.itemIdEnc = encode(item.dataValues.itemId.toString())
