@@ -11,7 +11,6 @@ module.exports = (sq) => {
 			},
 			itemCd: {
 				type: DataTypes.BIGINT.UNSIGNED,
-				allowNull: false,
 			},
 			name: {
 				type: DataTypes.STRING,

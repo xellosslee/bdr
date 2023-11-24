@@ -4,6 +4,11 @@ class Earn extends Model {}
 module.exports = (sq) => {
 	Earn.init(
 		{
+			id: {
+				type: DataTypes.BIGINT.UNSIGNED,
+				primaryKey: true,
+				autoIncrement: true,
+			},
 			itemId: {
 				type: DataTypes.BIGINT.UNSIGNED,
 				allowNull: false,

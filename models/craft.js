@@ -9,6 +9,10 @@ module.exports = (sq) => {
 				primaryKey: true,
 				autoIncrement: true,
 			},
+			earnId: {
+				type: DataTypes.BIGINT.UNSIGNED,
+				comment: 'earnId',
+			},
 			itemId: {
 				type: DataTypes.BIGINT.UNSIGNED,
 				comment: '완성 아이템 Id',

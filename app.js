@@ -97,5 +97,5 @@ async function main() {
 			process.exit(0)
 		}
 	}
-	setTimeout(main, 100)
+	setTimeout(main, 300)
 }
