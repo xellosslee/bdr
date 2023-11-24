@@ -115,16 +115,24 @@ async function itemPageIn(req, res) {
 				where: { itemCd: item.Usages.map((e) => e.resultItemCd), removed: 0 },
 				raw: 1,
 			})
+			let finalList = []
 			for (let i = 0; i < item.Usages.length; i++) {
 				let filterItems = usagesList.filter((e) => e.itemCd == item.Usages[i].resultItemCd)
 				if (filterItems.length == 0) {
 					console.error('cannot found usages item !!!')
+					item.Usages.splice(i, 1)
+					i--
 					continue
 				}
 				filterItems = filterItems.sort((a, b) => b.likeCount - a.likeCount)
 				item.Usages[i].resultItemName = filterItems[0].name
 				item.Usages[i].url = '/item/' + encode(filterItems[0].itemCd.toString())
 				item.Usages[i].imgUrl = filterItems[0]['itemImage.imgUrl']
+				finalList.push({
+					resultItemName: filterItems[0].name,
+					url: '/item/' + encode(filterItems[0].itemCd.toString()),
+					imgUrl: filterItems[0]['itemImage.imgUrl'],
+				})
 			}
 			item.dataValues.itemIdEnc = encode(item.dataValues.itemId.toString())
 			item.dataValues.itemCdEnc = encode(item.dataValues.itemCd.toString())
