@@ -119,7 +119,7 @@ window.onload = () => {
 			bookmark = []
 		}
 		if (bookmark.length > 9) {
-			console.log('북마크는 최대 10개까지 가능합니다.')
+			alert('북마크는 최대 10개까지 가능합니다.')
 			return
 		}
 		if (bookmark.indexOf(newBookmark) != -1) {
