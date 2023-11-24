@@ -114,41 +114,43 @@ window.onload = () => {
 	// let bookmarkWrap = document.querySelector('')
 
 	let bookmarkBtn = document.querySelector('button.btn.bookmark')
-	let bookmarkIcon = bookmarkBtn.querySelector('i')
-	let beforeBookmark = JSON.parse(localStorage.getItem('bookmark'))
-	function bookmarkCheck() {
-		let newBookmark = JSON.stringify(bookmarkBtn.dataset)
-		if (beforeBookmark.indexOf(newBookmark) != -1) { 
-			bookmarkIcon.classList.remove('icon-bookmark')
-			bookmarkIcon.classList.add('icon-bookmark-fill')
+	if (bookmarkBtn) {
+		let bookmarkIcon = bookmarkBtn.querySelector('i')
+		let beforeBookmark = JSON.parse(localStorage.getItem('bookmark'))
+		function bookmarkCheck() {
+			let newBookmark = JSON.stringify(bookmarkBtn.dataset)
+			if (beforeBookmark.indexOf(newBookmark) != -1) {
+				bookmarkIcon.classList.remove('icon-bookmark')
+				bookmarkIcon.classList.add('icon-bookmark-fill')
+			}
 		}
-	}
-	bookmarkCheck()
-	
-	function bookmark(evt) {
-		let bookmarkIcon = evt.currentTarget.querySelector('i')
-		let bookmark = JSON.parse(localStorage.getItem('bookmark'))
-		let newBookmark = JSON.stringify(evt.currentTarget.dataset)
-		if (!Array.isArray(bookmark)) {
-			bookmark = []
+		bookmarkCheck()
+
+		function bookmark(evt) {
+			let bookmarkIcon = evt.currentTarget.querySelector('i')
+			let bookmark = JSON.parse(localStorage.getItem('bookmark'))
+			let newBookmark = JSON.stringify(evt.currentTarget.dataset)
+			if (!Array.isArray(bookmark)) {
+				bookmark = []
+			}
+			if (bookmark.length > 9) {
+				alert('북마크는 최대 10개까지 가능합니다.')
+				return
+			}
+			if (bookmark.indexOf(newBookmark) != -1) {
+				// 다시 클릭하면 북마크에서 삭제
+				bookmark.splice(bookmark.indexOf(newBookmark), 1)
+			} else {
+				bookmark.push(newBookmark)
+			}
+			localStorage.setItem('bookmark', JSON.stringify(bookmark))
+			bookmarkIcon.classList.toggle('icon-bookmark')
+			bookmarkIcon.classList.toggle('icon-bookmark-fill')
 		}
-		if (bookmark.length > 9) {
-			alert('북마크는 최대 10개까지 가능합니다.')
-			return
-		}
-		if (bookmark.indexOf(newBookmark) != -1) {
-			// 다시 클릭하면 북마크에서 삭제
-			bookmark.splice(bookmark.indexOf(newBookmark), 1)
-		} else {			
-			bookmark.push(newBookmark)
-		}
-		localStorage.setItem('bookmark', JSON.stringify(bookmark))
-		bookmarkIcon.classList.toggle('icon-bookmark')
-		bookmarkIcon.classList.toggle('icon-bookmark-fill')
+
+		bookmarkBtn.onclick = bookmark
 	}
 
-	bookmarkBtn.onclick = bookmark
-	
 	// async function appendFn(evt) {
 	// 	let a = evt.currentTarget.dataset.itemId
 	// 	let b = evt.currentTarget.dataset.itemCd
