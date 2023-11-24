@@ -30,12 +30,17 @@ let DB = {
 }
 
 DB.Usages.belongsTo(DB.Item, { foreignKey: 'itemId', as: 'Item', constraints: false, foreignKeyConstraint: false })
-DB.Usages.hasOne(DB.Item, { foreignKey: 'itemCd', targetKey: 'resultItemCd', as: 'resultItem', constraints: false, foreignKeyConstraint: false })
+DB.Usages.hasMany(DB.Item, { foreignKey: 'itemCd', sourceKey: 'resultItemCd', as: 'resultItem', constraints: false, foreignKeyConstraint: false })
 
 DB.Item.belongsTo(DB.File, { foreignKey: 'fileId', targetKey: 'fileId', as: 'itemImage', constraints: false, foreignKeyConstraint: false })
 
 DB.Item.hasMany(DB.Usages, { foreignKey: 'itemId', targetKey: 'itemId', constraints: false, foreignKeyConstraint: false })
 DB.Item.hasMany(DB.Earn, { foreignKey: 'itemId', targetKey: 'itemId', constraints: false, foreignKeyConstraint: false })
+
+DB.Earn.hasMany(DB.Craft, { foreignKey: 'itemId', sourceKey: 'itemId', targetKey: 'itemId', constraints: false, foreignKeyConstraint: false })
+DB.Craft.hasMany(DB.Item, { foreignKey: 'itemCd', sourceKey: 'itemCd', targetKey: 'itemCd', as: 'craftItems', constraints: false, foreignKeyConstraint: false })
+DB.Usages.hasMany(DB.Item, { foreignKey: 'itemCd', sourceKey: 'resultItemCd', targetKey: 'itemCd', as: 'usageItems', constraints: false, foreignKeyConstraint: false })
+// DB.Craft.belongsTo(DB.Earn, { foreignKey: 'itemId', targetKey: 'itemId', constraints: false, foreignKeyConstraint: false })
 
 // db connection 끊기지 않게 주기적으로 ping 수행
 function ping() {

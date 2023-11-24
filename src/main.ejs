@@ -86,15 +86,15 @@
 									<%= item.Earns[i].path %>
 								<% } %>
 							<% } %>
-							<% for (var x = 0 ; Array.isArray(item.Earns[i].craftList) && x < item.Earns[i].craftList.length; x++) {%>
+							<% for (let craft of item.Earns[i].Crafts) { %>
 								<div class="col" style="align-items: center;">
 									<div class="miniItemLabel">
-										<a href="<%= item.Earns[i].craftList[x].url %>">
-											<img class="miniItem" src="<%= item.Earns[i].craftList[x].imgUrl %>" />
-											<span><%= item.Earns[i].craftList[x].name %></span>
+										<a href="<%= craft.craftItems[0].url %>">
+											<img class="miniItem" src="<%= craft.craftItems[0].imgUrl %>" />
+											<span><%= craft.craftItems[0].name %></span>
 										</a>
 									</div>
-									<div><%= item.Earns[i].craftList[x].count %> x <input class="count" type="text" data-earn-id="<%= i %>" data-ori-value="<%= item.Earns[i].craftList[x].count %>" readonly></div>
+									<div><%= craft.count %> x <input class="count" type="text" data-earn-id="<%= i %>" data-ori-value="<%= craft.count %>" readonly></div>
 								</div>
 							<% } %>
 						</div>
@@ -105,8 +105,13 @@
 					<hr class="separator">
 					<div class="subtitle"><%= item.name %> - 제작가능 아이템</div>
 					<div class="usageList">
-					<% for (var y = 0 ; Array.isArray(item.Usages) && y < item.Usages.length; y++) {%>
-						<div class="miniItemLabel"><a href="<%= item.Usages[y].url %>"><img class="miniItem" src="<%= item.Usages[y].imgUrl %>" /><span><%= item.Usages[y].resultItemName %></span></a></div>
+					<% for (let usage of item.Usages) { %>
+						<div class="miniItemLabel">
+							<a href="<%= usage.usageItems[0].url %>">
+							<img class="miniItem" src="<%= usage.usageItems[0].imgUrl %>" />
+							<span><%= usage.usageItems[0].name %></span>
+							</a>
+						</div>
 					<% } %>
 					</div>
 				<% }%>

@@ -55,12 +55,40 @@ async function itemPageIn(req, res) {
 	try {
 		let params = { itemCd: req.params.itemCd }
 		let items = null
+		let itemIncludeArray = [
+			{ model: DB.File, as: 'itemImage', attributes: ['imgUrl'] },
+			{
+				model: DB.Earn,
+				include: [
+					{
+						model: DB.Craft,
+						include: [{ model: DB.Item, as: 'craftItems', attributes: ['name', 'itemCd', 'fileId'], include: [{ model: DB.File, attributes: ['imgUrl'], as: 'itemImage' }] }],
+					},
+				],
+			},
+			{
+				model: DB.Usages,
+				include: [
+					{
+						model: DB.Item,
+						as: 'usageItems',
+						attributes: ['name', 'itemCd', 'fileId'],
+						include: [{ model: DB.File, attributes: ['imgUrl'], as: 'itemImage' }],
+						order: [
+							['likeCount', 'desc'],
+							['itemId', 'desc'],
+						],
+						limit: 1,
+					},
+				],
+			},
+		]
 		// 운영에서는 숫자 조회 불가능하게 방지
 		// 단, 랜덤 조회 일때에는 itemCd로 조회 시도
 		if (req.internal || process.env.NODE_ENV != 'prod') {
 			if (!Number.isNaN(Number(params.itemCd))) {
 				items = await DB.Item.findAll({
-					include: [{ model: DB.File, as: 'itemImage', attributes: ['imgUrl'] }, { model: DB.Earn }, { model: DB.Usages }],
+					include: itemIncludeArray,
 					where: { itemCd: Number(params.itemCd), removed: 0 },
 					order: [['likeCount', 'desc']],
 				})
@@ -71,10 +99,11 @@ async function itemPageIn(req, res) {
 				// console.debug(params.itemCd, decode(params.itemCd), data)
 				params.itemCd = decode(params.itemCd)
 				items = await DB.Item.findAll({
-					include: [{ model: DB.File, as: 'itemImage', attributes: ['imgUrl'] }, { model: DB.Earn }, { model: DB.Usages }],
+					include: itemIncludeArray,
 					where: { itemCd: params.itemCd, removed: 0 },
 					order: [['likeCount', 'desc']],
 				})
+				console.debug(params.itemCd)
 			} catch (err) {
 				console.error(err)
 				throw { code: '01' }
@@ -86,53 +115,19 @@ async function itemPageIn(req, res) {
 		for (let x = 0; x < items.length; x++) {
 			let item = items[x]
 			for (let i = 0; i < item.Earns.length; i++) {
-				let craftListTemp = item.Earns[i].craftList
-				if (item.Earns[i].type == 'craft') {
-					let items = await DB.Item.findAll({
-						attributes: ['itemId', 'itemCd', 'name', 'likeCount'],
-						include: [{ model: DB.File, as: 'itemImage', attributes: ['imgUrl'] }],
-						where: { itemCd: craftListTemp.map((e) => e.itemCd), removed: 0 },
-					})
-					for (let j = 0; j < craftListTemp.length; j++) {
-						let filterItems = items.filter((e) => e.itemCd == craftListTemp[j].itemCd)
-						if (filterItems.length == 0) {
-							console.error('cannot found craft item !!!')
-							break
-						}
-						// 동일 itemCd 중 가장 likeCount가 높은 항목을 earns에서 링크 표시
-						filterItems = filterItems.sort((a, b) => b.likeCount - a.likeCount)
-						// console.log(filterItems)
-						craftListTemp[j].name = filterItems[0].name
-						craftListTemp[j].url = '/item/' + encode(filterItems[0].itemCd.toString())
-						craftListTemp[j].imgUrl = filterItems[0].itemImage?.imgUrl
+				for (let x = 0; x < item.Earns[i].Crafts.length; x++) {
+					if (item.Earns[i].Crafts[x].craftItems.length > 0) {
+						item.Earns[i].Crafts[x].craftItems[0].url = '/item/' + encode(item.Earns[i].Crafts[x].craftItems[0].itemCd.toString())
+						item.Earns[i].Crafts[x].craftItems[0].imgUrl = item.Earns[i].Crafts[x].craftItems[0].itemImage.imgUrl
 					}
 				}
 			}
-			// let usagesList = []
-			let usagesList = await DB.Item.findAll({
-				attributes: ['itemId', 'itemCd', 'name', 'likeCount'],
-				include: [{ model: DB.File, as: 'itemImage', attributes: ['imgUrl'] }],
-				where: { itemCd: item.Usages.map((e) => e.resultItemCd), removed: 0 },
-				raw: 1,
-			})
-			let finalList = []
 			for (let i = 0; i < item.Usages.length; i++) {
-				let filterItems = usagesList.filter((e) => e.itemCd == item.Usages[i].resultItemCd)
-				if (filterItems.length == 0) {
-					console.error('cannot found usages item !!!')
-					item.Usages.splice(i, 1)
-					i--
-					continue
+				if (item.Usages[i].usageItems.length > 0) {
+					console.log(item.Usages[i].usageItems[0])
+					item.Usages[i].usageItems[0].url = '/item/' + encode(item.Usages[i].usageItems[0].itemCd.toString())
+					item.Usages[i].usageItems[0].imgUrl = item.Usages[i].usageItems[0].itemImage.imgUrl
 				}
-				filterItems = filterItems.sort((a, b) => b.likeCount - a.likeCount)
-				item.Usages[i].resultItemName = filterItems[0].name
-				item.Usages[i].url = '/item/' + encode(filterItems[0].itemCd.toString())
-				item.Usages[i].imgUrl = filterItems[0]['itemImage.imgUrl']
-				finalList.push({
-					resultItemName: filterItems[0].name,
-					url: '/item/' + encode(filterItems[0].itemCd.toString()),
-					imgUrl: filterItems[0]['itemImage.imgUrl'],
-				})
 			}
 			item.dataValues.itemIdEnc = encode(item.dataValues.itemId.toString())
 			item.dataValues.itemCdEnc = encode(item.dataValues.itemCd.toString())
@@ -145,8 +140,13 @@ async function itemPageIn(req, res) {
 			let maxAge = 1000 * 60 * 60 * 24 * 365
 			res.header('Set-Cookie', `bdrId=${uuid4()}; Max-age=${maxAge}; HttpOnly;`)
 		}
-		// console.log(items.map((e) => e.dataValues))
-		let html = await ejs.renderFile('src/main.ejs', { items: items.map((e) => e.dataValues), ...(await getFileTimes()) })
+		let resultItems = items.map((e) => e.dataValues)
+		// console.log(resultItems)
+		// console.log(resultItems[0].Earns[0].dataValues)
+		// console.log(resultItems[0].Earns[0].dataValues.Crafts[0].craftItem[0])
+		// console.log(resultItems[0].Usages[0].dataValues.usageItems.sort((a, b) => b.likeCount - a.likeCount))
+		// console.log(resultItems[0].Usages[0].dataValues.usageItems[0])
+		let html = await ejs.renderFile('src/main.ejs', { items: resultItems, ...(await getFileTimes()) }, { async: 1 })
 		res.writeHead(200, { 'content-length': Buffer.byteLength(html), 'content-type': 'text/html' })
 		res.write(html)
 		res.end()

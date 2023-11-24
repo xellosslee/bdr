@@ -20,10 +20,6 @@ module.exports = (sq) => {
 				type: DataTypes.TEXT,
 				comment: '획득 경로',
 			},
-			craftList: {
-				type: DataTypes.JSON,
-				comment: '제조 레시피 목록',
-			},
 		},
 		{
 			sequelize: sq,
