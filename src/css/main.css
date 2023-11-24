@@ -380,6 +380,16 @@ button.btn.solid:active {
 	transform: scale(1.2);
 }
 
+.contentHeader .searchWrap > div#toolBox {
+	display: flex;
+}
+
+.contentHeader .searchWrap > div#toolBox > div {
+	width: 100%;
+	padding: 6px;
+	font-weight: 600;
+}
+
 @media (max-width: 480px) {
 	.container {
 		margin: 20px 0;
