@@ -125,7 +125,7 @@ async function itemPageIn(req, res) {
 			}
 			for (let i = 0; i < item.Usages.length; i++) {
 				if (item.Usages[i].usageItems.length > 0) {
-					console.log(item.Usages[i].usageItems[0])
+					// console.debug(item.Usages[i].usageItems[0])
 					item.Usages[i].usageItems[0].url = '/item/' + encode(item.Usages[i].usageItems[0].itemCd.toString())
 					item.Usages[i].usageItems[0].imgUrl = item.Usages[i].usageItems[0]?.itemImage?.imgUrl
 				}
