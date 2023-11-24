@@ -93,11 +93,9 @@
 							<% for (let craft of item.Earns[i].Crafts) { %>
 								<% if (!craft.craftItems || craft.craftItems.length == 0) { continue } %>
 								<div class="col" style="align-items: center;">
-									<div class="miniItemLabel">
-										<a href="<%= craft.craftItems[0].url %>">
-											<img class="miniItem" src="<%= craft.craftItems[0] && craft.craftItems[0].imgUrl %>" alt="<%= craft.craftItems[0].name %>" />
-											<span><%= craft.craftItems[0].name %></span>
-										</a>
+									<div class="miniItemLabel" onclick="location.href='<%= craft.craftItems[0].url %>'">
+										<img class="miniItem" src="<%= craft.craftItems[0] && craft.craftItems[0].imgUrl %>" alt="<%= craft.craftItems[0].name %>" />
+										<span><%= craft.craftItems[0].name %></span>
 									</div>
 									<div><%= craft.count %> x <input class="count" type="text" data-earn-id="<%= i %>" data-ori-value="<%= craft.count %>" readonly></div>
 								</div>
@@ -112,11 +110,9 @@
 					<div class="usageList">
 					<% for (let usage of item.Usages) { %>
 						<% if (!usage.usageItems || usage.usageItems.length == 0) { continue } %>
-						<div class="miniItemLabel">
-							<a href="<%= usage.usageItems[0].url %>">
+						<div class="miniItemLabel" onclick="location.href='<%= usage.usageItems[0].url %>'">
 							<img class="miniItem" src="<%= usage.usageItems[0] && usage.usageItems[0].imgUrl %>" alt="<%= usage.usageItems[0].name %>" />
 							<span><%= usage.usageItems[0].name %></span>
-							</a>
 						</div>
 					<% } %>
 					</div>

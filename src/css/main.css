@@ -240,6 +240,8 @@ img.miniItem {
 }
 
 .miniItemLabel {
+	display: flex;
+	align-items: center;
 	line-height: min(22px, 5.6410256vw);
 	padding: 4px 6px;
 	color: var(--point-color);
@@ -249,15 +251,11 @@ img.miniItem {
 
 .miniItemLabel:hover {
 	background: var(--point-color);
+	cursor: pointer;
 	color: #fff;
 }
 
-.miniItemLabel a {
-	display: flex;
-	align-items: center;
-}
-
-.miniItemLabel a span {
+.miniItemLabel span {
 	margin-left: 4px;
 }
 
