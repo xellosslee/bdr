@@ -99,33 +99,42 @@ window.onload = () => {
 		}
 	}
 
-	let bookmarkBtns = document.querySelectorAll('button.btn.bookmark')
+	let bookmarkBtn = document.querySelectorAll('button.btn.bookmark')[0]
+	let bookmarkIcon = bookmarkBtn.querySelector('i')
 	let beforeBookmark = JSON.parse(localStorage.getItem('bookmark'))
-	let newBookmark = JSON.stringify(evt.currentTarget.dataset)
-
 	function bookmarkCheck() {
+		let newBookmark = JSON.stringify(bookmarkBtn.dataset)
 		if (beforeBookmark.indexOf(newBookmark) != -1) { 
-			bookmarkBtns.classList.add('on')
+			bookmarkIcon.classList.remove('icon-bookmark')
+			bookmarkIcon.classList.add('icon-bookmark-fill')
 		}
 	}
 	bookmarkCheck()
 	
 	function bookmark(evt) {
+		let bookmarkIcon = evt.currentTarget.querySelector('i')
 		let bookmark = JSON.parse(localStorage.getItem('bookmark'))
 		let newBookmark = JSON.stringify(evt.currentTarget.dataset)
 		if (!Array.isArray(bookmark)) {
 			bookmark = []
 		}
-		if (bookmark.indexOf(newBookmark) != -1) {
-			// 중복 추가 방지
+		if (bookmark.length > 9) {
+			console.log('북마크는 최대 10개까지 가능합니다.')
 			return
 		}
-		bookmark.push(newBookmark)
+		if (bookmark.indexOf(newBookmark) != -1) {
+			// 다시 클릭하면 북마크에서 삭제
+			bookmark.splice(bookmark.indexOf(newBookmark), 1)
+		} else {			
+			bookmark.push(newBookmark)
+		}
 		localStorage.setItem('bookmark', JSON.stringify(bookmark))
+		bookmarkIcon.classList.toggle('icon-bookmark')
+		bookmarkIcon.classList.toggle('icon-bookmark-fill')
 	}
-	for (let i = 0; i < bookmarkBtns.length; i++) {
-		bookmarkBtns[i].onclick = bookmark
-	}
+
+	bookmarkBtn.onclick = bookmark
+	
 	// async function appendFn(evt) {
 	// 	let a = evt.currentTarget.dataset.itemId
 	// 	let b = evt.currentTarget.dataset.itemCd
