@@ -12,6 +12,7 @@
         <meta property="og:image" content="https://bdr.gshn.kr/img/blackSpirit_og.png">
 		<title><%= Array.isArray(items) && items.length > 0 && items[0].name %> - BDR - 검은사막 레시피</title>
 		<link rel="stylesheet" href="/css/main.css?v=<%= main_css %>" type="text/css" />
+		<link rel="stylesheet" href="/css/icon.css?v=<%= icon_css %>" type="text/css" />
 		<script async type="text/javascript" src="/lib/lodash.4.6.1.js"></script>
 		<script async type="text/javascript" src="/js/main.js?v=<%= main_js %>"></script>
 		<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3352274765791981" crossorigin="anonymous"></script>
@@ -24,6 +25,7 @@
 				<div id="autoComplete" class="empty"></div>
 			</div>
 		</header>
+		<span class="icon-bookmark-fill"></span>
 		<div class="container">
 			<% for (let item of items) { %>
 			<div class="content">

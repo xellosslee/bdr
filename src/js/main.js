@@ -100,6 +100,16 @@ window.onload = () => {
 	}
 
 	let bookmarkBtns = document.querySelectorAll('button.btn.bookmark')
+	let beforeBookmark = JSON.parse(localStorage.getItem('bookmark'))
+	let newBookmark = JSON.stringify(evt.currentTarget.dataset)
+
+	function bookmarkCheck() {
+		if (beforeBookmark.indexOf(newBookmark) != -1) { 
+			bookmarkBtns.classList.add('on')
+		}
+	}
+	bookmarkCheck()
+	
 	function bookmark(evt) {
 		let bookmark = JSON.parse(localStorage.getItem('bookmark'))
 		let newBookmark = JSON.stringify(evt.currentTarget.dataset)
