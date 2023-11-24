@@ -29,11 +29,11 @@ let DB = {
 }
 
 DB.Usages.belongsTo(DB.Item, { foreignKey: 'itemId', as: 'Item', constraints: false, foreignKeyConstraint: false })
-DB.Usages.belongsTo(DB.Item, { foreignKey: 'resultItemCd', targetKey: 'itemCd', as: 'resultItem', constraints: false, foreignKeyConstraint: false })
+DB.Usages.hasOne(DB.Item, { foreignKey: 'itemCd', targetKey: 'resultItemCd', as: 'resultItem', constraints: false, foreignKeyConstraint: false })
 
 DB.Item.belongsTo(DB.File, { foreignKey: 'fileId', targetKey: 'fileId', as: 'itemImage', constraints: false, foreignKeyConstraint: false })
 
-DB.Item.hasMany(DB.Usages, { foreignKey: 'itemCd', targetKey: 'resultItemCd', constraints: false, foreignKeyConstraint: false })
+DB.Item.hasMany(DB.Usages, { foreignKey: 'itemId', targetKey: 'itemId', constraints: false, foreignKeyConstraint: false })
 DB.Item.hasMany(DB.Earn, { foreignKey: 'itemId', targetKey: 'itemId', constraints: false, foreignKeyConstraint: false })
 
 // db connection 끊기지 않게 주기적으로 ping 수행

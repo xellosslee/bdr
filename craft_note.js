@@ -109,13 +109,22 @@ async function itemPageIn(req, res) {
 				}
 			}
 			// let usagesList = []
+			let usagesList = await DB.Item.findAll({
+				attributes: ['itemId', 'itemCd', 'name', 'likeCount'],
+				include: [{ model: DB.File, as: 'itemImage', attributes: ['imgUrl'] }],
+				where: { itemCd: item.Usages.map((e) => e.resultItemCd), removed: 0 },
+				raw: 1,
+			})
 			for (let i = 0; i < item.Usages.length; i++) {
-				let e = item.Usages[i]
-				// console.log(itemId, encoded, url)
-				e.resultItemCd = e.resultItem.itemCd
-				e.resultItemName = e.resultItem.name
-				e.url = '/item/' + encode(e.resultItem.itemCd.toString())
-				e.imgUrl = e.resultItem.itemImage.imgUrl
+				let filterItems = usagesList.filter((e) => e.itemCd == item.Usages[i].resultItemCd)
+				if (filterItems.length == 0) {
+					console.error('cannot found usages item !!!')
+					continue
+				}
+				filterItems = filterItems.sort((a, b) => b.likeCount - a.likeCount)
+				item.Usages[i].resultItemName = filterItems[0].name
+				item.Usages[i].url = '/item/' + encode(filterItems[0].itemCd.toString())
+				item.Usages[i].imgUrl = filterItems[0]['itemImage.imgUrl']
 			}
 			item.dataValues.itemIdEnc = encode(item.dataValues.itemId.toString())
 			item.dataValues.itemCdEnc = encode(item.dataValues.itemCd.toString())
