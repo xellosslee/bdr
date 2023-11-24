@@ -18,7 +18,7 @@
 		<div class="connectionError">
 			<!-- CONNECTION ERROR -->
 			<div class="connectionErrorWrap">
-				<img src="/img/error.svg" alt="페이지를 불러올 수 없습니다." />
+				<img src="/img/error.png" alt="페이지를 불러올 수 없습니다." />
 				<h2 class="fs22 fw-d">페이지를 불러올 수 없습니다.</h2>
 				<div class="message"><%- errorHtml %></div>
 			</div>
@@ -38,14 +38,14 @@
 
 			.connectionErrorWrap img {
 				display: block;
-				width: 40vw;
-				height: 40vw;
+				width: min(150px, 38.4615385vw);
+				height: min(150px, 38.4615385vw);
 				margin: 0 auto 4.2666667vw;
 			}
 
 			.connectionError h2 {
 				padding-bottom: var(--px20);
-				font-size: 6vw;
+				font-size: min(20px, 5.1282051vw);
 				color: #000000;
 				line-height: 1;
 				letter-spacing: -0.69px;
@@ -59,7 +59,7 @@
 
 			.connectionError p {
 				margin: 0;
-				font-size: 3.7333333vw;
+				font-size: min(15px, 3.8461538vw);
 				line-height: 1.4;
 				letter-spacing: -0.46px;
 				color: #979797;
