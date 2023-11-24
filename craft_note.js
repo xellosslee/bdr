@@ -269,20 +269,25 @@ router.post('/item/fast/search', async (req, res) => {
 router.post('/item/put', async function (req, res) {
 	let transaction = await sq.transaction()
 	try {
-		let cnt = await DB.Item.count({ where: { itemCd: req.body.item.itemCd, removed: 0 } })
-		if (cnt >= 3) {
-			throw { code: '01', message: '3개 이상 동일한 아이템을 생성할 순 없습니다.' }
-		}
+		// let cnt = await DB.Item.count({ where: { itemCd: req.body.item.itemCd, removed: 0 } })
+		// if (cnt >= 3) {
+		// 	throw { code: '01', message: '3개 이상 동일한 아이템을 생성할 순 없습니다.' }
+		// }
 		if (req.body.item.itemId != null) {
-			await DB.Item.upsert(req.body.item, { where: { itemId: req.body.item.itemId }, transaction })
+			await DB.Item.upsert({ ...req.body.item, itemCd: req.body.item.itemId }, { where: { itemId: req.body.item.itemId }, transaction })
 			await DB.Earn.destroy({ where: { itemId: req.body.item.itemId }, transaction })
-			await DB.Earn.bulkCreate(
-				req.body.item.earnList.map((e) => ({ ...e, itemId: req.body.item.itemId })),
-				{ transaction },
-			)
+			for (let i = 0; i < req.body.item.earnList.length; i++) {
+				let earn = await DB.Earn.create({ itemId: req.body.item.itemId, ...req.body.item.earnList[i] }, { transaction })
+				if (Array.isArray(req.body.item.earnList[i].craftList)) {
+					await DB.Craft.bulkCreate(
+						req.body.item.earnList[i].craftList.map((e) => ({ ...e, earnId: earn.id, itemCd: req.body.item.itemId })),
+						{ transaction },
+					)
+				}
+			}
 			await DB.Usages.destroy({ where: { itemId: req.body.item.itemId }, transaction })
 			await DB.Usages.bulkCreate(
-				req.body.item.usageList.map((e) => ({ ...e, itemId: req.body.item.itemId })),
+				req.body.item.usageList.map((e) => ({ itemId: req.body.item.itemId, ...e })),
 				{ transaction },
 			)
 		} else {
