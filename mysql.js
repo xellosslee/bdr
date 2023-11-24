@@ -25,6 +25,7 @@ let DB = {
 	Earn: require('./models/earn.js')(sq),
 	Usages: require('./models/usages.js')(sq),
 	File: require('./models/file.js')(sq),
+	Craft: require('./models/craft.js')(sq),
 	LikeHistory: require('./models/like_history.js')(sq),
 }
 
@@ -53,11 +54,11 @@ async function DBSync() {
 		console.log('All models were synchronized successfully.')
 		DB.initialized = true
 	} else {
-		sq.sync().then(function () {
-			console.log('All models were synchronized successfully.')
-			console.log('Skipped db Sync')
-			DB.initialized = true
-		})
+		// sq.sync().then(function () {
+		// 	console.log('All models were synchronized successfully.')
+		console.log('Skipped db Sync')
+		DB.initialized = true
+		// })
 	}
 }
 
