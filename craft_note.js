@@ -38,6 +38,7 @@ async function getFileTimes() {
 	return {
 		main_js: Math.floor((await fs.stat(__dirname + '/src/js/main.js')).mtimeMs),
 		main_css: Math.floor((await fs.stat(__dirname + '/src/css/main.css')).mtimeMs),
+		icon_css: Math.floor((await fs.stat(__dirname + '/src/css/icon.css')).mtimeMs),
 	}
 }
 
