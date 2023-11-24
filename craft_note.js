@@ -280,7 +280,7 @@ router.post('/item/put', async function (req, res) {
 				let earn = await DB.Earn.create({ itemId: req.body.item.itemId, ...req.body.item.earnList[i] }, { transaction })
 				if (Array.isArray(req.body.item.earnList[i].craftList)) {
 					await DB.Craft.bulkCreate(
-						req.body.item.earnList[i].craftList.map((e) => ({ ...e, earnId: earn.id, itemCd: req.body.item.itemId })),
+						req.body.item.earnList[i].craftList.map((e) => ({ ...e, earnId: earn.id, itemCd: e.itemId })),
 						{ transaction },
 					)
 				}

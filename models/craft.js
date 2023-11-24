@@ -13,10 +13,6 @@ module.exports = (sq) => {
 				type: DataTypes.BIGINT.UNSIGNED,
 				comment: 'earnId',
 			},
-			itemId: {
-				type: DataTypes.BIGINT.UNSIGNED,
-				comment: '완성 아이템 Id',
-			},
 			itemCd: {
 				type: DataTypes.BIGINT.UNSIGNED,
 				comment: '재료 아이템 Cd',
@@ -32,7 +28,7 @@ module.exports = (sq) => {
 			tableName: 'craft',
 			charset: 'utf8mb4',
 			collate: 'utf8mb4_0900_ai_ci',
-			indexes: [{ fields: ['itemId'] }],
+			indexes: [{ fields: ['earnId'] }, { fields: ['itemCd'] }],
 		},
 	)
 	return Craft
