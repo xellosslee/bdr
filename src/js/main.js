@@ -50,14 +50,25 @@ window.onload = () => {
 	}, 100)
 	searchText.onkeyup = fn
 
-	function searchWrapShow(evt) {
-		autoComplete.classList.remove('empty')
+	// function searchWrapShow(evt) {
+	// 	autoComplete.classList.remove('empty')
+	// }
+	// function searchWrapHide(evt) {
+	// 	autoComplete.classList.add('empty')
+	// }
+	// searchText.onblur = searchWrapHide
+	// searchText.onfocus = searchWrapShow
+
+	function searchWrapHideCheck (evt) {
+		let searchWrap = document.querySelector('.searchWrap')
+		if (evt.target.contains(searchWrap)) {
+			autoComplete.classList.remove('empty')
+		} else {
+			autoComplete.classList.add('empty')
+		}
 	}
-	function searchWrapHide(evt) {
-		autoComplete.classList.add('empty')
-	}
-	searchText.onblur = searchWrapHide
-	searchText.onfocus = searchWrapShow
+	document.body.onclick = searchWrapHideCheck
+	
 
 	let inputCounts = document.querySelectorAll('input[data-earn-input]')
 	for (let i = 0; i < inputCounts.length; i++) {
