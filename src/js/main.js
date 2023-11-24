@@ -119,36 +119,12 @@ window.onload = () => {
 		let beforeBookmark = JSON.parse(localStorage.getItem('bookmark'))
 		function bookmarkCheck() {
 			let newBookmark = JSON.stringify(bookmarkBtn.dataset)
-			if (beforeBookmark.indexOf(newBookmark) != -1) {
+			if (Array.isArray(beforeBookmark) && beforeBookmark.indexOf(newBookmark) != -1) {
 				bookmarkIcon.classList.remove('icon-bookmark')
 				bookmarkIcon.classList.add('icon-bookmark-fill')
 			}
 		}
 		bookmarkCheck()
-
-		function bookmark(evt) {
-			let bookmarkIcon = evt.currentTarget.querySelector('i')
-			let bookmark = JSON.parse(localStorage.getItem('bookmark'))
-			let newBookmark = JSON.stringify(evt.currentTarget.dataset)
-			if (!Array.isArray(bookmark)) {
-				bookmark = []
-			}
-			if (bookmark.length > 9) {
-				alert('북마크는 최대 10개까지 가능합니다.')
-				return
-			}
-			if (bookmark.indexOf(newBookmark) != -1) {
-				// 다시 클릭하면 북마크에서 삭제
-				bookmark.splice(bookmark.indexOf(newBookmark), 1)
-			} else {
-				bookmark.push(newBookmark)
-			}
-			localStorage.setItem('bookmark', JSON.stringify(bookmark))
-			bookmarkIcon.classList.toggle('icon-bookmark')
-			bookmarkIcon.classList.toggle('icon-bookmark-fill')
-		}
-
-		bookmarkBtn.onclick = bookmark
 	}
 
 	// async function appendFn(evt) {
@@ -169,6 +145,28 @@ window.onload = () => {
 	// Api({ url: '/file/list', data: { page: 0 } }).then(async (e) => console.log(await e.json()))
 	// 이미지 목록 검색
 	// Api({ url: '/file/list', data: { page: 0, name: '뾰족' } }).then(async (e) => console.log(await e.json()))
+}
+
+function bookmark(evt) {
+	let bookmarkIcon = evt.currentTarget.querySelector('i')
+	let bookmark = JSON.parse(localStorage.getItem('bookmark'))
+	let newBookmark = JSON.stringify(evt.currentTarget.dataset)
+	if (!Array.isArray(bookmark)) {
+		bookmark = []
+	}
+	if (bookmark.length > 9) {
+		alert('북마크는 최대 10개까지 가능합니다.')
+		return
+	}
+	if (bookmark.indexOf(newBookmark) != -1) {
+		// 다시 클릭하면 북마크에서 삭제
+		bookmark.splice(bookmark.indexOf(newBookmark), 1)
+	} else {
+		bookmark.push(newBookmark)
+	}
+	localStorage.setItem('bookmark', JSON.stringify(bookmark))
+	bookmarkIcon.classList.toggle('icon-bookmark')
+	bookmarkIcon.classList.toggle('icon-bookmark-fill')
 }
 
 // 이미지 파일명에서 이름 추출
