@@ -11,7 +11,11 @@ module.exports = (sq) => {
 			},
 			itemId: {
 				type: DataTypes.BIGINT.UNSIGNED,
-				comment: '재료 아이템',
+				comment: '완성 아이템 Id',
+			},
+			itemCd: {
+				type: DataTypes.BIGINT.UNSIGNED,
+				comment: '재료 아이템 Cd',
 			},
 			count: {
 				type: DataTypes.BIGINT.UNSIGNED,
@@ -19,6 +23,7 @@ module.exports = (sq) => {
 			},
 		},
 		{
+			updatedAt: false,
 			sequelize: sq,
 			tableName: 'craft',
 			charset: 'utf8mb4',
