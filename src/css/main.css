@@ -240,6 +240,8 @@ img.miniItem {
 }
 
 .miniItemLabel {
+	display: flex;
+	align-items: center;
 	line-height: min(22px, 5.6410256vw);
 	padding: 4px 6px;
 	color: var(--point-color);
@@ -247,17 +249,17 @@ img.miniItem {
 	border-radius: 4px;
 }
 
+.miniItemLabel > a:has(.miniItem) {
+	display: flex;
+}
+
 .miniItemLabel:hover {
 	background: var(--point-color);
+	cursor: pointer;
 	color: #fff;
 }
 
-.miniItemLabel a {
-	display: flex;
-	align-items: center;
-}
-
-.miniItemLabel a span {
+.miniItemLabel span {
 	margin-left: 4px;
 }
 
@@ -376,6 +378,16 @@ button.btn.solid:focus {
 
 button.btn.solid:active {
 	transform: scale(1.2);
+}
+
+.contentHeader .searchWrap > div#toolBox {
+	display: flex;
+}
+
+.contentHeader .searchWrap > div#toolBox > div {
+	width: 100%;
+	padding: 6px;
+	font-weight: 600;
 }
 
 @media (max-width: 480px) {
