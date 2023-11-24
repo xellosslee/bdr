@@ -43,6 +43,7 @@ window.onload = () => {
 					})
 					.join('')
 			} else {
+				autoComplete.innerHTML = ''
 				searchedItemUrl = ''
 				autoComplete.classList.add('empty')
 			}
@@ -59,16 +60,15 @@ window.onload = () => {
 	// searchText.onblur = searchWrapHide
 	// searchText.onfocus = searchWrapShow
 
-	function searchWrapHideCheck (evt) {
+	function searchWrapHideCheck(evt) {
 		let searchWrap = document.querySelector('.searchWrap')
-		if (evt.target.contains(searchWrap)) {
+		if (searchWrap.contains(evt.target)) {
 			autoComplete.classList.remove('empty')
 		} else {
 			autoComplete.classList.add('empty')
 		}
 	}
 	document.body.onclick = searchWrapHideCheck
-	
 
 	let inputCounts = document.querySelectorAll('input[data-earn-input]')
 	for (let i = 0; i < inputCounts.length; i++) {
@@ -129,13 +129,13 @@ window.onload = () => {
 	let beforeBookmark = JSON.parse(localStorage.getItem('bookmark'))
 	function bookmarkCheck() {
 		let newBookmark = JSON.stringify(bookmarkBtn.dataset)
-		if (beforeBookmark.indexOf(newBookmark) != -1) { 
+		if (beforeBookmark.indexOf(newBookmark) != -1) {
 			bookmarkIcon.classList.remove('icon-bookmark')
 			bookmarkIcon.classList.add('icon-bookmark-fill')
 		}
 	}
 	bookmarkCheck()
-	
+
 	function bookmark(evt) {
 		let bookmarkIcon = evt.currentTarget.querySelector('i')
 		let bookmark = JSON.parse(localStorage.getItem('bookmark'))
@@ -150,7 +150,7 @@ window.onload = () => {
 		if (bookmark.indexOf(newBookmark) != -1) {
 			// 다시 클릭하면 북마크에서 삭제
 			bookmark.splice(bookmark.indexOf(newBookmark), 1)
-		} else {			
+		} else {
 			bookmark.push(newBookmark)
 		}
 		localStorage.setItem('bookmark', JSON.stringify(bookmark))
@@ -159,7 +159,7 @@ window.onload = () => {
 	}
 
 	bookmarkBtn.onclick = bookmark
-	
+
 	// async function appendFn(evt) {
 	// 	let a = evt.currentTarget.dataset.itemId
 	// 	let b = evt.currentTarget.dataset.itemCd
