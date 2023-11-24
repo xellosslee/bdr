@@ -145,7 +145,8 @@ input.count {
 	font-size: min(16px, 4.10256vw);
 	border: none;
 }
-.contentHeader .searchWrap > div#autoComplete {
+.contentHeader .searchWrap > div#autoComplete,
+.contentHeader .searchWrap > div#toolBox {
 	position: absolute;
 	background: white;
 	left: 0;
@@ -156,8 +157,13 @@ input.count {
 	border: 1px solid var(--gray-color2);
 	border-radius: 4px;
 }
-.contentHeader .searchWrap > div#autoComplete.empty {
+.contentHeader .searchWrap > div#autoComplete.empty,
+.contentHeader .searchWrap > div#toolBox.empty {
 	display: none;
+}
+
+.contentHeader .searchWrap > div#toolBox {
+	display: flex;
 }
 
 .itemHeader {

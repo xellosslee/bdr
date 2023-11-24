@@ -111,7 +111,9 @@ window.onload = () => {
 		}
 	}
 
-	let bookmarkBtn = document.querySelectorAll('button.btn.bookmark')[0]
+	// let bookmarkWrap = document.querySelector('')
+
+	let bookmarkBtn = document.querySelector('button.btn.bookmark')
 	let bookmarkIcon = bookmarkBtn.querySelector('i')
 	let beforeBookmark = JSON.parse(localStorage.getItem('bookmark'))
 	function bookmarkCheck() {
