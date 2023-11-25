@@ -52,7 +52,7 @@
 					</div>
 					<div class="right">
 						<div class="btnWrap">
-							<button class="btn main"><i class="icon ic16 icon-edit"></i></button>
+							<button class="btn main" onclick="openEditLayer(event)"><i class="icon ic16 icon-edit"></i></button>
 							<div class="likeWrap">
 								<button class="btn solid success" data-value="1" data-item-id="<%= item.itemIdEnc %>">
 									<i class="icon ic16 icon-like-fill"></i>
@@ -124,9 +124,14 @@
 			<% } %>
 		<% } %>
 		</div>
-		<!-- <div class="popup hide">
-			<input type="file" id="image1" onchange="setImageName(1)" /><input type="text" id="imageName1" /><button onclick="doUpload(1)">doUpload</button>
-		</div> -->
 	</body>
+	<div class="layerPopup" id="layerEdit">
+		<div class="dimmed"></div>
+		<div class="box">
+			<button class="btn closeBtn" onclick="editLayerClose(event)"><i class="icon ic16 icon-close"></i></button>
+			<input type="text" id="" />
+			<input type="file" id="image1" onchange="setImageName(1)" /><input type="text" id="imageName1" /><button onclick="doUpload(1)">doUpload</button>
+		</div>
+	</div>
 	<footer></footer>
 </html>

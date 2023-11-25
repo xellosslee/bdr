@@ -229,6 +229,22 @@ async function doUpload(idx) {
 	let result = await res.json()
 	console.log(result)
 }
+// 수정 팝업
+function openEditLayer(evt) {
+	let layerEdit = document.getElementById('layerEdit')
+	if (layerEdit) {
+		layerEdit.classList.remove(...['show', 'hide'])
+		layerEdit.classList.add('show')
+	}
+}
+// 수정 팝업 닫기
+function editLayerClose(evt) {
+	let layerEdit = document.getElementById('layerEdit')
+	if (layerEdit) {
+		layerEdit.classList.remove(...['show', 'hide'])
+		layerEdit.classList.add('hide')
+	}
+}
 
 async function Api(param) {
 	let body

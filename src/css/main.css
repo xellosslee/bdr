@@ -390,6 +390,84 @@ button.btn.solid:active {
 	font-weight: 600;
 }
 
+.layerPopup {
+	position: absolute;
+	left: 0;
+	right: 0;
+	top: 0;
+	bottom: 0;
+	width: 100%;
+	height: 100%;
+	/* transition: opacity 0.3s; */
+	opacity: 0;
+	z-index: -1;
+}
+
+.layerPopup.show {
+	animation: 0.5s linear showAni;
+	opacity: 1;
+	z-index: 30000;
+}
+
+.layerPopup.hide {
+	animation: 0.5s linear hideAni;
+	opacity: 0;
+	z-index: -1;
+}
+
+.layerPopup .dimmed {
+	background: rgba(0, 0, 0, 0.5);
+	width: 100%;
+	height: 100%;
+}
+
+.layerPopup .box {
+	position: absolute;
+	background: white;
+	border: 1px solid #333;
+	border-radius: 15px;
+	left: 0;
+	right: 0;
+	top: 0;
+	bottom: 0;
+	min-width: 200px;
+	max-width: min(1024px, 90%);
+	height: 400px;
+	margin: auto;
+}
+
+.layerPopup .closeBtn {
+	position: absolute;
+	top: 0;
+	right: 0;
+	width: 24px;
+	height: 24px;
+	padding: 10px;
+}
+
+@keyframes showAni {
+	0% {
+		opacity: 0;
+		z-index: -1;
+	}
+	1% {
+		z-index: 30000;
+	}
+	99% {
+		opacity: 1;
+	}
+}
+
+@keyframes hideAni {
+	0% {
+		opacity: 1;
+		z-index: 30000;
+	}
+	99% {
+		z-index: -1;
+	}
+}
+
 @media (max-width: 480px) {
 	.container {
 		margin: 20px 0;
