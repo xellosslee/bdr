@@ -421,7 +421,7 @@ button.btn.solid:active {
 	height: 100%;
 }
 
-.layerPopup .box {
+.layerPopup .contentBox {
 	position: absolute;
 	background: white;
 	border: 1px solid #333;
@@ -432,16 +432,18 @@ button.btn.solid:active {
 	bottom: 0;
 	min-width: 200px;
 	max-width: min(1024px, 90%);
-	height: 400px;
+	max-height: 90%;
+	padding: 20px;
+	overflow-y: auto;
 	margin: auto;
 }
 
 .layerPopup .closeBtn {
 	position: absolute;
-	top: 0;
-	right: 0;
-	width: 24px;
-	height: 24px;
+	top: 20px;
+	right: 20px;
+	width: 32px;
+	height: 32px;
 	padding: 10px;
 }
 
@@ -466,6 +468,10 @@ button.btn.solid:active {
 	99% {
 		z-index: -1;
 	}
+}
+
+.inputWrap .inputTitle {
+	font-size: 16px;
 }
 
 @media (max-width: 480px) {

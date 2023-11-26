@@ -42,7 +42,7 @@
 			<div class="content">아이템을 찾을 수 없습니다.</div>
 		<% } else { %>
 			<% for (let item of items) { %>
-			<div class="content">
+			<div class="content" data-item-id="<%= item.itemIdEnc %>">
 				<div class="itemHeader">
 					<div class="left">
 						<div class="itemImg"><img src="<%= item.itemImage && item.itemImage.imgUrl %>" alt="<%= item.name %>" /></div>
@@ -50,7 +50,7 @@
 					</div>
 					<div class="right">
 						<div class="btnWrap">
-							<button class="btn main" onclick="openEditLayer(event)"><i class="icon ic16 icon-edit"></i></button>
+							<button class="btn main" onclick="openEditLayer(event)" data-item-id="<%= item.itemIdEnc %>"><i class="icon ic16 icon-edit"></i></button>
 							<div class="likeWrap">
 								<button class="btn solid success" data-value="1" data-item-id="<%= item.itemIdEnc %>">
 									<i class="icon ic16 icon-like-fill"></i>
@@ -125,16 +125,40 @@
 	</body>
 	<div class="layerPopup" id="layerEdit">
 		<div class="dimmed"></div>
-		<div class="box">
+		<div class="contentBox">
 			<button class="btn closeBtn" onclick="editLayerClose(event)"><i class="icon ic16 icon-close"></i></button>
-			<div class="inputWrap">
-				<div class="inputTitle">이미지 파일 업로드</div>
-				<input type="text" id="imageName" />
-				<input type="file" id="image1" onchange="setImageName(1)" /><input type="text" id="imageName1" /><button onclick="doUpload(1)">doUpload</button>
+			<div class="inputWrap name">
+				<div class="inputTitle">아이템 <input type="text" class="label" /></div>
 			</div>
 			<div class="inputWrap">
-				<div class="inputTitle">이름</div>
-				<input type="text" class="label" />
+				<div class="inputTitle">아이템 이미지 업로드</div>
+				<input type="file" id="image1" onchange="setImageName(1)" /><input type="text" id="imageName" /><button onclick="doUpload(1)">doUpload</button>
+			</div>
+			<div class="inputWrap">
+				<div class="inputTitle">아이템 이미지 선택</div>
+				<input list="image-list" id="searchImageName" onkeyup="imageSearch(event)" />
+				<datalist id="image-list">
+				</datalist>
+			</div>
+			<div class="inputWrap desc">
+				<div class="inputTitle">아이템 설명<textarea></textarea></div>
+			</div>
+			<div class="inputWrap itemName">
+				<div class="inputTitle">획득 방법</div>
+				<ul>
+					<li>
+						<div>아이템 <input /></div>
+						<div>개수 <input /></div>
+					</li>
+				</ul>
+			</div>
+			<div class="inputWrap itemName">
+				<div class="inputTitle">제작가능 아이템</div>
+				<ul>
+					<li>
+						<div>아이템</div>
+					</li>
+				</ul>
 			</div>
 		</div>
 	</div>

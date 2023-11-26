@@ -1,3 +1,4 @@
+var popupImageList = document.getElementById('image-list')
 window.onload = () => {
 	var searchText = document.getElementById('searchText')
 	var searchedText = ''
@@ -144,7 +145,7 @@ window.onload = () => {
 		}
 	}
 	setBookmarkList(1)
-	
+
 	// 북마크 추가/삭제
 	function addBookmark(evt) {
 		let bookmarkIcon = evt.currentTarget.querySelector('i')
@@ -242,6 +243,14 @@ async function doUpload(idx) {
 }
 // 수정 팝업
 function openEditLayer(evt) {
+	if (!evt.currentTarget.dataset.itemId) {
+		return alert('화면이 정상적으로 로드 되지 않았습니다.\n새로 고침 후 진행해 주시기 바랍니다.')
+	}
+	let itemContent = document.querySelector('.content[data-item-id="' + evt.currentTarget.dataset.itemId + '"]')
+	if (!itemContent) {
+		return alert('화면이 정상적으로 로드 되지 않았습니다.\n새로 고침 후 진행해 주시기 바랍니다.')
+	}
+	itemSetPopup(itemContent)
 	let layerEdit = document.getElementById('layerEdit')
 	if (layerEdit) {
 		layerEdit.classList.remove(...['show', 'hide'])
@@ -256,7 +265,11 @@ function editLayerClose(evt) {
 		layerEdit.classList.add('hide')
 	}
 }
-
+function itemSetPopup(itemContent) {
+	document.querySelector('#layerEdit > .contentBox .inputWrap.name input').value = itemContent.querySelector('.itemName').textContent
+	document.querySelector('#layerEdit > .contentBox .inputWrap.desc textarea').value = decodeURI(itemContent.querySelector('.itemDesc').innerHTML.replace(/<br>/gi, '\n'))
+	// debugger
+}
 async function Api(param) {
 	let body
 	let headers = {
@@ -298,4 +311,19 @@ function comma(x) {
 		return
 	}
 	return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+}
+
+async function imageSearch(event) {
+	let name = event.target.value
+	console.log('searchText', name)
+
+	let res = await Api({ url: '/file/list', data: { name, page: 0 } })
+	let result = await res.json()
+	console.log(result)
+	popupImageList.innerHTML = ''
+	if (result.code == '00' && Array.isArray(result.data?.rows)) {
+		result.data.rows.forEach((e) => {
+			popupImageList.innerHTML += `<option value="${e.fileId}">${e.name}</option>`
+		})
+	}
 }
