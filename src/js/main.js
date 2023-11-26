@@ -165,7 +165,7 @@ window.onload = () => {
 		localStorage.setItem('bookmark', JSON.stringify(bookmark))
 		bookmarkIcon.classList.toggle('icon-bookmark')
 		bookmarkIcon.classList.toggle('icon-bookmark-fill')
-		bookmarkListSet(0)
+		setBookmarkList(0)
 		alert(`북마크 ${status} 되었습니다.`)
 	}
 
