@@ -404,13 +404,13 @@ button.btn.solid:active {
 }
 
 .layerPopup.show {
-	animation: 0.5s linear showAni;
+	animation: 0.3s linear showAni;
 	opacity: 1;
 	z-index: 30000;
 }
 
 .layerPopup.hide {
-	animation: 0.5s linear hideAni;
+	animation: 0.3s linear hideAni;
 	opacity: 0;
 	z-index: -1;
 }

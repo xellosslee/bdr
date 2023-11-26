@@ -63,7 +63,15 @@ async function itemPageIn(req, res) {
 				include: [
 					{
 						model: DB.Craft,
-						include: [{ model: DB.Item, as: 'craftItems', attributes: ['name', 'itemCd', 'fileId'], include: [{ model: DB.File, attributes: ['imgUrl'], as: 'itemImage' }] }],
+						include: [
+							{
+								model: DB.Item,
+								as: 'craftItems',
+								attributes: ['name', 'itemCd', 'fileId'],
+								include: [{ model: DB.File, attributes: ['imgUrl'], as: 'itemImage' }],
+								where: { removed: 0 },
+							},
+						],
 					},
 				],
 			},
@@ -77,8 +85,9 @@ async function itemPageIn(req, res) {
 						include: [{ model: DB.File, attributes: ['imgUrl'], as: 'itemImage' }],
 						order: [
 							['likeCount', 'desc'],
-							['itemId', 'desc'],
+							['name', 'asc'],
 						],
+						where: { removed: 0 },
 						limit: 1,
 					},
 				],
