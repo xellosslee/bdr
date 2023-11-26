@@ -19,6 +19,7 @@ window.onload = () => {
 					autoComplete.replaceChildren()
 				}
 				autoComplete.classList.add('empty')
+				toolBox.classList.remove('empty')
 			}
 			return
 		}
@@ -44,6 +45,8 @@ window.onload = () => {
 						return `<div class="miniItemLabel"><a href="${e.itemUrl}"><img class="miniItem" src=${e.imgUrl}/><span>${e.name}</span></a></div>`
 					})
 					.join('')
+					
+				toolBox.classList.add('empty')
 			} else {
 				autoComplete.innerHTML = ''
 				searchedItemUrl = ''
@@ -57,7 +60,9 @@ window.onload = () => {
 		let searchWrap = document.querySelector('.searchWrap')
 		if (searchWrap.contains(evt.target)) {
 			autoComplete.classList.remove('empty')
-			toolBox.classList.remove('empty')
+			if (searchText.value == '') {
+				toolBox.classList.remove('empty')
+			}
 		} else {
 			autoComplete.classList.add('empty')
 			toolBox.classList.add('empty')
