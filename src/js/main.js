@@ -47,36 +47,37 @@ window.onload = () => {
 					})
 					.join('')
 					
+				autoCompleteFocusCnt = -1
 				toolBox.classList.add('empty')
 			} else {
 				autoComplete.innerHTML = ''
 				searchedItemUrl = ''
 				autoComplete.classList.add('empty')
+				autoCompleteFocusCnt = -1
 			}
 		}
 	}, 100)
 	searchText.onkeyup = fn
 	
-	let autoCompleteFocusCnt = 0
+	let autoCompleteFocusCnt = -1
 	function autoCompleteFocusing(evt) {
 		let autoCompleteItems = autoComplete.querySelectorAll('.miniItemLabel')
 		if (autoCompleteItems.length > 0) {
 			if (evt.key == 'Escape') {
 				autoComplete.classList.add('empty')
-				autoCompleteFocusCnt = 0
+				autoCompleteFocusCnt = -1
 				return
 			}
 			if (evt.key == 'ArrowDown') {
-				if (autoCompleteFocusCnt == 0) {
+				if (autoCompleteFocusCnt < 0) {
 					autoCompleteFocusCnt = 0
 					autoCompleteItems[autoCompleteFocusCnt].focus()
-					autoCompleteFocusCnt++
 				} else if (autoCompleteFocusCnt < autoCompleteItems.length - 1) {
-					autoCompleteItems[autoCompleteFocusCnt].focus()
 					autoCompleteFocusCnt++
-				} else if (autoCompleteFocusCnt == autoCompleteItems.length - 1) {
-					autoCompleteFocusCnt = autoCompleteItems.length - 1
 					autoCompleteItems[autoCompleteFocusCnt].focus()
+				} else if (autoCompleteFocusCnt == autoCompleteItems.length - 1) {
+					autoCompleteItems[autoCompleteFocusCnt].focus()
+					autoCompleteFocusCnt = autoCompleteItems.length - 1
 				}
 			} else if (evt.key == 'ArrowUp') {
 				if (autoCompleteFocusCnt == autoCompleteItems.length - 1) {
@@ -86,10 +87,10 @@ window.onload = () => {
 					autoCompleteFocusCnt--
 					autoCompleteItems[autoCompleteFocusCnt].focus()
 				} else if (autoCompleteFocusCnt == 0) {
-					autoCompleteFocusCnt = 0
 					autoCompleteItems[autoCompleteFocusCnt].focus()
+					autoCompleteFocusCnt = 0
 				}
-			}	
+			}
 		}
 	}
 	searchWrap.onkeyup = autoCompleteFocusing
@@ -103,6 +104,7 @@ window.onload = () => {
 		} else {
 			autoComplete.classList.add('empty')
 			toolBox.classList.add('empty')
+			autoCompleteFocusCnt = -1
 		}
 	}
 	document.body.onclick = toolboxToggle
