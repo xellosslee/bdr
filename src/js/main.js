@@ -3,6 +3,7 @@ window.onload = () => {
 	var searchedText = ''
 	var searchedItemUrl = ''
 	var autoComplete = document.getElementById('autoComplete')
+	var toolBox = document.getElementById('toolBox')
 	let likeCntLabel = document.querySelector('div.likeCnt')
 	let append = document.getElementById('append')
 	let fn = _.debounce(async (evt) => {
@@ -51,24 +52,17 @@ window.onload = () => {
 	}, 100)
 	searchText.onkeyup = fn
 
-	// function searchWrapShow(evt) {
-	// 	autoComplete.classList.remove('empty')
-	// }
-	// function searchWrapHide(evt) {
-	// 	autoComplete.classList.add('empty')
-	// }
-	// searchText.onblur = searchWrapHide
-	// searchText.onfocus = searchWrapShow
-
-	function searchWrapHideCheck(evt) {
+	function toolboxToggle(evt) {
 		let searchWrap = document.querySelector('.searchWrap')
 		if (searchWrap.contains(evt.target)) {
 			autoComplete.classList.remove('empty')
+			toolBox.classList.remove('empty')
 		} else {
 			autoComplete.classList.add('empty')
+			toolBox.classList.add('empty')
 		}
 	}
-	document.body.onclick = searchWrapHideCheck
+	document.body.onclick = toolboxToggle
 
 	let inputCounts = document.querySelectorAll('input[data-earn-input]')
 	for (let i = 0; i < inputCounts.length; i++) {
@@ -122,43 +116,60 @@ window.onload = () => {
 		}
 	}
 
-	// let bookmarkWrap = document.querySelector('')
-
 	let bookmarkBtn = document.querySelector('button.btn.bookmark')
 	let bookmarkIcon = bookmarkBtn.querySelector('i')
-	let beforeBookmark = JSON.parse(localStorage.getItem('bookmark'))
-	function bookmarkCheck() {
+	let bookmark = JSON.parse(localStorage.getItem('bookmark'))
+
+	// 최초 화면 렌더링 시 현재 아이템의 북마크 여부 체크
+	function isBookmarked() {
 		let newBookmark = JSON.stringify(bookmarkBtn.dataset)
-		if (beforeBookmark.indexOf(newBookmark) != -1) {
+		if (bookmark.indexOf(newBookmark) != -1) {
 			bookmarkIcon.classList.remove('icon-bookmark')
 			bookmarkIcon.classList.add('icon-bookmark-fill')
 		}
 	}
-	bookmarkCheck()
+	isBookmarked()
 
-	function bookmark(evt) {
-		let bookmarkIcon = evt.currentTarget.querySelector('i')
-		let bookmark = JSON.parse(localStorage.getItem('bookmark'))
-		let newBookmark = JSON.stringify(evt.currentTarget.dataset)
-		if (!Array.isArray(bookmark)) {
-			bookmark = []
+	// 북마크 리스트 표시
+	function setBookmarkList(init) {
+		let bookmarkList = document.getElementById('bookmarkList')
+		if (!init) {
+			bookmarkList.replaceChildren()
 		}
+		if (Array.isArray(bookmark) && bookmark.length > 0) {
+			for (let i = 0; i < bookmark.length; i++) {
+				let item = JSON.parse(bookmark[i])
+				bookmarkList.innerHTML += `<li class="miniItemLabel"><a href="/item/${item.itemCd}"><img class="miniItem" src="${item.imgUrl}"><span>${item.name}</span></a></li>`
+			}
+		}
+	}
+	setBookmarkList(1)
+	
+	// 북마크 추가/삭제
+	function addBookmark(evt) {
+		let bookmarkIcon = evt.currentTarget.querySelector('i')
+		let newBookmark = JSON.stringify(evt.currentTarget.dataset)
 		if (bookmark.length > 9) {
 			alert('북마크는 최대 10개까지 가능합니다.')
 			return
 		}
+		let status = ''
 		if (bookmark.indexOf(newBookmark) != -1) {
 			// 다시 클릭하면 북마크에서 삭제
 			bookmark.splice(bookmark.indexOf(newBookmark), 1)
+			status = '삭제'
 		} else {
 			bookmark.push(newBookmark)
+			status = '추가'
 		}
 		localStorage.setItem('bookmark', JSON.stringify(bookmark))
 		bookmarkIcon.classList.toggle('icon-bookmark')
 		bookmarkIcon.classList.toggle('icon-bookmark-fill')
+		bookmarkListSet(0)
+		alert(`북마크 ${status} 되었습니다.`)
 	}
 
-	bookmarkBtn.onclick = bookmark
+	bookmarkBtn.onclick = addBookmark
 
 	// async function appendFn(evt) {
 	// 	let a = evt.currentTarget.dataset.itemId
