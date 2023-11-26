@@ -451,6 +451,13 @@ button.btn.solid:active {
 	padding: 10px;
 }
 
+.notExist {
+    color: var(--gray-color2);
+    font-weight: 500;
+    font-size: 15px;
+    padding-left: 4px;
+}
+
 @keyframes showAni {
 	0% {
 		opacity: 0;

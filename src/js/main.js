@@ -139,14 +139,14 @@ window.onload = () => {
 	// 북마크 리스트 표시
 	function setBookmarkList(init) {
 		let bookmarkList = document.getElementById('bookmarkList')
-		if (!init) {
-			bookmarkList.replaceChildren()
-		}
+		bookmarkList.replaceChildren()
 		if (Array.isArray(bookmark) && bookmark.length > 0) {
 			for (let i = 0; i < bookmark.length; i++) {
 				let item = JSON.parse(bookmark[i])
 				bookmarkList.innerHTML += `<li class="miniItemLabel"><a href="/item/${item.itemCd}"><img class="miniItem" src="${item.imgUrl}"><span>${item.name}</span></a></li>`
 			}
+		} else {
+			bookmarkList.innerHTML = '<span class="notExist">아직 북마크가 없습니다.</span>'
 		}
 	}
 	setBookmarkList(1)
