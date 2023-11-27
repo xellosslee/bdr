@@ -197,16 +197,16 @@ window.onload = () => {
 	function addBookmark(evt) {
 		let bookmarkIcon = evt.currentTarget.querySelector('i')
 		let newBookmark = JSON.stringify(evt.currentTarget.dataset)
-		if (bookmark.length > 9) {
-			alert('북마크는 최대 10개까지 가능합니다.')
-			return
-		}
 		let status = ''
 		if (bookmark.indexOf(newBookmark) != -1) {
 			// 다시 클릭하면 북마크에서 삭제
 			bookmark.splice(bookmark.indexOf(newBookmark), 1)
 			status = '삭제'
 		} else {
+			if (bookmark.length > 9) {
+				alert('북마크는 최대 10개까지 가능합니다.')
+				return
+			}
 			bookmark.push(newBookmark)
 			status = '추가'
 		}
