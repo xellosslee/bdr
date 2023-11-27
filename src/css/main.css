@@ -233,8 +233,21 @@ input.count {
 .earnList .colHeader {
 	width: min(130px, 33.3333333vw);
 	text-align: center;
-	background-color: var(--gray-color3);
+	/* background-color: var(--gray-color3); */
 	vertical-align: middle;
+	font-size: min(13px, 3.3333333vw);
+	font-weight: 600;
+	border: 1px solid var(--gray-color1);
+	border-radius: 5px;
+    margin: 4px;
+}
+
+.earnList > .row {
+	transition: background-color .2s;
+}
+
+.earnList > .row:hover {
+    background-color: var(--gray-color4);
 }
 
 .earnList .recipe {
