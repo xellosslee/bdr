@@ -1,5 +1,8 @@
 var popupImageList = document.getElementById('image-list')
 window.onload = () => {
+	// AMP.f['AMP'] = AMP
+	// AMP.extv.defaultModule = 'main'
+	// AMP.init()
 	var searchText = document.getElementById('searchText')
 	var searchedText = ''
 	var searchedItemUrl = ''

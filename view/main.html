@@ -1,0 +1,96 @@
+<header class="contentHeader">
+    <a href="/"><div class="homeLink"><img src="/img/blackSpirit.png" alt="흑정령(홈아이콘)"></div></a>
+    <div class="searchWrap">
+        <input type="text" id="searchText" placeholder="파트너! 어서 궁금한 아이템명을 입력해봐!" spellcheck="false">
+        <div id="autoComplete" class="empty"></div>
+        <div id="toolBox" class="empty">
+            <div class="historyWrap">
+                <div class="toolTitle">검색기록</div>
+                <div id="historyList">
+                    <span class="notExist">아직 기록이 없습니다.</span>
+                </div>
+            </div>
+            <div class="bookmarkWrap">
+                <div class="toolTitle">북마크</div>
+                <div id="bookmarkList">
+                    <span class="notExist">아직 북마크가 없습니다.</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+<div class="container">
+    <template v-if="!Array.isArray(items) || items.length == 0">
+        <div class="content">아이템을 찾을 수 없습니다.</div>
+    </template>
+    <template v-else>
+        <template v-for="item of items">
+            <div class="content" :data-item-id="item.itemIdEnc">
+                <div class="itemHeader">
+                    <div class="left">
+                        <div class="itemImg"><img :src="item.itemImage && item.itemImage.imgUrl" :alt="item.name" /></div>
+                        <div class="itemName">{{item.name}}</div>
+                    </div>
+                    <div class="right">
+                        <div class="btnWrap">
+                            <button class="btn main" @click="openEditLayer(event)" :data-item-id="item.itemIdEnc"><i class="icon ic16 icon-edit"></i></button>
+                            <div class="likeWrap">
+                                <button class="btn solid success" data-value="1" :data-item-id="item.itemIdEnc">
+                                    <i class="icon ic16 icon-like-fill"></i>
+                                </button>
+                                <div class="likeCnt" :data-item-id="item.itemIdEnc">{{item.likeCount}}</div>
+                                <button class="btn solid reverse" data-value="0" :data-item-id="item.itemIdEnc">
+                                    <i class="icon ic16 icon-dislike-fill"></i>
+                                </button>
+                            </div>
+                            <button class="btn gold bookmark" onclick="bookmark(event)" :data-img-url="item.itemImage && item.itemImage.imgUrl" :data-name="item.name" :data-item-cd="item.itemCdEnc">
+                                <i class="icon ic16 icon-bookmark"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <textarea class="itemDesc" readonly><%- item.desc.replace(/<br>/gi, '\n') %></textarea>
+                <hr class="separator">
+                <div class="subtitle">획득 방법</div>
+                <div class="earnList">
+                    <div class="row" v-for="(earn, i) of item.Earns">
+                        <div class="colHeader">
+                            <label v-if="earn.type == 'craft'">
+                                {{earn.path != null ? earn.path : earn.work}}</br>
+                                <div>x <input type="text" class="count" style="max-width: 46%;" :data-earn-input="i" value="1">회</div>
+                            </label>
+                            <label v-else>{{earn.work}}</label>
+                        </div>
+                        <div class="row recipe">
+                            <template v-if="earn.type != 'craft'">
+                                {{earn.path != null ? earn.path : ''}}
+                            </template>
+                            <template v-for="craft of earn.Crafts">
+                                <div class="col" style="align-items: center;" v-if="Array.isArray(craft.craftItems) && craft.craftItems.length > 0">
+                                    <div class="miniItemLabel" :onclick="'location.href=' + craft.craftItems[0].url">
+                                        <img class="miniItem" :src="craft.craftItems[0] && craft.craftItems[0].imgUrl" :alt="craft.craftItems[0].name" />
+                                        <span>{{craft.craftItems[0].name}}</span>
+                                    </div>
+                                    <div>{{craft.count}} x <input class="count" type="text" :data-earn-id="i" :data-ori-value="craft.count" readonly></div>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+                </div>
+                <template v-if="Array.isArray(item.Usages) && item.Usages.length > 0">
+                    <hr class="separator">
+                    <div class="subtitle">{{item.name}} - 제작가능 아이템</div>
+                    <div class="usageList">
+                    <template v-for="usage of item.Usages">
+                        <div class="miniItemLabel" @click="'location.href=' + usage.usageItems[0].url" v-if="Array.isArray(usage.usageItems) && usage.usageItems.length > 0">
+                            <img class="miniItem" :src="usage.usageItems[0] && usage.usageItems[0].imgUrl" :alt="usage.usageItems[0].name" />
+                            <span>{{usage.usageItems[0].name}}</span>
+                        </div>
+                    </template>
+                    </div>
+                </template>
+            </div>
+        </template>
+    </template>
+</div>
+</body>

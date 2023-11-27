@@ -36,6 +36,7 @@ function toCookieObj(cookieInput) {
 
 async function getFileTimes() {
 	return {
+		amp_js: Math.floor((await fs.stat(__dirname + '/src/lib/amp.js')).mtimeMs),
 		main_js: Math.floor((await fs.stat(__dirname + '/src/js/main.js')).mtimeMs),
 		main_css: Math.floor((await fs.stat(__dirname + '/src/css/main.css')).mtimeMs),
 		icon_css: Math.floor((await fs.stat(__dirname + '/src/css/icon.css')).mtimeMs),
@@ -168,6 +169,112 @@ async function itemPageIn(req, res) {
 		res.end()
 	}
 }
+
+router.get('/item/get/:itemCd', async (req, res) => {
+	try {
+		let params = { itemCd: req.params.itemCd }
+		let items = null
+		let itemIncludeArray = [
+			{ model: DB.File, as: 'itemImage', attributes: ['imgUrl'] },
+			{
+				model: DB.Earn,
+				include: [
+					{
+						model: DB.Craft,
+						include: [
+							{
+								model: DB.Item,
+								as: 'craftItems',
+								attributes: ['name', 'itemCd', 'fileId'],
+								include: [{ model: DB.File, attributes: ['imgUrl'], as: 'itemImage' }],
+								where: { removed: 0 },
+							},
+						],
+					},
+				],
+			},
+			{
+				model: DB.Usages,
+				include: [
+					{
+						model: DB.Item,
+						as: 'usageItems',
+						attributes: ['name', 'itemCd', 'fileId'],
+						include: [{ model: DB.File, attributes: ['imgUrl'], as: 'itemImage' }],
+						order: [
+							['likeCount', 'desc'],
+							['name', 'asc'],
+						],
+						where: { removed: 0 },
+						limit: 1,
+					},
+				],
+			},
+		]
+		// 운영에서는 숫자 조회 불가능하게 방지
+		// 단, 랜덤 조회 일때에는 itemCd로 조회 시도
+		if (req.internal || process.env.NODE_ENV != 'prod') {
+			if (!Number.isNaN(Number(params.itemCd))) {
+				items = await DB.Item.findAll({
+					include: itemIncludeArray,
+					where: { itemCd: Number(params.itemCd), removed: 0 },
+					order: [['likeCount', 'desc']],
+				})
+			}
+		}
+		if (!items) {
+			try {
+				// console.debug(params.itemCd, decode(params.itemCd), data)
+				params.itemCd = decode(params.itemCd)
+				items = await DB.Item.findAll({
+					include: itemIncludeArray,
+					where: { itemCd: params.itemCd, removed: 0 },
+					order: [['likeCount', 'desc']],
+				})
+				console.debug(params.itemCd)
+			} catch (err) {
+				console.error(err)
+				throw { code: '01' }
+			}
+		}
+		if (!items) {
+			throw { code: '02' }
+		}
+		for (let x = 0; x < items.length; x++) {
+			let item = items[x]
+			for (let i = 0; i < item.Earns.length; i++) {
+				for (let x = 0; x < item.Earns[i].Crafts.length; x++) {
+					if (item.Earns[i].Crafts[x].craftItems.length > 0) {
+						item.Earns[i].Crafts[x].craftItems[0].url = '/item/' + encode(item.Earns[i].Crafts[x].craftItems[0].itemCd.toString())
+						item.Earns[i].Crafts[x].craftItems[0].imgUrl = item.Earns[i].Crafts[x].craftItems[0]?.itemImage?.imgUrl
+					}
+				}
+			}
+			for (let i = 0; i < item.Usages.length; i++) {
+				if (item.Usages[i].usageItems.length > 0) {
+					// console.debug(item.Usages[i].usageItems[0])
+					item.Usages[i].usageItems[0].url = '/item/' + encode(item.Usages[i].usageItems[0].itemCd.toString())
+					item.Usages[i].usageItems[0].imgUrl = item.Usages[i].usageItems[0]?.itemImage?.imgUrl
+				}
+			}
+			item.dataValues.itemIdEnc = encode(item.dataValues.itemId.toString())
+			item.dataValues.itemCdEnc = encode(item.dataValues.itemCd.toString())
+		}
+		let cookie
+		if (req.headers.cookie) {
+			cookie = toCookieObj(req.headers.cookie)
+		}
+		if (cookie?.bdrId == null) {
+			let maxAge = 1000 * 60 * 60 * 24 * 365
+			res.header('Set-Cookie', `bdrId=${uuid4()}; Max-age=${maxAge}; HttpOnly;`)
+		}
+		let resultItems = items.map((e) => e.dataValues)
+		res.send(200, { ...jsonSuccess, data: resultItems })
+	} catch (err) {
+		console.error(err)
+		res.send(403, jsonFailed)
+	}
+})
 
 // 자동완성용 검색
 router.post('/item/fast/search', async (req, res) => {

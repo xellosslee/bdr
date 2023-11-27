@@ -1,0 +1,33 @@
+#START mainLayout
+<section class="hero is-fullheight">
+    <div class="hero-head" style="min-height: 10vh;">
+        <div id=AMP_HEADER></div>
+    </div>
+    <div class="hero-body" style="min-height: 80vh;">#1f3a93
+        <div class="container" id=AMP_CONTENT>
+        </div>
+    </div>
+    <div class="hero-foot" style="min-height: 10vh;background-color:#ffeeff">
+        <div id=AMP_FOOTER> </div>
+    </div>
+</section>
+#END
+
+#START POPUP_BASE
+<div class="AMP_DIALOGS modal fade" id="${dlg_id}" tabindex="-1">
+    ${content}
+</div>            
+#END
+
+#START blankLayout
+<div id=AMP_CONTENT></div>
+#END
+
+#START LOADING
+<div id="AMP_LOADING">
+    <div class="loading_layer"></div>
+    <div class="loading_text no-drag">
+        <em class="fas fa-sync-alt fa-spin mr-2"></em><img style="width: var(--px40); height: var(--px40);" src="/img/loading.gif"><span id="AMP_LOADING_PERCENT"></span>
+    </div>
+</div>
+#END

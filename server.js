@@ -67,6 +67,7 @@ server.get('/ping', (req, res, next) => {
 require('./craft_note').applyRoutes(server)
 
 // FOR THE maxAge, IT IS COUNTED BY PER SECOND, THERE IS NO CASHING WHEN IT IS -1
+server.get('/ald/*', plugins.serveStatic({ directory: __dirname + '/src', maxAge: 6000 }))
 server.get('/css/*', plugins.serveStatic({ directory: __dirname + '/src', maxAge: 6000 }))
 server.get('/lib/*', plugins.serveStatic({ directory: __dirname + '/src', maxAge: 6000 }))
 server.get('/js/*', plugins.serveStatic({ directory: __dirname + '/src', maxAge: 6000 }))
@@ -75,3 +76,4 @@ server.get('/font/*', plugins.serveStatic({ directory: __dirname + '/src', maxAg
 server.get('/images/*', plugins.serveStatic({ directory: __dirname + '/uploads/items', appendRequestPath: false, maxAge: 6000 }))
 server.get('/favicon.ico', plugins.serveStatic({ directory: __dirname + '/src', appendRequestPath: false, maxAge: 6000 }))
 server.get('/robots.txt', plugins.serveStatic({ directory: __dirname + '/src', appendRequestPath: false, maxAge: 6000 }))
+server.get('/view/*', plugins.serveStatic({ directory: __dirname + '/', maxAge: 6000 }))
