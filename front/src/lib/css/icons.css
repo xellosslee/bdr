@@ -1,0 +1,60 @@
+@font-face {
+	font-family: 'icon';
+	src: url('/fonts/icon.eot');
+	src:
+		url('/fonts/icon.eot') format('embedded-opentype'),
+		url('/fonts/icon.ttf') format('truetype'),
+		url('/fonts/icon.woff') format('woff'),
+		url('/fonts/icon.svg') format('svg');
+	font-weight: normal;
+	font-style: normal;
+	font-display: block;
+}
+
+[class^='icon-'],
+[class*=' icon-'] {
+	/* use !important to prevent issues with browser extensions that change fonts */
+	font-family: 'icon' !important;
+	speak: never;
+	font-style: normal;
+	font-weight: normal;
+	font-variant: normal;
+	text-transform: none;
+	line-height: 1;
+
+	/* Better Font Rendering =========== */
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+.ic16 {
+	font-size: min(16px, 4.10256vw);
+}
+
+.icon-bookmark-fill:before {
+	content: '\e900';
+}
+
+.icon-bookmark:before {
+	content: '\e901';
+}
+
+.icon-dislike-fill:before {
+	content: '\e902';
+}
+
+.icon-edit:before {
+	content: '\e903';
+}
+
+.icon-like-fill:before {
+	content: '\e904';
+}
+
+.icon-close:before {
+	content: '\e905';
+}
+
+.icon-close-sm:before {
+	content: '\e906';
+}
