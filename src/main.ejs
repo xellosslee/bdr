@@ -68,7 +68,7 @@
 						</div>
 					</div>
 				</div>
-				<div class="itemDesc"><%- item.desc.replace('\n', '<br />') %></div>
+				<textarea class="itemDesc" readonly><%- item.desc.replace(/<br>/gi, '\n') %></textarea>
 				<hr class="separator">
 				<div class="subtitle">획득 방법</div>
 				<div class="earnList">
@@ -133,10 +133,6 @@
 				<div class="inputTitle">아이템 <input type="text" class="label" /></div>
 			</div>
 			<div class="inputWrap">
-				<div class="inputTitle">아이템 이미지 업로드</div>
-				<input type="file" id="image1" onchange="setImageName(1)" /><input type="text" id="imageName" /><button onclick="doUpload(1)">doUpload</button>
-			</div>
-			<div class="inputWrap">
 				<div class="inputTitle">아이템 이미지 선택</div>
 				<input list="image-list" id="searchImageName" onkeyup="imageSearch(event)" />
 				<datalist id="image-list">
@@ -149,18 +145,40 @@
 				<div class="inputTitle">획득 방법</div>
 				<ul>
 					<li>
-						<div>아이템 <input /></div>
-						<div>개수 <input /></div>
+						<div>동작 <input type="text" value="요리"/></div>
+						<ul>
+							<li>
+								<div>아이템 <input type="text"/></div>
+								<div>개수 <input type="text"/></div>
+							</li>
+							<li>
+								<div>아이템 <input type="text"/></div>
+								<div>개수 <input type="text"/></div>
+							</li>
+							<li>
+								<div>아이템 <input type="text"/></div>
+								<div>개수 <input type="text"/></div>
+							</li>
+							<li>
+								<div>아이템 <input type="text"/></div>
+								<div>개수 <input type="text"/></div>
+							</li>
+						</ul>
 					</li>
 				</ul>
 			</div>
 			<div class="inputWrap itemName">
-				<div class="inputTitle">제작가능 아이템</div>
+				<div class="inputTitle">제작가능 아이템<button class="btn"><i class="icon ic16 icon-add"></i>추가</button></div>
 				<ul>
 					<li>
-						<div>아이템</div>
+						<div>아이템 선택</div>
+						<button class="btn"><i class="icon ic16 icon-del"></i>삭제</button>
 					</li>
 				</ul>
+			</div>
+			<div class="inputWrap">
+				<div class="inputTitle">아이템 이미지 업로드</div>
+				<input type="file" id="image1" onchange="setImageName(1)" /><input type="text" id="imageName" /><button onclick="doUpload(1)">doUpload</button>
 			</div>
 		</div>
 	</div>

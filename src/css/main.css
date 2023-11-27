@@ -35,6 +35,25 @@ body {
 	margin: 0;
 }
 
+textarea {
+	font-family:
+		'Pretendard Variable',
+		Pretendard,
+		-apple-system,
+		BlinkMacSystemFont,
+		system-ui,
+		Roboto,
+		'Helvetica Neue',
+		'Segoe UI',
+		'Apple SD Gothic Neo',
+		'Noto Sans KR',
+		'Malgun Gothic',
+		'Apple Color Emoji',
+		'Segoe UI Emoji',
+		'Segoe UI Symbol',
+		sans-serif;
+}
+
 input:read-only {
 	background-color: #eee;
 }
@@ -111,8 +130,11 @@ input.count {
 }
 
 .content .itemDesc {
-	max-height: 300px;
+	width: 100%;
+	height: 300px;
+	border: none;
 	overflow: auto;
+	resize: unset;
 }
 
 .contentHeader {
@@ -257,7 +279,8 @@ img.miniItem {
 	display: flex;
 }
 
-.miniItemLabel:hover, .miniItemLabel:focus-within {
+.miniItemLabel:hover,
+.miniItemLabel:focus-within {
 	background: var(--point-color);
 	cursor: pointer;
 	color: #fff;
@@ -404,19 +427,19 @@ button.btn.solid:active {
 	height: 100%;
 	/* transition: opacity 0.3s; */
 	opacity: 0;
-	z-index: -1;
+	display: none;
 }
 
 .layerPopup.show {
 	animation: 0.3s linear showAni;
 	opacity: 1;
-	z-index: 30000;
+	display: block;
 }
 
 .layerPopup.hide {
 	animation: 0.3s linear hideAni;
 	opacity: 0;
-	z-index: -1;
+	display: none;
 }
 
 .layerPopup .dimmed {
@@ -452,19 +475,19 @@ button.btn.solid:active {
 }
 
 .notExist {
-    color: var(--gray-color2);
-    font-weight: 500;
-    font-size: 15px;
-    padding-left: 4px;
+	color: var(--gray-color2);
+	font-weight: 500;
+	font-size: 15px;
+	padding-left: 4px;
 }
 
 @keyframes showAni {
 	0% {
 		opacity: 0;
-		z-index: -1;
+		display: none;
 	}
 	1% {
-		z-index: 30000;
+		display: block;
 	}
 	99% {
 		opacity: 1;
@@ -474,10 +497,11 @@ button.btn.solid:active {
 @keyframes hideAni {
 	0% {
 		opacity: 1;
-		z-index: 30000;
+		display: block;
 	}
 	99% {
-		z-index: -1;
+		opacity: 0;
+		display: block;
 	}
 }
 
