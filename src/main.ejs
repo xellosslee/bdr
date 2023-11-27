@@ -27,11 +27,13 @@
 					<div class="historyWrap">
 						<div class="toolTitle">검색기록</div>
 						<div id="historyList">
+							<span class="notExist">아직 기록이 없습니다.</span>
 						</div>
 					</div>
 					<div class="bookmarkWrap">
 						<div class="toolTitle">북마크</div>
 						<div id="bookmarkList">
+							<span class="notExist">아직 북마크가 없습니다.</span>
 						</div>
 					</div>
 				</div>
@@ -79,7 +81,7 @@
 										<%= item.Earns[i].path %>
 									<% } %>
 									<%= item.Earns[i].work %></br>
-									<div>x <input type="text" class="count" data-earn-input="<%= i %>" value="1">회</div>
+									<div>x <input type="text" class="count" style="max-width: 46%;" data-earn-input="<%= i %>" value="1">회</div>
 								</label>
 							<% } else { %>
 								<%= item.Earns[i].work %>

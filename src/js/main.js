@@ -7,6 +7,7 @@ window.onload = () => {
 	var toolBox = document.getElementById('toolBox')
 	let likeCntLabel = document.querySelector('div.likeCnt')
 	let append = document.getElementById('append')
+	let searchWrap = document.querySelector('.searchWrap')
 	let fn = _.debounce(async (evt) => {
 		if (evt.key == 'Enter' && searchedItemUrl != '') {
 			location.href = location.protocol + '//' + location.host + searchedItemUrl
@@ -19,6 +20,7 @@ window.onload = () => {
 					autoComplete.replaceChildren()
 				}
 				autoComplete.classList.add('empty')
+				toolBox.classList.remove('empty')
 			}
 			return
 		}
@@ -41,26 +43,68 @@ window.onload = () => {
 				searchedItemUrl = result.data[0].itemUrl
 				autoComplete.innerHTML = result.data
 					.map((e) => {
-						return `<div class="miniItemLabel"><a href="${e.itemUrl}"><img class="miniItem" src=${e.imgUrl}/><span>${e.name}</span></a></div>`
+						return `<a class="miniItemLabel" href="${e.itemUrl}"><img class="miniItem" src=${e.imgUrl}/><span>${e.name}</span></a>`
 					})
 					.join('')
+					
+				autoCompleteFocusCnt = -1
+				toolBox.classList.add('empty')
 			} else {
 				autoComplete.innerHTML = ''
 				searchedItemUrl = ''
 				autoComplete.classList.add('empty')
+				autoCompleteFocusCnt = -1
 			}
 		}
 	}, 100)
 	searchText.onkeyup = fn
+	
+	let autoCompleteFocusCnt = -1
+	function autoCompleteFocusing(evt) {
+		let autoCompleteItems = autoComplete.querySelectorAll('.miniItemLabel')
+		if (autoCompleteItems.length > 0) {
+			if (evt.key == 'Escape') {
+				autoComplete.classList.add('empty')
+				autoCompleteFocusCnt = -1
+				return
+			}
+			if (evt.key == 'ArrowDown') {
+				if (autoCompleteFocusCnt < 0) {
+					autoCompleteFocusCnt = 0
+					autoCompleteItems[autoCompleteFocusCnt].focus()
+				} else if (autoCompleteFocusCnt < autoCompleteItems.length - 1) {
+					autoCompleteFocusCnt++
+					autoCompleteItems[autoCompleteFocusCnt].focus()
+				} else if (autoCompleteFocusCnt == autoCompleteItems.length - 1) {
+					autoCompleteItems[autoCompleteFocusCnt].focus()
+					autoCompleteFocusCnt = autoCompleteItems.length - 1
+				}
+			} else if (evt.key == 'ArrowUp') {
+				if (autoCompleteFocusCnt == autoCompleteItems.length - 1) {
+					autoCompleteFocusCnt--
+					autoCompleteItems[autoCompleteFocusCnt].focus()
+				} else if (autoCompleteFocusCnt > 0) {
+					autoCompleteFocusCnt--
+					autoCompleteItems[autoCompleteFocusCnt].focus()
+				} else if (autoCompleteFocusCnt == 0) {
+					autoCompleteItems[autoCompleteFocusCnt].focus()
+					autoCompleteFocusCnt = 0
+				}
+			}
+		}
+	}
+	searchWrap.onkeyup = autoCompleteFocusing
 
 	function toolboxToggle(evt) {
-		let searchWrap = document.querySelector('.searchWrap')
 		if (searchWrap.contains(evt.target)) {
 			autoComplete.classList.remove('empty')
-			toolBox.classList.remove('empty')
+			if (searchText.value == '') {
+				toolBox.classList.remove('empty')
+			}
 		} else {
 			autoComplete.classList.add('empty')
 			toolBox.classList.add('empty')
+			autoCompleteFocusCnt = -1
 		}
 	}
 	document.body.onclick = toolboxToggle
@@ -134,14 +178,14 @@ window.onload = () => {
 	// 북마크 리스트 표시
 	function setBookmarkList(init) {
 		let bookmarkList = document.getElementById('bookmarkList')
-		if (!init) {
-			bookmarkList.replaceChildren()
-		}
+		bookmarkList.replaceChildren()
 		if (Array.isArray(bookmark) && bookmark.length > 0) {
 			for (let i = 0; i < bookmark.length; i++) {
 				let item = JSON.parse(bookmark[i])
-				bookmarkList.innerHTML += `<li class="miniItemLabel"><a href="/item/${item.itemCd}"><img class="miniItem" src="${item.imgUrl}"><span>${item.name}</span></a></li>`
+				bookmarkList.innerHTML += `<a class="miniItemLabel" href="/item/${item.itemCd}"><img class="miniItem" src="${item.imgUrl}"><span>${item.name}</span></a>`
 			}
+		} else {
+			bookmarkList.innerHTML = '<span class="notExist">아직 북마크가 없습니다.</span>'
 		}
 	}
 	setBookmarkList(1)

@@ -154,6 +154,10 @@ input.count {
 	width: 100%;
 	font-size: min(16px, 4.1025641vw);
 	line-height: 44px;
+}
+
+.contentHeader .searchWrap > div#autoComplete:has(.miniItemLabel),
+.contentHeader .searchWrap > div#toolBox {
 	border: 1px solid var(--gray-color2);
 	border-radius: 4px;
 }
@@ -253,7 +257,7 @@ img.miniItem {
 	display: flex;
 }
 
-.miniItemLabel:hover {
+.miniItemLabel:hover, .miniItemLabel:focus-within {
 	background: var(--point-color);
 	cursor: pointer;
 	color: #fff;
@@ -445,6 +449,13 @@ button.btn.solid:active {
 	width: 32px;
 	height: 32px;
 	padding: 10px;
+}
+
+.notExist {
+    color: var(--gray-color2);
+    font-weight: 500;
+    font-size: 15px;
+    padding-left: 4px;
 }
 
 @keyframes showAni {
