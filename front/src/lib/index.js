@@ -1,8 +1,11 @@
 // place files you want to import through the `$lib` alias in this folder.
 export default {
-	Api: async function Api(param) {
+	api: async function api(param) {
 		let body
-		let headers = param.headers || {}
+		let headers = {
+			...(param.headers || {}),
+			bdrId: this.bdrId,
+		}
 		if (param.data instanceof FormData) {
 			body = param.data
 		} else {
@@ -11,4 +14,5 @@ export default {
 		}
 		return await fetch(param.url, { method: param.method || 'POST', body, headers })
 	},
+	bdrId: '',
 }

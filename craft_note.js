@@ -170,7 +170,15 @@ async function itemPageIn(req, res) {
 	}
 }
 
-router.get('/item/get/:itemCd', async (req, res) => {
+router.post('/items/get', async (req, res) => {
+	let item = await DB.Item.findOne({ attributes: ['itemCd'], order: [sq.fn('rand')] })
+	req.params.itemCd = item.itemCd.toString()
+	req.internal = true
+	await itemJsonGet(req, res)
+})
+router.post('/items/get/:itemCd', itemJsonGet)
+
+async function itemJsonGet(req, res) {
 	try {
 		let params = { itemCd: req.params.itemCd }
 		let items = null
@@ -245,16 +253,20 @@ router.get('/item/get/:itemCd', async (req, res) => {
 			for (let i = 0; i < item.Earns.length; i++) {
 				for (let x = 0; x < item.Earns[i].Crafts.length; x++) {
 					if (item.Earns[i].Crafts[x].craftItems.length > 0) {
-						item.Earns[i].Crafts[x].craftItems[0].url = '/item/' + encode(item.Earns[i].Crafts[x].craftItems[0].itemCd.toString())
-						item.Earns[i].Crafts[x].craftItems[0].imgUrl = item.Earns[i].Crafts[x].craftItems[0]?.itemImage?.imgUrl
+						// item.Earns[i].Crafts[x].craftItems[0].url = '/' + encode(item.Earns[i].Crafts[x].craftItems[0].itemCd.toString())
+						// item.Earns[i].Crafts[x].craftItems[0].imgUrl = item.Earns[i].Crafts[x].craftItems[0]?.itemImage?.imgUrl
+						item.Earns[i].Crafts[x].craftItems[0].setDataValue('url', '/' + encode(item.Earns[i].Crafts[x].craftItems[0].itemCd.toString()))
+						item.Earns[i].Crafts[x].craftItems[0].setDataValue('imgUrl', item.Earns[i].Crafts[x].craftItems[0]?.itemImage?.imgUrl)
 					}
 				}
 			}
 			for (let i = 0; i < item.Usages.length; i++) {
 				if (item.Usages[i].usageItems.length > 0) {
 					// console.debug(item.Usages[i].usageItems[0])
-					item.Usages[i].usageItems[0].url = '/item/' + encode(item.Usages[i].usageItems[0].itemCd.toString())
-					item.Usages[i].usageItems[0].imgUrl = item.Usages[i].usageItems[0]?.itemImage?.imgUrl
+					// item.Usages[i].usageItems[0].url = '/' + encode(item.Usages[i].usageItems[0].itemCd.toString())
+					// item.Usages[i].usageItems[0].imgUrl = item.Usages[i].usageItems[0]?.itemImage?.imgUrl
+					item.Usages[i].usageItems[0].setDataValue('url', '/' + encode(item.Usages[i].usageItems[0].itemCd.toString()))
+					item.Usages[i].usageItems[0].setDataValue('imgUrl', item.Usages[i].usageItems[0]?.itemImage?.imgUrl)
 				}
 			}
 			item.dataValues.itemIdEnc = encode(item.dataValues.itemId.toString())
@@ -264,17 +276,17 @@ router.get('/item/get/:itemCd', async (req, res) => {
 		if (req.headers.cookie) {
 			cookie = toCookieObj(req.headers.cookie)
 		}
-		if (cookie?.bdrId == null) {
-			let maxAge = 1000 * 60 * 60 * 24 * 365
-			res.header('Set-Cookie', `bdrId=${uuid4()}; Max-age=${maxAge}; HttpOnly;`)
-		}
 		let resultItems = items.map((e) => ({ ...e.dataValues, itemId: undefined, fileId: undefined, itemCd: undefined }))
-		res.send(200, { ...jsonSuccess, data: resultItems })
+		let bdrId
+		if (cookie?.bdrId == null) {
+			bdrId = uuid4()
+		}
+		res.send(200, { ...jsonSuccess, data: resultItems, bdrId })
 	} catch (err) {
 		console.error(err)
-		res.send(403, jsonFailed)
+		res.send(400, { ...jsonFailed })
 	}
-})
+}
 
 // 자동완성용 검색
 router.post('/item/fast/search', async (req, res) => {

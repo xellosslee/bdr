@@ -2,9 +2,10 @@
 	import lib from '$lib'
 	import logo from '$lib/img/blackSpirit.png'
 	import { onMount } from 'svelte'
+	import { page } from '$app/stores'
 	let items = null
 	onMount(async function () {
-		let res = await lib.api({ url: 'http://127.0.0.1:7700/items/get' })
+		let res = await lib.api({ url: 'http://127.0.0.1:7700/items/get/' + $page.params.itemId })
 		let r = await res.json()
 		if (r.code == '00') {
 			items = r.data
