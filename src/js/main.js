@@ -316,7 +316,14 @@ function comma(x) {
 async function imageSearch(event) {
 	let name = event.target.value
 	console.log('searchText', name)
-
+	if (name == '') {
+		return
+	}
+	var pattern = /([^가-힣\x20])/i
+	if (pattern.test(name)) {
+		console.log('자음,모음만 있는 경우 검색 안함')
+		return
+	}
 	let res = await Api({ url: '/file/list', data: { name, page: 0 } })
 	let result = await res.json()
 	console.log(result)
@@ -325,5 +332,8 @@ async function imageSearch(event) {
 		result.data.rows.forEach((e) => {
 			popupImageList.innerHTML += `<option value="${e.fileId}">${e.name}</option>`
 		})
+		event.target.focus()
+		event.target.value = ''
+		event.target.value = name
 	}
 }
