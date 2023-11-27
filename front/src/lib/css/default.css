@@ -1,0 +1,81 @@
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard-dynamic-subset.min.css');
+
+:root {
+	--text: #333;
+	--point-color: indianred; /* 흑정령 눈색 */
+	--success-color: rgb(0, 140, 255);
+	--gold-color: rgb(255, 179, 0);
+	--gray-color: #666;
+	--gray-color1: #999;
+	--gray-color2: #bbb;
+	--gray-color3: #ddd;
+	--gray-color3: #ddd;
+	--gray-color4: #eeeeee;
+}
+
+body {
+	font-family:
+		'Pretendard Variable',
+		Pretendard,
+		-apple-system,
+		BlinkMacSystemFont,
+		system-ui,
+		Roboto,
+		'Helvetica Neue',
+		'Segoe UI',
+		'Apple SD Gothic Neo',
+		'Noto Sans KR',
+		'Malgun Gothic',
+		'Apple Color Emoji',
+		'Segoe UI Emoji',
+		'Segoe UI Symbol',
+		sans-serif;
+	font-size: min(16px, 4.10256vw);
+	color: var(--text);
+	margin: 0;
+}
+
+input:read-only {
+	background-color: #eee;
+}
+
+div {
+	line-height: min(26px, 6.6666667vw);
+	color: var(--text);
+}
+
+a {
+	text-decoration: unset;
+	color: inherit;
+}
+
+li {
+	list-style: none;
+	color: var(--text);
+}
+
+.row {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+}
+.row:not(:first-child) {
+	margin-top: 4px;
+}
+
+.col {
+	display: flex;
+	flex-direction: column;
+}
+.col1 {
+	width: 8.333333%;
+}
+.col3 {
+	width: 25%;
+}
+.col6 {
+	width: 50%;
+}
+.col12 {
+	width: 100%;
+}

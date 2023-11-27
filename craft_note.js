@@ -268,7 +268,7 @@ router.get('/item/get/:itemCd', async (req, res) => {
 			let maxAge = 1000 * 60 * 60 * 24 * 365
 			res.header('Set-Cookie', `bdrId=${uuid4()}; Max-age=${maxAge}; HttpOnly;`)
 		}
-		let resultItems = items.map((e) => e.dataValues)
+		let resultItems = items.map((e) => ({ ...e.dataValues, itemId: undefined, fileId: undefined, itemCd: undefined }))
 		res.send(200, { ...jsonSuccess, data: resultItems })
 	} catch (err) {
 		console.error(err)

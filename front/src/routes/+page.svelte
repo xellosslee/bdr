@@ -1,53 +1,71 @@
 <script>
-	export let items = []
+	import lib from '$lib'
+	import { onMount } from 'svelte'
+	let items = null
+	onMount(async function () {
+		let res = await lib.Api({ url: 'http://127.0.0.1:7700/item/get/YzliMDExODY4YTM2NDBkM2M4MmVkYmU0ZTNlMDEwYmE=', method: 'GET' })
+		let r = await res.json()
+		if (r.code == '00') {
+			items = r.data
+			console.log(items)
+		}
+	})
 </script>
 
 <header class="contentHeader">
 	<a href="/"><div class="homeLink"><img src="/img/blackSpirit.png" alt="흑정령(홈아이콘)" /></div></a>
 	<div class="searchWrap">
 		<input type="text" id="searchText" placeholder="파트너! 어서 궁금한 아이템명을 입력해봐!" spellcheck="false" />
-		<div id="autoComplete" class="empty"></div>
+		<div id="autoComplete" class="empty" />
 		<div id="toolBox" class="empty">
 			<div class="historyWrap">
 				<div>검색기록</div>
 				<div id="historyList">
-					<li></li>
+					<li />
 				</div>
 			</div>
 			<div class="bookmarkWrap">
 				<div>북마크</div>
 				<div id="bookmarkList">
-					<li></li>
+					<li />
 				</div>
 			</div>
 		</div>
 	</div>
 </header>
 <div class="container">
-	{#if Array.isArray(items) || items.length == 0}
+	{#if items == null}
+		<div class="content">검색 중...</div>
+	{:else if items.length == 0}
 		<div class="content">아이템을 찾을 수 없습니다.</div>
 	{:else}
 		{#each items as item}
 			<div class="content">
 				<div class="itemHeader">
 					<div class="left">
-						<div class="itemImg"><img src={item.itemImage && item.itemImage.imgUrl} alt={item.name} /></div>
+						<div class="itemImg"><img src={item.itemImage && item.itemImage.imgUrl ? 'http://127.0.0.1:7700' + item.itemImage.imgUrl : ''} alt={item.name} /></div>
 						<div class="itemName">{item.name}</div>
 					</div>
 					<div class="right">
 						<div class="btnWrap">
-							<button class="btn main" onclick="openEditLayer(event)"><i class="icon ic16 icon-edit"></i></button>
+							<button class="btn main" onclick="openEditLayer(event)"><i class="icon ic16 icon-edit" /></button>
 							<div class="likeWrap">
 								<button class="btn solid success" data-value="1" data-item-id={item.itemIdEnc}>
-									<i class="icon ic16 icon-like-fill"></i>
+									<i class="icon ic16 icon-like-fill" />
 								</button>
 								<div class="likeCnt" data-item-id={item.itemIdEnc}>{item.likeCount}</div>
 								<button class="btn solid reverse" data-value="0" data-item-id={item.itemIdEnc}>
-									<i class="icon ic16 icon-dislike-fill"></i>
+									<i class="icon ic16 icon-dislike-fill" />
 								</button>
 							</div>
-							<button class="btn gold bookmark" onclick="bookmark(event)" data-img-url={item.itemImage && item.itemImage.imgUrl} data-name={item.name} data-item-cd={item.itemCdEnc}>
-								<i class="icon ic16 icon-bookmark"></i>
+							<button
+								class="btn gold bookmark"
+								onclick="bookmark(event)"
+								data-img-url={item.itemImage && item.itemImage.imgUrl ? 'http://127.0.0.1:7700' + item.itemImage.imgUrl : ''}
+								data-name={item.name}
+								data-item-cd={item.itemCdEnc}
+							>
+								<i class="icon ic16 icon-bookmark" />
 							</button>
 						</div>
 					</div>
@@ -79,7 +97,11 @@
 									{#if craft.craftItems && craft.craftItems.length > 0}
 										<div class="col" style="align-items: center;">
 											<div class="miniItemLabel" onclick="location.href='{craft.craftItems[0].url}'">
-												<img class="miniItem" src={craft.craftItems[0] && craft.craftItems[0].imgUrl} alt={craft.craftItems[0].name} />
+												<img
+													class="miniItem"
+													src={craft.craftItems[0].itemImage && craft.craftItems[0].itemImage.imgUrl ? 'http://127.0.0.1:7700' + craft.craftItems[0].itemImage.imgUrl : ''}
+													alt={craft.craftItems[0].name}
+												/>
 												<span>{craft.craftItems[0].name}</span>
 											</div>
 											<div>{craft.count} x <input class="count" type="text" data-earn-id={i} data-ori-value={craft.count} readonly /></div>
@@ -97,7 +119,11 @@
 						{#each item.Usages as usage}
 							{#if usage.usageItems && usage.usageItems.length > 0}
 								<div class="miniItemLabel" onclick="location.href='{usage.usageItems[0].url}'">
-									<img class="miniItem" src={usage.usageItems[0] && usage.usageItems[0].imgUrl} alt={usage.usageItems[0].name} />
+									<img
+										class="miniItem"
+										src={usage.usageItems[0].itemImage && usage.usageItems[0].itemImage.imgUrl ? 'http://127.0.0.1:7700' + usage.usageItems[0].itemImage.imgUrl : ''}
+										alt={usage.usageItems[0].name}
+									/>
 									<span>{usage.usageItems[0].name}</span>
 								</div>
 							{/if}
@@ -109,9 +135,9 @@
 	{/if}
 </div>
 <div class="layerPopup" id="layerEdit">
-	<div class="dimmed"></div>
+	<div class="dimmed" />
 	<div class="box">
-		<button class="btn closeBtn" onclick="editLayerClose(event)"><i class="icon ic16 icon-close"></i></button>
+		<button class="btn closeBtn" onclick="editLayerClose(event)"><i class="icon ic16 icon-close" /></button>
 		<div class="inputWrap">
 			<div class="inputTitle">이미지 파일 업로드</div>
 			<input type="text" id="imageName" />
@@ -123,9 +149,133 @@
 		</div>
 	</div>
 </div>
-<footer></footer>
+<footer />
 
 <style>
+	@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard-dynamic-subset.min.css');
+
+	:root {
+		--text: #333;
+		--point-color: indianred; /* 흑정령 눈색 */
+		--success-color: rgb(0, 140, 255);
+		--gold-color: rgb(255, 179, 0);
+		--gray-color: #666;
+		--gray-color1: #999;
+		--gray-color2: #bbb;
+		--gray-color3: #ddd;
+		--gray-color3: #ddd;
+		--gray-color4: #eeeeee;
+	}
+
+	body {
+		font-family: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, 'Helvetica Neue', 'Segoe UI', 'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic',
+			'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', sans-serif;
+		font-size: min(16px, 4.10256vw);
+		color: var(--text);
+		margin: 0;
+	}
+
+	input:read-only {
+		background-color: #eee;
+	}
+
+	div {
+		line-height: min(26px, 6.6666667vw);
+		color: var(--text);
+	}
+
+	a {
+		text-decoration: unset;
+		color: inherit;
+	}
+
+	li {
+		list-style: none;
+		color: var(--text);
+	}
+
+	.row {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+	}
+	.row:not(:first-child) {
+		margin-top: 4px;
+	}
+
+	.col {
+		display: flex;
+		flex-direction: column;
+	}
+	.col1 {
+		width: 8.333333%;
+	}
+	.col3 {
+		width: 25%;
+	}
+	.col6 {
+		width: 50%;
+	}
+	.col12 {
+		width: 100%;
+	}
+	@font-face {
+		font-family: 'icon';
+		src: url('$lib/fonts/icon.eot');
+		src: url('$lib/fonts/icon.eot') format('embedded-opentype'), url('$lib/fonts/icon.ttf') format('truetype'), url('$lib/fonts/icon.woff') format('woff'), url('$lib/fonts/icon.svg') format('svg');
+		font-weight: normal;
+		font-style: normal;
+		font-display: block;
+	}
+
+	[class^='icon-'],
+	[class*=' icon-'] {
+		/* use !important to prevent issues with browser extensions that change fonts */
+		font-family: 'icon' !important;
+		speak: never;
+		font-style: normal;
+		font-weight: normal;
+		font-variant: normal;
+		text-transform: none;
+		line-height: 1;
+
+		/* Better Font Rendering =========== */
+		-webkit-font-smoothing: antialiased;
+		-moz-osx-font-smoothing: grayscale;
+	}
+
+	.ic16 {
+		font-size: min(16px, 4.10256vw);
+	}
+
+	.icon-bookmark-fill:before {
+		content: '\e900';
+	}
+
+	.icon-bookmark:before {
+		content: '\e901';
+	}
+
+	.icon-dislike-fill:before {
+		content: '\e902';
+	}
+
+	.icon-edit:before {
+		content: '\e903';
+	}
+
+	.icon-like-fill:before {
+		content: '\e904';
+	}
+
+	.icon-close:before {
+		content: '\e905';
+	}
+
+	.icon-close-sm:before {
+		content: '\e906';
+	}
+
 	input {
 		font-family: pretendard, sans-serif;
 		outline: none;
@@ -404,9 +554,7 @@
 		border: none;
 		padding: 0;
 		margin: 0 5px;
-		transition:
-			opacity 0.3s,
-			transform 0.3s;
+		transition: opacity 0.3s, transform 0.3s;
 	}
 
 	.btn.solid.success {
