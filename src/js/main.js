@@ -46,7 +46,7 @@ window.onload = () => {
 						return `<a class="miniItemLabel" href="${e.itemUrl}"><img class="miniItem" src=${e.imgUrl}/><span>${e.name}</span></a>`
 					})
 					.join('')
-					
+
 				autoCompleteFocusCnt = -1
 				toolBox.classList.add('empty')
 			} else {
@@ -58,7 +58,7 @@ window.onload = () => {
 		}
 	}, 100)
 	searchText.onkeyup = fn
-	
+
 	let autoCompleteFocusCnt = -1
 	function autoCompleteFocusing(evt) {
 		let autoCompleteItems = autoComplete.querySelectorAll('.miniItemLabel')
@@ -376,8 +376,5 @@ async function imageSearch(event) {
 		result.data.rows.forEach((e) => {
 			popupImageList.innerHTML += `<option value="${e.fileId}">${e.name}</option>`
 		})
-		event.target.focus()
-		event.target.value = ''
-		event.target.value = name
 	}
 }
