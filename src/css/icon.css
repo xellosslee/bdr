@@ -1,10 +1,10 @@
 @font-face {
     font-family: 'icon';
-    src: url('/font/icon.eot');
-    src: url('/font/icon.eot') format('embedded-opentype'),
-        url('/font/icon.ttf') format('truetype'),
-        url('/font/icon.woff') format('woff'),
-        url('/font/icon.svg') format('svg');
+    src: url('/fonts/icon.eot');
+    src: url('/fonts/icon.eot') format('embedded-opentype'),
+        url('/fonts/icon.ttf') format('truetype'),
+        url('/fonts/icon.woff') format('woff'),
+        url('/fonts/icon.svg') format('svg');
     font-weight: normal;
     font-style: normal;
     font-display: block;
@@ -48,4 +48,12 @@
 
 .icon-like-fill:before {
     content: "\e904";
+}
+
+.icon-close:before {
+    content: "\e905";
+}
+
+.icon-close-sm:before {
+    content: "\e906";
 }
