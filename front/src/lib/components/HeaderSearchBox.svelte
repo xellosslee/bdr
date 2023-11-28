@@ -38,7 +38,7 @@
 </script>
 
 <header class="contentHeader">
-	<a href="/"><div class="homeLink"><img src={logo} alt="흑정령(홈아이콘)" /></div></a>
+	<a href="/" target="_self"><div class="homeLink"><img src={logo} alt="흑정령(홈아이콘)" /></div></a>
 	<div class="searchWrap">
 		<input type="text" bind:value={searchText} on:keyup={keyupEvent} placeholder="파트너! 어서 궁금한 아이템명을 입력해봐!" spellcheck="false" />
 		<div id="autoComplete" class={searchItems.length == 0 ? 'empty' : ''}>
