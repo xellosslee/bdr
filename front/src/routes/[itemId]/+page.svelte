@@ -212,7 +212,7 @@
 			<div class="inputWrap name">
 				<div class="inputTitle">아이템명 <input type="text" class="label" value={popupItem?.name} /></div>
 			</div>
-			<div class="inputWrap">
+			<div class="inputWrap image">
 				<div class="inputTitle">
 					아이템 이미지 선택<input list="image-list" on:keyup={imageSearch} value={popupImageSearch} />
 					{#if popupItem.itemImage.name}<div>선택된 이미지 : {popupItem.itemImage.name}</div>{/if}
@@ -221,15 +221,15 @@
 					<button on:click={chooseImage} data-image-idx={i}><img src={popupImage.imgUrl ? 'http://127.0.0.1:7700' + popupImage.imgUrl : ''} alt={popupImage.name} />{popupImage.name}</button>
 				{/each}
 			</div>
-			<div class="inputWrap">
+			<div class="inputWrap imageUpload">
 				<div class="inputTitle">
 					이미지 파일 업로드<input type="file" on:change={setImageName} /><input type="text" value={uploadImage.name || ''} /><button on:click={doUpload}>doUpload</button>
 				</div>
 			</div>
 			<div class="inputWrap desc">
-				<div class="inputTitle">아이템 설명<textarea>{popupItem.desc}</textarea></div>
+				<div class="inputTitle">아이템 설명<textarea>{popupItem.desc.replace(/<br>/gi, '\n')}</textarea></div>
 			</div>
-			<div class="inputWrap itemName">
+			<div class="inputWrap crafts">
 				<div class="inputTitle">획득 방법</div>
 				<ul>
 					<li>
@@ -255,7 +255,7 @@
 					</li>
 				</ul>
 			</div>
-			<div class="inputWrap itemName">
+			<div class="inputWrap usages">
 				<div class="inputTitle">제작가능 아이템<button class="btn"><i class="icon ic16 icon-add" />추가</button></div>
 				<ul>
 					<li>
@@ -777,6 +777,11 @@
 		99% {
 			z-index: -1;
 		}
+	}
+
+	.layerPopup textarea {
+		width: calc(100% - 6px);
+		height: 200px;
 	}
 
 	@media (max-width: 480px) {
