@@ -288,7 +288,7 @@ router.post('/item/fast/search', async (req, res) => {
 		}
 		let data = []
 		let items = await DB.Item.findAll({
-			attributes: ['itemCd', 'name'],
+			attributes: ['itemCd', 'name', 'grade'],
 			include: [{ model: DB.File, as: 'itemImage', attributes: ['imgUrl'] }],
 			where: { name: { [Op.like]: '%' + req.body.search + '%' }, removed: 0 },
 			limit: 10,
@@ -303,6 +303,7 @@ router.post('/item/fast/search', async (req, res) => {
 			data.push({
 				itemUrl: url,
 				name: items[i].name,
+				grade: items[i].grade,
 				imgUrl: items[i].itemImage.imgUrl,
 			})
 		}

@@ -44,7 +44,7 @@
 		<div id="autoComplete" class={searchItems.length == 0 ? 'empty' : ''}>
 			{#each searchItems as e}
 				<a class="miniItemLabel" href={e.itemUrl} target="_self">
-					<img class="miniItem" src={lib.apiUrl + e.imgUrl} alt={e.name} /><span>{e.name}</span>
+					<img class={'miniItem grade' + e.grade} src={lib.apiUrl + e.imgUrl} alt={e.name} /><span>{e.name}</span>
 				</a>
 			{/each}
 		</div>
@@ -152,5 +152,31 @@
 
 	.miniItemLabel span {
 		margin-left: 4px;
+	}
+
+	img.miniItem.grade1,
+	.itemImg.grade1 {
+		border: 1px solid var(--grade1);
+		box-sizing: border-box;
+	}
+	img.miniItem.grade2,
+	.itemImg.grade2 {
+		border: 1px solid var(--grade2);
+		box-sizing: border-box;
+	}
+	img.miniItem.grade3,
+	.itemImg.grade3 {
+		border: 1px solid var(--grade3);
+		box-sizing: border-box;
+	}
+	img.miniItem.grade4,
+	.itemImg.grade4 {
+		border: 1px solid var(--grade4);
+		box-sizing: border-box;
+	}
+	img.miniItem.grade5,
+	.itemImg.grade5 {
+		border: 1px solid var(--grade5);
+		box-sizing: border-box;
 	}
 </style>
