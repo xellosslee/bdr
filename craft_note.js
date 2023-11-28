@@ -270,7 +270,8 @@ async function itemJsonGet(req, res) {
 		}
 		let resultItems = items.map((e) => ({ ...e.dataValues, itemId: undefined, fileId: undefined, itemCd: undefined }))
 		let bdrId
-		if (cookie?.bdrId == null) {
+		if (req.headers['bdr-id'] == null) {
+			console.debug(req.headers)
 			bdrId = uuid4()
 		}
 		res.send(200, { ...jsonSuccess, data: resultItems, bdrId })
@@ -368,8 +369,7 @@ router.post('/item/put', async function (req, res) {
 // 좋아요, 싫어요 저장
 router.post('/item/like-set', async (req, res) => {
 	try {
-		let cookie = toCookieObj(req.headers.cookie)
-		if (!cookie.bdrId) {
+		if (!req.headers['bdr-id']) {
 			throw { code: '97', message: '비정상 적인 접근입니다.' }
 		}
 		let item = await DB.Item.findOne({
@@ -378,13 +378,13 @@ router.post('/item/like-set', async (req, res) => {
 		})
 		if (item) {
 			let checkOver = await DB.LikeHistory.count({
-				where: { bdrId: cookie.bdrId, itemId: item.itemId, createdAt: { [Op.between]: [dayjs().format('YYYY-MM-DD 00:00:00'), dayjs().format('YYYY-MM-DD 23:59:59')] } },
+				where: { bdrId: req.headers['bdr-id'], itemId: item.itemId, createdAt: { [Op.between]: [dayjs().format('YYYY-MM-DD 00:00:00'), dayjs().format('YYYY-MM-DD 23:59:59')] } },
 			})
 			if (checkOver > 0) {
 				throw { code: '01', message: '좋아요, 싫어요는 게시글별 하루 한번만 가능합니다.' }
 			}
 			await item.increment({ likeCount: req.body.like == '1' ? 1 : -1 })
-			await DB.LikeHistory.create({ bdrId: cookie.bdrId, itemId: item.itemId })
+			await DB.LikeHistory.create({ bdrId: req.headers['bdr-id'], itemId: item.itemId })
 		} else {
 			throw { code: '02', message: '해당 아이템을 찾을 수 없습니다.' }
 		}

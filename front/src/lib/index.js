@@ -4,7 +4,7 @@ export default {
 		let body
 		let headers = {
 			...(param.headers || {}),
-			bdrId: this.bdrId,
+			'bdr-id': localStorage.getItem('bdrId'),
 		}
 		if (param.data instanceof FormData) {
 			body = param.data
@@ -12,15 +12,12 @@ export default {
 			body = param.method == 'GET' ? null : JSON.stringify(param.data || {})
 			headers['Content-Type'] = 'application/json'
 		}
+		console.log(headers)
 		let response = await fetch(this.apiUrl + param.url, { method: param.method || 'POST', body, headers })
 		let res = await response.json()
 		if (res.code == '00' && res.bdrId) {
-			cookieStore.set({
-				name: 'bdrId',
-				value: res.bdrId,
-				expires: Date.now() + 365 * 24 * 60 * 60 * 1000,
-				domain: location.hostname,
-			})
+			console.debug('reset storage')
+			localStorage.setItem('bdrId', res.bdrId)
 		}
 		return res
 	},

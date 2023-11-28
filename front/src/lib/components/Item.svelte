@@ -5,6 +5,23 @@
 	function openEditLayer(evt) {
 		popupItem = item
 	}
+	async function likeSet(evt) {
+		let a = evt.currentTarget.dataset.itemId
+		let b = evt.currentTarget.dataset.value
+		if (!a || !b) {
+			return
+		}
+		let result = await lib.api({ url: '/item/like-set', data: { itemId: a, like: b } })
+		if (result.code == '00') {
+			if (b == '1') {
+				item.likeCount++
+			} else {
+				item.likeCount--
+			}
+		} else if (result.code == '01') {
+			alert(result.message)
+		}
+	}
 </script>
 
 <div class="content" data-item-id={item.itemIdEnc}>
@@ -17,11 +34,11 @@
 			<div class="btnWrap">
 				<button class="btn main" on:click={openEditLayer} data-item-id={item.itemIdEnc}><i class="icon ic16 icon-edit" /></button>
 				<div class="likeWrap">
-					<button class="btn solid success" data-value="1" data-item-id={item.itemIdEnc}>
+					<button class="btn solid success" data-value="1" data-item-id={item.itemIdEnc} on:click={likeSet}>
 						<i class="icon ic16 icon-like-fill" />
 					</button>
 					<div class="likeCnt" data-item-id={item.itemIdEnc}>{item.likeCount}</div>
-					<button class="btn solid reverse" data-value="0" data-item-id={item.itemIdEnc}>
+					<button class="btn solid reverse" data-value="0" data-item-id={item.itemIdEnc} on:click={likeSet}>
 						<i class="icon ic16 icon-dislike-fill" />
 					</button>
 				</div>
