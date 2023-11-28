@@ -185,7 +185,7 @@ async function itemJsonGet(req, res) {
 							{
 								model: DB.Item,
 								as: 'craftItems',
-								attributes: ['name', 'itemCd', 'fileId'],
+								attributes: ['name', 'itemCd', 'fileId', 'grade'],
 								include: [{ model: DB.File, attributes: ['imgUrl'], as: 'itemImage' }],
 								where: { removed: 0 },
 							},
@@ -199,7 +199,7 @@ async function itemJsonGet(req, res) {
 					{
 						model: DB.Item,
 						as: 'usageItems',
-						attributes: ['name', 'itemCd', 'fileId'],
+						attributes: ['name', 'itemCd', 'fileId', 'grade'],
 						include: [{ model: DB.File, attributes: ['imgUrl'], as: 'itemImage' }],
 						order: [
 							['likeCount', 'desc'],

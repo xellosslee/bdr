@@ -27,7 +27,7 @@
 <div class="content" data-item-id={item.itemIdEnc}>
 	<div class="itemHeader">
 		<div class="left">
-			<div class="itemImg"><img src={item.itemImage && item.itemImage.imgUrl ? lib.apiUrl + item.itemImage.imgUrl : ''} alt={item.name} /></div>
+			<div class={'itemImg grade' + item.grade}><img src={item.itemImage && item.itemImage.imgUrl ? lib.apiUrl + item.itemImage.imgUrl : ''} alt={item.name} /></div>
 			<div class={'itemName grade' + item.grade}>{item.name}</div>
 		</div>
 		<div class="right">
@@ -82,11 +82,11 @@
 							<div class="col" style="align-items: center;">
 								<div class="miniItemLabel" onclick="location.href='{craft.craftItems[0].url}'">
 									<img
-										class="miniItem"
+										class={'miniItem grade' + craft.craftItems[0].grade}
 										src={craft.craftItems[0].itemImage && craft.craftItems[0].itemImage.imgUrl ? lib.apiUrl + craft.craftItems[0].itemImage.imgUrl : ''}
 										alt={craft.craftItems[0].name}
 									/>
-									<span>{craft.craftItems[0].name}</span>
+									<span class={'grade' + craft.craftItems[0].grade}>{craft.craftItems[0].name}</span>
 								</div>
 								<div>{craft.count} x <input class="count" type="text" value={craft.count * (earn.makeCnt || 0)} readonly /></div>
 							</div>
@@ -104,11 +104,11 @@
 				{#if usage.usageItems && usage.usageItems.length > 0}
 					<div class="miniItemLabel" onclick="location.href='{usage.usageItems[0].url}'">
 						<img
-							class="miniItem"
+							class={'miniItem grade' + usage.usageItems[0].grade}
 							src={usage.usageItems[0].itemImage && usage.usageItems[0].itemImage.imgUrl ? lib.apiUrl + usage.usageItems[0].itemImage.imgUrl : ''}
 							alt={usage.usageItems[0].name}
 						/>
-						<span>{usage.usageItems[0].name}</span>
+						<span class={'grade' + usage.usageItems[0].grade}>{usage.usageItems[0].name}</span>
 					</div>
 				{/if}
 			{/each}
@@ -284,19 +284,44 @@
 	button.btn.solid:active {
 		transform: scale(1.2);
 	}
-	.grade1 {
-		color: #4e4e4e;
+	img.miniItem.grade1,
+	.itemImg.grade1 {
+		border: 1px solid var(--grade1);
+		box-sizing: border-box;
 	}
-	.grade2 {
-		color: #00aa00;
+	img.miniItem.grade2,
+	.itemImg.grade2 {
+		border: 1px solid var(--grade2);
+		box-sizing: border-box;
 	}
-	.grade3 {
-		color: #0070dd;
+	img.miniItem.grade3,
+	.itemImg.grade3 {
+		border: 1px solid var(--grade3);
+		box-sizing: border-box;
 	}
-	.grade4 {
-		color: #ffb400;
+	img.miniItem.grade4,
+	.itemImg.grade4 {
+		border: 1px solid var(--grade4);
+		box-sizing: border-box;
 	}
-	.grade5 {
-		color: #ff0036;
+	img.miniItem.grade5,
+	.itemImg.grade5 {
+		border: 1px solid var(--grade5);
+		box-sizing: border-box;
+	}
+	.itemName.grade1 {
+		color: var(--grade1);
+	}
+	.itemName.grade2 {
+		color: var(--grade2);
+	}
+	.itemName.grade3 {
+		color: var(--grade3);
+	}
+	.itemName.grade4 {
+		color: var(--grade4);
+	}
+	.itemName.grade5 {
+		color: var(--grade5);
 	}
 </style>

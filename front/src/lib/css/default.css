@@ -11,6 +11,11 @@
 	--gray-color3: #ddd;
 	--gray-color3: #ddd;
 	--gray-color4: #eeeeee;
+	--grade1: #4e4e4e;
+	--grade2: #00aa00;
+	--grade3: #0070dd;
+	--grade4: #ffb400;
+	--grade5: #ff0036;
 }
 
 body {
