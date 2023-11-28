@@ -27,7 +27,7 @@
 <div class="content" data-item-id={item.itemIdEnc}>
 	<div class="itemHeader">
 		<div class="left">
-			<div class="itemImg"><img src={item.itemImage && item.itemImage.imgUrl ? 'http://127.0.0.1:7700' + item.itemImage.imgUrl : ''} alt={item.name} /></div>
+			<div class="itemImg"><img src={item.itemImage && item.itemImage.imgUrl ? lib.apiUrl + item.itemImage.imgUrl : ''} alt={item.name} /></div>
 			<div class="itemName">{item.name}</div>
 		</div>
 		<div class="right">
@@ -45,7 +45,7 @@
 				<button
 					class="btn gold bookmark"
 					onclick="bookmark(event)"
-					data-img-url={item.itemImage && item.itemImage.imgUrl ? 'http://127.0.0.1:7700' + item.itemImage.imgUrl : ''}
+					data-img-url={item.itemImage && item.itemImage.imgUrl ? lib.apiUrl + item.itemImage.imgUrl : ''}
 					data-name={item.name}
 					data-item-cd={item.itemCdEnc}
 				>
@@ -83,7 +83,7 @@
 								<div class="miniItemLabel" onclick="location.href='{craft.craftItems[0].url}'">
 									<img
 										class="miniItem"
-										src={craft.craftItems[0].itemImage && craft.craftItems[0].itemImage.imgUrl ? 'http://127.0.0.1:7700' + craft.craftItems[0].itemImage.imgUrl : ''}
+										src={craft.craftItems[0].itemImage && craft.craftItems[0].itemImage.imgUrl ? lib.apiUrl + craft.craftItems[0].itemImage.imgUrl : ''}
 										alt={craft.craftItems[0].name}
 									/>
 									<span>{craft.craftItems[0].name}</span>
@@ -105,7 +105,7 @@
 					<div class="miniItemLabel" onclick="location.href='{usage.usageItems[0].url}'">
 						<img
 							class="miniItem"
-							src={usage.usageItems[0].itemImage && usage.usageItems[0].itemImage.imgUrl ? 'http://127.0.0.1:7700' + usage.usageItems[0].itemImage.imgUrl : ''}
+							src={usage.usageItems[0].itemImage && usage.usageItems[0].itemImage.imgUrl ? lib.apiUrl + usage.usageItems[0].itemImage.imgUrl : ''}
 							alt={usage.usageItems[0].name}
 						/>
 						<span>{usage.usageItems[0].name}</span>
@@ -246,72 +246,6 @@
 
 	.btnWrap > .btn:not(:first-child) {
 		margin-left: 6px;
-	}
-
-	/* btn 기본 */
-	.btn {
-		display: flex;
-		align-items: center;
-		padding: min(4px, 1.025641vw) min(7px, 1.7948718vw);
-		background: #fff;
-		border: 1px solid var(--gray-color);
-		color: var(--gray-color);
-		border-radius: 4px;
-		font-size: min(12px, 3.0769231vw);
-		cursor: pointer;
-	}
-	.btn:hover {
-		background: var(--gray-color);
-		border-color: #fff;
-		color: #fff;
-	}
-
-	.btn > svg.bi:not(:only-child) {
-		margin-right: 4px;
-	}
-
-	.btn.reverse {
-		background: var(--gray-color);
-		border-color: var(--gray-color);
-		color: #fff;
-	}
-	.btn.reverse:hover {
-		background: #fff;
-		border-color: var(--gray-color);
-		color: var(--gray-color);
-	}
-
-	.btn.main {
-		background: var(--point-color);
-		border-color: var(--point-color);
-		color: #fff;
-	}
-	.btn.main:hover {
-		background: #fff;
-		border-color: var(--point-color);
-		color: var(--point-color);
-	}
-
-	.btn.success {
-		background: var(--success-color);
-		border-color: var(--success-color);
-		color: #fff;
-	}
-	.btn.success:hover {
-		background: #fff;
-		border-color: var(--success-color);
-		color: var(--success-color);
-	}
-
-	.btn.gold {
-		background: var(--gold-color);
-		border-color: var(--gold-color);
-		color: #fff;
-	}
-	.btn.gold:hover {
-		background: #fff;
-		border-color: var(--gold-color);
-		color: var(--gold-color);
 	}
 
 	.likeWrap {
