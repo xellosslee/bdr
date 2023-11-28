@@ -25,7 +25,7 @@ server.use((req, res, next) => {
 	next()
 })
 const cors = corsMiddleware({
-	origins: ['*', 'https://bdo.weingchicken.com'],
+	origins: ['http://localhost:*', 'http://127.0.0.1:*', 'https://bdr.gshn.kr'],
 	allowHeaders: ['*'],
 	exposeHeaders: ['*'],
 })
