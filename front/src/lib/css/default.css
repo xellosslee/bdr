@@ -102,6 +102,17 @@ input.count {
 	text-align: right;
 }
 
+button {
+	border: 0;
+	background: 0;
+	border-radius: 4px;
+}
+
+button:hover {
+	border: 0;
+	background: var(--gray-color4);
+}
+
 /* btn 기본 */
 .btn {
 	display: flex;
