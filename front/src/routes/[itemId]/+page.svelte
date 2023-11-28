@@ -1,6 +1,7 @@
 <script>
 	import lib from '$lib'
 	import logo from '$lib/img/blackSpirit.png'
+	import { fade } from 'svelte/transition'
 	import { onMount } from 'svelte'
 	import { page } from '$app/stores'
 	let items = null // 화면 랜딩된 아이템 전체 정보. Earns, Usages
@@ -204,7 +205,7 @@
 	{/if}
 </div>
 {#if popupItem}
-	<div class={popupItem == null ? 'layerPopup' : 'layerPopup show'}>
+	<div class="layerPopup" transition:fade={{ duration: 300 }}>
 		<div class="dimmed" />
 		<div class="box">
 			<button class="btn closeBtn" on:click={closeEditLayer}><i class="icon ic16 icon-close" /></button>
@@ -226,7 +227,7 @@
 				</div>
 			</div>
 			<div class="inputWrap desc">
-				<div class="inputTitle">아이템 설명<textarea /></div>
+				<div class="inputTitle">아이템 설명<textarea>{popupItem.desc}</textarea></div>
 			</div>
 			<div class="inputWrap itemName">
 				<div class="inputTitle">획득 방법</div>
@@ -722,21 +723,6 @@
 		bottom: 0;
 		width: 100%;
 		height: 100%;
-		/* transition: opacity 0.3s; */
-		opacity: 0;
-		z-index: -1;
-	}
-
-	.layerPopup.show {
-		animation: 0.3s linear showAni;
-		opacity: 1;
-		z-index: 30000;
-	}
-
-	.layerPopup.hide {
-		animation: 0.3s linear hideAni;
-		opacity: 0;
-		z-index: -1;
 	}
 
 	.layerPopup .dimmed {
