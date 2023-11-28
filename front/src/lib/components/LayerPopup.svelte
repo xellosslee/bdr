@@ -3,6 +3,7 @@
 	import ImageSearch from '$components/ImageSearch.svelte'
 	export let popupItem = {}
 	let uploadImage = {} // 업로드 대상 이미지 값 저장용
+	let dimmedClickClose = true
 
 	export function closeEditLayer() {
 		popupItem = null
@@ -35,10 +36,15 @@
 			uploadImage = {}
 		}
 	}
+	function dimmedClick() {
+		if (dimmedClickClose) {
+			closeEditLayer()
+		}
+	}
 </script>
 
 <div class="layerPopup" transition:fade={{ duration: 300 }}>
-	<div class="dimmed" />
+	<div class="dimmed" on:click={dimmedClick} />
 	<div class="box">
 		<button class="btn closeBtn" on:click={closeEditLayer}><i class="icon ic16 icon-close" /></button>
 		<div class="inputWrap name">

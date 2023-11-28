@@ -1,10 +1,8 @@
 <script>
 	import lib from '$lib'
 	import logo from '$lib/img/blackSpirit.png'
-	import { fade } from 'svelte/transition'
 	import { onMount } from 'svelte'
 	import { page } from '$app/stores'
-	import ImageSearch from '$components/ImageSearch.svelte'
 	import LayerPopup from '$components/LayerPopup.svelte'
 	let items = null // 화면 랜딩된 아이템 전체 정보. Earns, Usages
 	let popupItem = null // 열려있는 팝업의 아이템 정보
@@ -26,9 +24,6 @@
 			return alert('화면이 정상적으로 로드 되지 않았습니다.\n새로 고침 후 진행해 주시기 바랍니다.[0002]')
 		}
 		popupItem = item
-	}
-	function closeEditLayer() {
-		popupItem = null
 	}
 </script>
 
