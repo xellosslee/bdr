@@ -7,7 +7,7 @@
 
 	async function keyupEvent(evt) {
 		if (evt.key == 'Enter' && searchItems.length > 0) {
-			location.href = location.protocol + '//' + location.host + searchItems[0].url
+			location.href = location.protocol + '//' + location.host + searchItems[0].itemUrl
 			return
 		}
 		if (searchText == '') {
