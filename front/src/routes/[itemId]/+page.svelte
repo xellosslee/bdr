@@ -43,6 +43,11 @@
 		let res = await lib.api({ url: '/file/put', data })
 		let result = await res.json()
 		console.log(result)
+		if (result.code == '00') {
+			alert('업로드 성공')
+		} else {
+			alert(result.message)
+		}
 	}
 	function setImageName(evt) {
 		let image = evt.currentTarget
