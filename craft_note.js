@@ -36,7 +36,6 @@ function toCookieObj(cookieInput) {
 
 async function getFileTimes() {
 	return {
-		amp_js: Math.floor((await fs.stat(__dirname + '/src/lib/amp.js')).mtimeMs),
 		main_js: Math.floor((await fs.stat(__dirname + '/src/js/main.js')).mtimeMs),
 		main_css: Math.floor((await fs.stat(__dirname + '/src/css/main.css')).mtimeMs),
 		icon_css: Math.floor((await fs.stat(__dirname + '/src/css/icon.css')).mtimeMs),
