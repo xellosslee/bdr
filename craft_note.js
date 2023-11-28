@@ -34,14 +34,6 @@ function toCookieObj(cookieInput) {
 	}
 }
 
-async function getFileTimes() {
-	return {
-		main_js: Math.floor((await fs.stat(__dirname + '/src/js/main.js')).mtimeMs),
-		main_css: Math.floor((await fs.stat(__dirname + '/src/css/main.css')).mtimeMs),
-		icon_css: Math.floor((await fs.stat(__dirname + '/src/css/icon.css')).mtimeMs),
-	}
-}
-
 // router.get('/', (req, res, next) => {
 // 	DB.Item.findOne({ attributes: ['itemCd'], order: [sq.fn('rand')] }).then(async (item) => {
 // 		req.params.itemCd = item.itemCd.toString()
