@@ -28,19 +28,10 @@
 			// 검색결과 출력
 			console.log(result)
 			if (result.code == '00' && result.data.length > 0) {
-				autoComplete.classList.remove('empty')
-				autoComplete.innerHTML = result.data
-					.map((e) => {
-						return `<a class="miniItemLabel" href="${e.itemUrl}"><img class="miniItem" src=${e.imgUrl}/><span>${e.name}</span></a>`
-					})
-					.join('')
-
-				autoCompleteFocusCnt = -1
-				toolBox.classList.add('empty')
+				searchItems = result.data
 			} else {
-				autoComplete.innerHTML = ''
-				autoComplete.classList.add('empty')
-				autoCompleteFocusCnt = -1
+				searchItems = []
+				// autoCompleteFocusCnt = -1
 			}
 		}
 	}
@@ -50,7 +41,13 @@
 	<a href="/"><div class="homeLink"><img src={logo} alt="흑정령(홈아이콘)" /></div></a>
 	<div class="searchWrap">
 		<input type="text" bind:value={searchText} on:keyup={keyupEvent} placeholder="파트너! 어서 궁금한 아이템명을 입력해봐!" spellcheck="false" />
-		<div id="autoComplete" class="empty" />
+		<div id="autoComplete" class={searchItems.length == 0 ? 'empty' : ''}>
+			{#each searchItems as e}
+				<a class="miniItemLabel" href={e.itemUrl} target="_self">
+					<img class="miniItem" src={lib.apiUrl + e.imgUrl} alt={e.name} /><span>{e.name}</span>
+				</a>
+			{/each}
+		</div>
 		<div id="toolBox" class="empty">
 			<div class="historyWrap">
 				<div>검색기록</div>
@@ -128,5 +125,36 @@
 		width: 100%;
 		padding: 6px;
 		font-weight: 600;
+	}
+
+	img.miniItem {
+		width: min(22px, 5.6410256vw);
+		height: min(22px, 5.6410256vw);
+		border: 1px solid var(--gray-color3);
+		border-radius: 4px;
+	}
+
+	.miniItemLabel {
+		display: flex;
+		align-items: center;
+		line-height: min(22px, 5.6410256vw);
+		padding: 4px 6px;
+		color: var(--point-color);
+		font-size: min(15px, 3.8461538vw);
+		border-radius: 4px;
+	}
+
+	.miniItemLabel > a:has(.miniItem) {
+		display: flex;
+	}
+
+	.miniItemLabel:hover {
+		background: var(--point-color);
+		cursor: pointer;
+		color: #fff;
+	}
+
+	.miniItemLabel span {
+		margin-left: 4px;
 	}
 </style>
