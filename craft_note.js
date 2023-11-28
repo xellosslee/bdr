@@ -163,7 +163,7 @@ function toCookieObj(cookieInput) {
 
 router.post('/items/get', async (req, res) => {
 	let item = await DB.Item.findOne({ attributes: ['itemCd'], order: [sq.fn('rand')] })
-	req.params.itemCd = item.itemCd.toString()
+	req.params.itemCd = item.itemCd
 	req.internal = true
 	await itemJsonGet(req, res)
 })

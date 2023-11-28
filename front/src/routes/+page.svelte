@@ -8,7 +8,7 @@
 	let items = null // 화면 랜딩된 아이템 전체 정보. Earns, Usages
 	let popupItem = null // 열려있는 팝업의 아이템 정보
 	onMount(async function () {
-		let r = await lib.api({ url: '/items/get/' + $page.params.itemId })
+		let r = await lib.api({ url: '/items/get' })
 		if (r.code == '00') {
 			items = r.data
 			console.log(items)

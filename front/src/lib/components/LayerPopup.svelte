@@ -43,7 +43,7 @@
 </script>
 
 <div class="layerPopup" transition:fade={{ duration: 300 }}>
-	<div class="dimmed" on:click={dimmedClick} />
+	<button class="dimmed" on:click={dimmedClick} aria-roledescription="close btn" />
 	<div class="box">
 		<button class="btn closeBtn" on:click={closeEditLayer}><i class="icon ic16 icon-close" /></button>
 		<div class="inputWrap name">

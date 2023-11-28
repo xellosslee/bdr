@@ -144,10 +144,6 @@
 		border-radius: 4px;
 	}
 
-	.miniItemLabel > a:has(.miniItem) {
-		display: flex;
-	}
-
 	.miniItemLabel:hover {
 		background: var(--point-color);
 		cursor: pointer;
