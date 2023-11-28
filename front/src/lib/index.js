@@ -21,5 +21,5 @@ export default {
 		}
 		return res
 	},
-	apiUrl: 'http://127.0.0.1:7700',
+	apiUrl: import.meta.env.VITE_API_HOST,
 }
