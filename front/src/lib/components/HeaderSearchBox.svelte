@@ -24,8 +24,7 @@
 			searchedText = evt.target.value
 			let data = { search: evt.target.value }
 			console.log(data)
-			let res = await lib.api({ url: '/item/fast/search', data })
-			let result = await res.json()
+			let result = await lib.api({ url: '/item/fast/search', data })
 			// 검색결과 출력
 			console.log(result)
 			if (result.code == '00' && result.data.length > 0) {

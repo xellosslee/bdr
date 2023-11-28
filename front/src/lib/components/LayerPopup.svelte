@@ -18,8 +18,7 @@
 		let data = new FormData()
 		data.append('image', uploadImage.file)
 		data.append('name', uploadImage.name)
-		let res = await lib.api({ url: '/file/put', data })
-		let result = await res.json()
+		let result = await lib.api({ url: '/file/put', data })
 		console.log(result)
 		if (result.code == '00') {
 			alert('업로드 성공')

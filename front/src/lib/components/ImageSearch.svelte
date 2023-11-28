@@ -20,8 +20,7 @@
 			return
 		}
 		searchImageText = name
-		let res = await lib.api({ url: '/file/list', data: { name, page: 0 } })
-		let result = await res.json()
+		let result = await lib.api({ url: '/file/list', data: { name, page: 0 } })
 		console.log(result)
 		popupImageList = result.data.rows
 	}
