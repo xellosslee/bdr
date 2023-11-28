@@ -52,7 +52,7 @@
 	function setImageName(evt) {
 		let image = evt.currentTarget
 		if (image.files.length > 0) {
-			uploadImage.name = image.files[0].name.split('.')[0].replace(/ /gi, '_')
+			uploadImage.name = image.files[0].name.split('.')[0].normalize('NFC')
 			uploadImage.file = image.files[0]
 		} else {
 			uploadImage = {}
