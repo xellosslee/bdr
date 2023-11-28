@@ -4,7 +4,7 @@
 	import { fade } from 'svelte/transition'
 	import { onMount } from 'svelte'
 	import { page } from '$app/stores'
-	import ImageSearch from '$components/imageSearch.svelte'
+	import ImageSearch from '$components/ImageSearch.svelte'
 	let items = null // 화면 랜딩된 아이템 전체 정보. Earns, Usages
 	let popupItem = null // 열려있는 팝업의 아이템 정보
 	let uploadImage = {} // 업로드 대상 이미지 값 저장용
