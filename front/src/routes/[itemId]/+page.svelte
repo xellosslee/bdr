@@ -3,12 +3,13 @@
 	import logo from '$lib/img/blackSpirit.png'
 	import { onMount } from 'svelte'
 	import { page } from '$app/stores'
-	let items = null
-	let popupItem = null
-	let uploadImage = {}
-	let popupImageList = []
-	let selectedImageIdx = null
-	let selectedImageName = null
+	let items = null // 화면 랜딩된 아이템 전체 정보. Earns, Usages
+	let popupItem = null // 열려있는 팝업의 아이템 정보
+	let uploadImage = {} // 업로드 대상 이미지 값 저장용
+	let popupImageList = [] // 팝업 검색 결과 (최대 10개) 노출용 리스트
+	let searchImageText = '' // 팝업의 이미지 검색 기록 저장용 temp 변수
+	let selectedImageIdx = null // 이미지 선택된 배열의 인덱스 저장용 변수 (추후 저장/수정 버튼 눌렀을 때에 활용 해야 함)
+	let selectedImageName = null // 이미지 선택한 이름을 화면에 노출하기 위한 변수
 	onMount(async function () {
 		let res = await lib.api({ url: '/items/get/' + $page.params.itemId })
 		let r = await res.json()
@@ -65,6 +66,7 @@
 			console.log('자음,모음만 있는 경우 검색 안함')
 			return
 		}
+		searchImageText = name
 		let res = await lib.api({ url: '/file/list', data: { name, page: 0 } })
 		let result = await res.json()
 		console.log(result)
@@ -217,9 +219,47 @@
 			{/if}
 		</div>
 		<div class="inputWrap">
-			<div class="inputTitle">이미지 파일 업로드</div>
-			<input type="text" id="imageName" />
-			<input type="file" on:change={setImageName} /><input type="text" value={uploadImage.name || ''} /><button on:click={doUpload}>doUpload</button>
+			<div class="inputTitle">
+				이미지 파일 업로드<input type="file" on:change={setImageName} /><input type="text" value={uploadImage.name || ''} /><button on:click={doUpload}>doUpload</button>
+			</div>
+		</div>
+		<div class="inputWrap desc">
+			<div class="inputTitle">아이템 설명<textarea /></div>
+		</div>
+		<div class="inputWrap itemName">
+			<div class="inputTitle">획득 방법</div>
+			<ul>
+				<li>
+					<div>동작 <input type="text" value="요리" /></div>
+					<ul>
+						<li>
+							<div>아이템 <input type="text" /></div>
+							<div>개수 <input type="text" /></div>
+						</li>
+						<li>
+							<div>아이템 <input type="text" /></div>
+							<div>개수 <input type="text" /></div>
+						</li>
+						<li>
+							<div>아이템 <input type="text" /></div>
+							<div>개수 <input type="text" /></div>
+						</li>
+						<li>
+							<div>아이템 <input type="text" /></div>
+							<div>개수 <input type="text" /></div>
+						</li>
+					</ul>
+				</li>
+			</ul>
+		</div>
+		<div class="inputWrap itemName">
+			<div class="inputTitle">제작가능 아이템<button class="btn"><i class="icon ic16 icon-add" />추가</button></div>
+			<ul>
+				<li>
+					<div>아이템 선택</div>
+					<button class="btn"><i class="icon ic16 icon-del" />삭제</button>
+				</li>
+			</ul>
 		</div>
 	</div>
 </div>
@@ -713,7 +753,8 @@
 		bottom: 0;
 		min-width: 200px;
 		max-width: min(1024px, 90%);
-		height: 400px;
+		min-height: 400px;
+		max-height: 90%;
 		margin: auto;
 	}
 
