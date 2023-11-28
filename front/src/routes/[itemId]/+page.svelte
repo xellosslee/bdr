@@ -8,8 +8,7 @@
 	let uploadImage = {} // 업로드 대상 이미지 값 저장용
 	let popupImageList = [] // 팝업 검색 결과 (최대 10개) 노출용 리스트
 	let searchImageText = '' // 팝업의 이미지 검색 기록 저장용 temp 변수
-	let selectedImageIdx = null // 이미지 선택된 배열의 인덱스 저장용 변수 (추후 저장/수정 버튼 눌렀을 때에 활용 해야 함)
-	let selectedImageName = null // 이미지 선택한 이름을 화면에 노출하기 위한 변수
+	let popupImageSearch = ''
 	onMount(async function () {
 		let res = await lib.api({ url: '/items/get/' + $page.params.itemId })
 		let r = await res.json()
@@ -71,11 +70,14 @@
 		let result = await res.json()
 		console.log(result)
 		popupImageList = result.data.rows
-		selectedImageIdx = null
 	}
 	function chooseImage(event) {
-		selectedImageIdx = event.currentTarget.dataset.imageIdx
-		selectedImageName = popupImageList[selectedImageIdx].name
+		popupItem.itemImage.name = popupImageList[event.currentTarget.dataset.imageIdx].name
+		popupItem.itemImage.fileId = popupImageList[event.currentTarget.dataset.imageIdx].fileId
+		// 검색 초기화
+		popupImageList = []
+		searchImageText = ''
+		popupImageSearch = ''
 	}
 </script>
 
@@ -201,68 +203,69 @@
 		{/each}
 	{/if}
 </div>
-<div class={popupItem == null ? 'layerPopup' : 'layerPopup show'}>
-	<div class="dimmed" />
-	<div class="box">
-		<button class="btn closeBtn" on:click={closeEditLayer}><i class="icon ic16 icon-close" /></button>
-		<div class="inputWrap name">
-			<div class="inputTitle">아이템명 <input type="text" class="label" value={popupItem?.name} /></div>
-		</div>
-		<div class="inputWrap">
-			<div class="inputTitle">아이템 이미지 선택<input list="image-list" id="searchImageName" on:keyup={imageSearch} /></div>
-			{#if selectedImageName == null}
+{#if popupItem}
+	<div class={popupItem == null ? 'layerPopup' : 'layerPopup show'}>
+		<div class="dimmed" />
+		<div class="box">
+			<button class="btn closeBtn" on:click={closeEditLayer}><i class="icon ic16 icon-close" /></button>
+			<div class="inputWrap name">
+				<div class="inputTitle">아이템명 <input type="text" class="label" value={popupItem?.name} /></div>
+			</div>
+			<div class="inputWrap">
+				<div class="inputTitle">
+					아이템 이미지 선택<input list="image-list" on:keyup={imageSearch} value={popupImageSearch} />
+					{#if popupItem.itemImage.name}<div>선택된 이미지 : {popupItem.itemImage.name}</div>{/if}
+				</div>
 				{#each popupImageList as popupImage, i}
 					<button on:click={chooseImage} data-image-idx={i}><img src={popupImage.imgUrl ? 'http://127.0.0.1:7700' + popupImage.imgUrl : ''} alt={popupImage.name} />{popupImage.name}</button>
 				{/each}
-			{:else}
-				<div>선택된 이미지 : {selectedImageName}</div>
-			{/if}
-		</div>
-		<div class="inputWrap">
-			<div class="inputTitle">
-				이미지 파일 업로드<input type="file" on:change={setImageName} /><input type="text" value={uploadImage.name || ''} /><button on:click={doUpload}>doUpload</button>
+			</div>
+			<div class="inputWrap">
+				<div class="inputTitle">
+					이미지 파일 업로드<input type="file" on:change={setImageName} /><input type="text" value={uploadImage.name || ''} /><button on:click={doUpload}>doUpload</button>
+				</div>
+			</div>
+			<div class="inputWrap desc">
+				<div class="inputTitle">아이템 설명<textarea /></div>
+			</div>
+			<div class="inputWrap itemName">
+				<div class="inputTitle">획득 방법</div>
+				<ul>
+					<li>
+						<div>동작 <input type="text" value="요리" /></div>
+						<ul>
+							<li>
+								<div>아이템 <input type="text" /></div>
+								<div>개수 <input type="text" /></div>
+							</li>
+							<li>
+								<div>아이템 <input type="text" /></div>
+								<div>개수 <input type="text" /></div>
+							</li>
+							<li>
+								<div>아이템 <input type="text" /></div>
+								<div>개수 <input type="text" /></div>
+							</li>
+							<li>
+								<div>아이템 <input type="text" /></div>
+								<div>개수 <input type="text" /></div>
+							</li>
+						</ul>
+					</li>
+				</ul>
+			</div>
+			<div class="inputWrap itemName">
+				<div class="inputTitle">제작가능 아이템<button class="btn"><i class="icon ic16 icon-add" />추가</button></div>
+				<ul>
+					<li>
+						<div>아이템 선택</div>
+						<button class="btn"><i class="icon ic16 icon-del" />삭제</button>
+					</li>
+				</ul>
 			</div>
 		</div>
-		<div class="inputWrap desc">
-			<div class="inputTitle">아이템 설명<textarea /></div>
-		</div>
-		<div class="inputWrap itemName">
-			<div class="inputTitle">획득 방법</div>
-			<ul>
-				<li>
-					<div>동작 <input type="text" value="요리" /></div>
-					<ul>
-						<li>
-							<div>아이템 <input type="text" /></div>
-							<div>개수 <input type="text" /></div>
-						</li>
-						<li>
-							<div>아이템 <input type="text" /></div>
-							<div>개수 <input type="text" /></div>
-						</li>
-						<li>
-							<div>아이템 <input type="text" /></div>
-							<div>개수 <input type="text" /></div>
-						</li>
-						<li>
-							<div>아이템 <input type="text" /></div>
-							<div>개수 <input type="text" /></div>
-						</li>
-					</ul>
-				</li>
-			</ul>
-		</div>
-		<div class="inputWrap itemName">
-			<div class="inputTitle">제작가능 아이템<button class="btn"><i class="icon ic16 icon-add" />추가</button></div>
-			<ul>
-				<li>
-					<div>아이템 선택</div>
-					<button class="btn"><i class="icon ic16 icon-del" />삭제</button>
-				</li>
-			</ul>
-		</div>
 	</div>
-</div>
+{/if}
 <footer />
 
 <style>
