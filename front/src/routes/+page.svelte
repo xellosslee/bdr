@@ -12,20 +12,18 @@
 			lib.bdrId = r.bdrId
 		}
 	})
-	function openEditLayer(event) {
+	function openEditLayer(evt) {
 		if (!evt.currentTarget.dataset.itemId) {
-			return alert('화면이 정상적으로 로드 되지 않았습니다.\n새로 고침 후 진행해 주시기 바랍니다.')
+			return alert('화면이 정상적으로 로드 되지 않았습니다.\n새로 고침 후 진행해 주시기 바랍니다.[0001]')
 		}
-		let itemContent = document.querySelector('.content[data-item-id="' + evt.currentTarget.dataset.itemId + '"]')
-		if (!itemContent) {
-			return alert('화면이 정상적으로 로드 되지 않았습니다.\n새로 고침 후 진행해 주시기 바랍니다.')
+		let item = items.find((e) => e.itemIdEnc == evt.currentTarget.dataset.itemId)
+		if (!item) {
+			return alert('화면이 정상적으로 로드 되지 않았습니다.\n새로 고침 후 진행해 주시기 바랍니다.[0002]')
 		}
-		itemSetPopup(itemContent)
-		let layerEdit = document.getElementById('layerEdit')
-		if (layerEdit) {
-			layerEdit.classList.remove(...['show', 'hide'])
-			layerEdit.classList.add('show')
-		}
+		popupItem = item
+	}
+	function closeEditLayer() {
+		popupItem = null
 	}
 </script>
 
@@ -57,7 +55,7 @@
 		<div class="content">아이템을 찾을 수 없습니다.</div>
 	{:else}
 		{#each items as item}
-			<div class="content">
+			<div class="content" data-item-id={item.itemIdEnc}>
 				<div class="itemHeader">
 					<div class="left">
 						<div class="itemImg"><img src={item.itemImage && item.itemImage.imgUrl ? 'http://127.0.0.1:7700' + item.itemImage.imgUrl : ''} alt={item.name} /></div>
@@ -65,7 +63,7 @@
 					</div>
 					<div class="right">
 						<div class="btnWrap">
-							<button class="btn main" on:click={openEditLayer}><i class="icon ic16 icon-edit" /></button>
+							<button class="btn main" on:click={openEditLayer} data-item-id={item.itemIdEnc}><i class="icon ic16 icon-edit" /></button>
 							<div class="likeWrap">
 								<button class="btn solid success" data-value="1" data-item-id={item.itemIdEnc}>
 									<i class="icon ic16 icon-like-fill" />
@@ -151,10 +149,10 @@
 		{/each}
 	{/if}
 </div>
-<div class="layerPopup" id="layerEdit">
+<div class={popupItem == null ? 'layerPopup' : 'layerPopup show'}>
 	<div class="dimmed" />
 	<div class="box">
-		<button class="btn closeBtn" onclick="editLayerClose(event)"><i class="icon ic16 icon-close" /></button>
+		<button class="btn closeBtn" on:click={closeEditLayer}><i class="icon ic16 icon-close" /></button>
 		<div class="inputWrap">
 			<div class="inputTitle">이미지 파일 업로드</div>
 			<input type="text" id="imageName" />
