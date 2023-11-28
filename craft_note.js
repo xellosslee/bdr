@@ -270,8 +270,7 @@ async function itemJsonGet(req, res) {
 		}
 		let resultItems = items.map((e) => ({ ...e.dataValues, itemId: undefined, fileId: undefined, itemCd: undefined }))
 		let bdrId
-		if (req.headers['bdr-id'] == null) {
-			console.debug(req.headers)
+		if (req.headers['bdr-id'] == null || req.headers['bdr-id'] == 'null') {
 			bdrId = uuid4()
 		}
 		res.send(200, { ...jsonSuccess, data: resultItems, bdrId })
