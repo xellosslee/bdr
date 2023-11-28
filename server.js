@@ -65,6 +65,7 @@ server.get('/ping', (req, res, next) => {
 	res.send(200)
 })
 require('./craft_note').applyRoutes(server)
+require('./file').applyRoutes(server)
 
 // FOR THE maxAge, IT IS COUNTED BY PER SECOND, THERE IS NO CASHING WHEN IT IS -1
 server.get('/ald/*', plugins.serveStatic({ directory: __dirname + '/src', maxAge: 6000 }))

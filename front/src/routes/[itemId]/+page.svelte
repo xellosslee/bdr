@@ -6,6 +6,9 @@
 	let items = null
 	let popupItem = null
 	let uploadImage = {}
+	let popupImageList = []
+	let selectedImageIdx = null
+	let selectedImageName = null
 	onMount(async function () {
 		let res = await lib.api({ url: '/items/get/' + $page.params.itemId })
 		let r = await res.json()
@@ -50,6 +53,27 @@
 		} else {
 			uploadImage = {}
 		}
+	}
+	async function imageSearch(event) {
+		let name = event.target.value
+		console.log('searchText', name)
+		if (name == '') {
+			return
+		}
+		var pattern = /([^가-힣\x20])/i
+		if (pattern.test(name)) {
+			console.log('자음,모음만 있는 경우 검색 안함')
+			return
+		}
+		let res = await lib.api({ url: '/file/list', data: { name, page: 0 } })
+		let result = await res.json()
+		console.log(result)
+		popupImageList = result.data.rows
+		selectedImageIdx = null
+	}
+	function chooseImage(event) {
+		selectedImageIdx = event.currentTarget.dataset.imageIdx
+		selectedImageName = popupImageList[selectedImageIdx].name
 	}
 </script>
 
@@ -179,14 +203,23 @@
 	<div class="dimmed" />
 	<div class="box">
 		<button class="btn closeBtn" on:click={closeEditLayer}><i class="icon ic16 icon-close" /></button>
+		<div class="inputWrap name">
+			<div class="inputTitle">아이템명 <input type="text" class="label" value={popupItem?.name} /></div>
+		</div>
+		<div class="inputWrap">
+			<div class="inputTitle">아이템 이미지 선택<input list="image-list" id="searchImageName" on:keyup={imageSearch} /></div>
+			{#if selectedImageName == null}
+				{#each popupImageList as popupImage, i}
+					<button on:click={chooseImage} data-image-idx={i}><img src={popupImage.imgUrl ? 'http://127.0.0.1:7700' + popupImage.imgUrl : ''} alt={popupImage.name} />{popupImage.name}</button>
+				{/each}
+			{:else}
+				<div>선택된 이미지 : {selectedImageName}</div>
+			{/if}
+		</div>
 		<div class="inputWrap">
 			<div class="inputTitle">이미지 파일 업로드</div>
 			<input type="text" id="imageName" />
 			<input type="file" on:change={setImageName} /><input type="text" value={uploadImage.name || ''} /><button on:click={doUpload}>doUpload</button>
-		</div>
-		<div class="inputWrap">
-			<div class="inputTitle">이름</div>
-			<input type="text" class="label" />
 		</div>
 	</div>
 </div>
