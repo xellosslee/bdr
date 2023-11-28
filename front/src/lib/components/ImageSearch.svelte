@@ -38,7 +38,7 @@
 <div class="props.class">
 	<div class="inputTitle">
 		이미지 검색 <input list="image-list" on:keyup={imageSearch} value={popupImageSearch} />
-		{#if popupItem.itemImage.name}<div>선택된 이미지 : {popupItem.itemImage.name}</div>{/if}
+		{#if popupItem?.itemImage?.name}<div>선택된 이미지 : {popupItem?.itemImage?.name}</div>{/if}
 	</div>
 	{#each popupImageList as popupImage, i}
 		<button on:click={chooseImage} data-image-idx={i}><img src={popupImage.imgUrl ? 'http://127.0.0.1:7700' + popupImage.imgUrl : ''} alt={popupImage.name} />{popupImage.name}</button>
