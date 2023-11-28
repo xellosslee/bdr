@@ -18,6 +18,11 @@ module.exports = (sq) => {
 			desc: {
 				type: DataTypes.TEXT,
 			},
+			grade: {
+				type: DataTypes.TINYINT,
+				defaultValue: 1,
+				comment: '아이템 등급 1부터 회색, 녹색, 파랑, 노랑, 빨강',
+			},
 			fileId: {
 				type: DataTypes.BIGINT.UNSIGNED,
 			},

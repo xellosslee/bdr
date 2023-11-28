@@ -28,7 +28,7 @@
 	<div class="itemHeader">
 		<div class="left">
 			<div class="itemImg"><img src={item.itemImage && item.itemImage.imgUrl ? lib.apiUrl + item.itemImage.imgUrl : ''} alt={item.name} /></div>
-			<div class="itemName">{item.name}</div>
+			<div class={'itemName grade' + item.grade}>{item.name}</div>
 		</div>
 		<div class="right">
 			<div class="btnWrap">
@@ -67,7 +67,7 @@
 								{earn.path}
 							{/if}
 							{earn.work}<br />
-							<div>x <input type="text" class="count" data-earn-input={i} value="1" />회</div>
+							<div>x <input type="text" class="count" bind:value={earn.makeCnt} />회</div>
 						</label>
 					{:else}
 						{earn.work}
@@ -88,7 +88,7 @@
 									/>
 									<span>{craft.craftItems[0].name}</span>
 								</div>
-								<div>{craft.count} x <input class="count" type="text" data-earn-id={i} data-ori-value={craft.count} readonly /></div>
+								<div>{craft.count} x <input class="count" type="text" value={craft.count * (earn.makeCnt || 0)} readonly /></div>
 							</div>
 						{/if}
 					{/each}
@@ -283,5 +283,20 @@
 
 	button.btn.solid:active {
 		transform: scale(1.2);
+	}
+	.grade1 {
+		color: #4e4e4e;
+	}
+	.grade2 {
+		color: #00aa00;
+	}
+	.grade3 {
+		color: #0070dd;
+	}
+	.grade4 {
+		color: #ffb400;
+	}
+	.grade5 {
+		color: #ff0036;
 	}
 </style>
