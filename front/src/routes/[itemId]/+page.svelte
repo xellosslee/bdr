@@ -5,8 +5,9 @@
 	import { page } from '$app/stores'
 	let items = null
 	let popupItem = null
+	let uploadImage = {}
 	onMount(async function () {
-		let res = await lib.api({ url: 'http://127.0.0.1:7700/items/get/' + $page.params.itemId })
+		let res = await lib.api({ url: '/items/get/' + $page.params.itemId })
 		let r = await res.json()
 		if (r.code == '00') {
 			items = r.data
@@ -26,6 +27,29 @@
 	}
 	function closeEditLayer() {
 		popupItem = null
+	}
+	async function doUpload() {
+		if (!uploadImage) {
+			return alert('이미지 선택되지 않았습니다.')
+		}
+		if (uploadImage.name == '') {
+			return alert('이미지 이름을 적어주세요.')
+		}
+		let data = new FormData()
+		data.append('image', uploadImage.file)
+		data.append('name', uploadImage.name)
+		let res = await lib.api({ url: '/file/put', data })
+		let result = await res.json()
+		console.log(result)
+	}
+	function setImageName(evt) {
+		let image = evt.currentTarget
+		if (image.files.length > 0) {
+			uploadImage.name = image.files[0].name.split('.')[0].replace(/ /gi, '_')
+			uploadImage.file = image.files[0]
+		} else {
+			uploadImage = {}
+		}
 	}
 </script>
 
@@ -158,7 +182,7 @@
 		<div class="inputWrap">
 			<div class="inputTitle">이미지 파일 업로드</div>
 			<input type="text" id="imageName" />
-			<input type="file" id="image1" onchange="setImageName(1)" /><input type="text" id="imageName1" /><button onclick="doUpload(1)">doUpload</button>
+			<input type="file" on:change={setImageName} /><input type="text" value={uploadImage.name || ''} /><button on:click={doUpload}>doUpload</button>
 		</div>
 		<div class="inputWrap">
 			<div class="inputTitle">이름</div>
