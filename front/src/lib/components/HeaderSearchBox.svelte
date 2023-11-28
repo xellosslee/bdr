@@ -23,15 +23,13 @@
 			// 단어의 변경이 없으면 재조회 안하도록 수정
 			searchedText = evt.target.value
 			let data = { search: evt.target.value }
-			console.log(data)
 			let result = await lib.api({ url: '/item/fast/search', data })
 			// 검색결과 출력
-			console.log(result)
+			console.debug(result)
 			if (result.code == '00' && result.data.length > 0) {
 				searchItems = result.data
 			} else {
 				searchItems = []
-				// autoCompleteFocusCnt = -1
 			}
 		}
 	}
