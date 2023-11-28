@@ -12,6 +12,21 @@
 			lib.bdrId = r.bdrId
 		}
 	})
+	function openEditLayer(event) {
+		if (!evt.currentTarget.dataset.itemId) {
+			return alert('화면이 정상적으로 로드 되지 않았습니다.\n새로 고침 후 진행해 주시기 바랍니다.')
+		}
+		let itemContent = document.querySelector('.content[data-item-id="' + evt.currentTarget.dataset.itemId + '"]')
+		if (!itemContent) {
+			return alert('화면이 정상적으로 로드 되지 않았습니다.\n새로 고침 후 진행해 주시기 바랍니다.')
+		}
+		itemSetPopup(itemContent)
+		let layerEdit = document.getElementById('layerEdit')
+		if (layerEdit) {
+			layerEdit.classList.remove(...['show', 'hide'])
+			layerEdit.classList.add('show')
+		}
+	}
 </script>
 
 <header class="contentHeader">
@@ -50,7 +65,7 @@
 					</div>
 					<div class="right">
 						<div class="btnWrap">
-							<button class="btn main" onclick="openEditLayer(event)"><i class="icon ic16 icon-edit" /></button>
+							<button class="btn main" on:click={openEditLayer}><i class="icon ic16 icon-edit" /></button>
 							<div class="likeWrap">
 								<button class="btn solid success" data-value="1" data-item-id={item.itemIdEnc}>
 									<i class="icon ic16 icon-like-fill" />

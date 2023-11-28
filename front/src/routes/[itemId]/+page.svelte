@@ -13,6 +13,22 @@
 			lib.bdrId = r.bdrId
 		}
 	})
+	function openEditLayer(evt) {
+		debugger
+		if (!evt.currentTarget.dataset.itemId) {
+			return alert('화면이 정상적으로 로드 되지 않았습니다.\n새로 고침 후 진행해 주시기 바랍니다.')
+		}
+		let itemContent = document.querySelector('.content[data-item-id="' + evt.currentTarget.dataset.itemId + '"]')
+		if (!itemContent) {
+			return alert('화면이 정상적으로 로드 되지 않았습니다.\n새로 고침 후 진행해 주시기 바랍니다.[0001]')
+		}
+		itemSetPopup(itemContent)
+		let layerEdit = document.getElementById('layerEdit')
+		if (layerEdit) {
+			layerEdit.classList.remove(...['show', 'hide'])
+			layerEdit.classList.add('show')
+		}
+	}
 </script>
 
 <header class="contentHeader">
@@ -51,7 +67,7 @@
 					</div>
 					<div class="right">
 						<div class="btnWrap">
-							<button class="btn main" onclick="openEditLayer(event)"><i class="icon ic16 icon-edit" /></button>
+							<button class="btn main" on:click={openEditLayer}><i class="icon ic16 icon-edit" /></button>
 							<div class="likeWrap">
 								<button class="btn solid success" data-value="1" data-item-id={item.itemIdEnc}>
 									<i class="icon ic16 icon-like-fill" />
@@ -61,7 +77,13 @@
 									<i class="icon ic16 icon-dislike-fill" />
 								</button>
 							</div>
-							<button class="btn gold bookmark" onclick="bookmark(event)" data-img-url={item.itemImage && item.itemImage.imgUrl ? 'http://127.0.0.1:7700' + item.itemImage.imgUrl : ''} data-name={item.name} data-item-cd={item.itemCdEnc}>
+							<button
+								class="btn gold bookmark"
+								onclick="bookmark(event)"
+								data-img-url={item.itemImage && item.itemImage.imgUrl ? 'http://127.0.0.1:7700' + item.itemImage.imgUrl : ''}
+								data-name={item.name}
+								data-item-cd={item.itemCdEnc}
+							>
 								<i class="icon ic16 icon-bookmark" />
 							</button>
 						</div>
@@ -94,7 +116,11 @@
 									{#if craft.craftItems && craft.craftItems.length > 0}
 										<div class="col" style="align-items: center;">
 											<div class="miniItemLabel" onclick="location.href='{craft.craftItems[0].url}'">
-												<img class="miniItem" src={craft.craftItems[0].itemImage && craft.craftItems[0].itemImage.imgUrl ? 'http://127.0.0.1:7700' + craft.craftItems[0].itemImage.imgUrl : ''} alt={craft.craftItems[0].name} />
+												<img
+													class="miniItem"
+													src={craft.craftItems[0].itemImage && craft.craftItems[0].itemImage.imgUrl ? 'http://127.0.0.1:7700' + craft.craftItems[0].itemImage.imgUrl : ''}
+													alt={craft.craftItems[0].name}
+												/>
 												<span>{craft.craftItems[0].name}</span>
 											</div>
 											<div>{craft.count} x <input class="count" type="text" data-earn-id={i} data-ori-value={craft.count} readonly /></div>
@@ -112,7 +138,11 @@
 						{#each item.Usages as usage}
 							{#if usage.usageItems && usage.usageItems.length > 0}
 								<div class="miniItemLabel" onclick="location.href='{usage.usageItems[0].url}'">
-									<img class="miniItem" src={usage.usageItems[0].itemImage && usage.usageItems[0].itemImage.imgUrl ? 'http://127.0.0.1:7700' + usage.usageItems[0].itemImage.imgUrl : ''} alt={usage.usageItems[0].name} />
+									<img
+										class="miniItem"
+										src={usage.usageItems[0].itemImage && usage.usageItems[0].itemImage.imgUrl ? 'http://127.0.0.1:7700' + usage.usageItems[0].itemImage.imgUrl : ''}
+										alt={usage.usageItems[0].name}
+									/>
 									<span>{usage.usageItems[0].name}</span>
 								</div>
 							{/if}
@@ -157,22 +187,8 @@
 	}
 
 	body {
-		font-family:
-			'Pretendard Variable',
-			Pretendard,
-			-apple-system,
-			BlinkMacSystemFont,
-			system-ui,
-			Roboto,
-			'Helvetica Neue',
-			'Segoe UI',
-			'Apple SD Gothic Neo',
-			'Noto Sans KR',
-			'Malgun Gothic',
-			'Apple Color Emoji',
-			'Segoe UI Emoji',
-			'Segoe UI Symbol',
-			sans-serif;
+		font-family: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, 'Helvetica Neue', 'Segoe UI', 'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic',
+			'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', sans-serif;
 		font-size: min(16px, 4.10256vw);
 		color: var(--text);
 		margin: 0;
@@ -225,11 +241,7 @@
 	@font-face {
 		font-family: 'icon';
 		src: url('$lib/fonts/icon.eot');
-		src:
-			url('$lib/fonts/icon.eot') format('embedded-opentype'),
-			url('$lib/fonts/icon.ttf') format('truetype'),
-			url('$lib/fonts/icon.woff') format('woff'),
-			url('$lib/fonts/icon.svg') format('svg');
+		src: url('$lib/fonts/icon.eot') format('embedded-opentype'), url('$lib/fonts/icon.ttf') format('truetype'), url('$lib/fonts/icon.woff') format('woff'), url('$lib/fonts/icon.svg') format('svg');
 		font-weight: normal;
 		font-style: normal;
 		font-display: block;
@@ -410,8 +422,21 @@
 	.earnList .colHeader {
 		width: min(130px, 33.3333333vw);
 		text-align: center;
-		background-color: var(--gray-color3);
+		/* background-color: var(--gray-color3); */
 		vertical-align: middle;
+		font-size: min(13px, 3.3333333vw);
+		font-weight: 600;
+		border: 1px solid var(--gray-color1);
+		border-radius: 5px;
+		margin: 4px;
+	}
+
+	.earnList > .row {
+		transition: background-color 0.2s;
+	}
+
+	.earnList > .row:hover {
+		background-color: var(--gray-color4);
 	}
 
 	.earnList .recipe {
@@ -561,9 +586,7 @@
 		border: none;
 		padding: 0;
 		margin: 0 5px;
-		transition:
-			opacity 0.3s,
-			transform 0.3s;
+		transition: opacity 0.3s, transform 0.3s;
 	}
 
 	.btn.solid.success {
