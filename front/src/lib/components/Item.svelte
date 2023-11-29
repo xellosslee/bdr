@@ -171,7 +171,7 @@
 	.itemImg {
 		width: min(36px, 9.2307692vw);
 		height: min(36px, 9.2307692vw);
-		border: 1px solid var(--gray-color3);
+		border: 2px solid var(--gray-color3);
 		border-radius: 4px;
 		overflow: hidden;
 		margin-right: min(10px, 2.5641026vw);
