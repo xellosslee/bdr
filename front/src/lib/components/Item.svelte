@@ -1,7 +1,16 @@
 <script>
 	import lib from '$lib'
+	import { onMount } from 'svelte'
 	export let item = {}
 	export let popupItem = null
+	onMount(async function () {
+		let exists = localStorage.getItem('bookmark-' + item.itemCdEnc)
+		if (exists) {
+			item.bookmarked = 1
+		} else {
+			item.bookmarked = 0
+		}
+	})
 	function openEditLayer(evt) {
 		popupItem = item
 	}
@@ -20,6 +29,16 @@
 			}
 		} else if (result.code == '01') {
 			alert(result.message)
+		}
+	}
+	function toggleBookmark(evt) {
+		let exists = localStorage.getItem('bookmark-' + item.itemCdEnc)
+		if (exists) {
+			localStorage.removeItem('bookmark-' + item.itemCdEnc)
+			item.bookmarked = 0
+		} else {
+			localStorage.setItem('bookmark-' + item.itemCdEnc, JSON.stringify({ name: item.name, imgUrl: lib.apiUrl + item.itemImage.imgUrl }))
+			item.bookmarked = 1
 		}
 	}
 </script>
@@ -42,14 +61,8 @@
 						<i class="icon ic16 icon-dislike-fill" />
 					</button>
 				</div>
-				<button
-					class="btn gold bookmark"
-					onclick="bookmark(event)"
-					data-img-url={item.itemImage && item.itemImage.imgUrl ? lib.apiUrl + item.itemImage.imgUrl : ''}
-					data-name={item.name}
-					data-item-cd={item.itemCdEnc}
-				>
-					<i class="icon ic16 icon-bookmark" />
+				<button class="btn gold bookmark" on:click={toggleBookmark}>
+					<i class={'icon ic16 icon-bookmark' + (item.bookmarked ? '-fill' : '')} />
 				</button>
 			</div>
 		</div>
