@@ -47,9 +47,31 @@
 		let newUsages = editItem.Usages.filter((e) => e.resultItemCd != evt.target.dataset.itemCd)
 		editItem.Usages = newUsages
 	}
-
+	function addEarn() {
+		editItem.Earns.push({ type: 'get', Crafts: [] })
+		editItem.Earns = editItem.Earns
+	}
+	function addRecipeItem(evt) {
+		let idx = evt.currentTarget.dataset.earnIdx
+		editItem.Earns[idx].Crafts.push({})
+		editItem.Earns[idx].Crafts = editItem.Earns[idx].Crafts
+	}
+	function removeRecipeItem(evt) {
+		let idx = evt.currentTarget.dataset.earnIdx
+		let craftIdx = evt.currentTarget.dataset.craftIdx
+		editItem.Earns[idx].Crafts.splice(craftIdx, 1)
+		editItem.Earns[idx].Crafts = editItem.Earns[idx].Crafts
+	}
 	function save(evt) {
 		console.debug(editItem)
+		let data = {
+			itemCdEnc: editItem.itemCdEnc,
+			name: editItem.name,
+			...(editItem?.itemImage?.fileId != null ? { fileId: editItem.itemImage.fileId } : {}),
+			desc: editItem.desc,
+			Earns: editItem.Earns.map((e) => ({ itemId: e.itemId, work: e.work, type: e.type })),
+		}
+		console.debug(data)
 	}
 </script>
 
@@ -74,19 +96,34 @@
 					<div class="inputTitle">아이템 설명<textarea>{editItem.desc.replace(/<br>/gi, '\n')}</textarea></div>
 				</div>
 				<div class="inputWrap crafts">
-					<div class="inputTitle">획득 방법</div>
+					<div class="inputTitle">획득 방법<button on:click={addEarn}>추가</button></div>
 					<ul>
-						{#each editItem.Earns as earn}
+						{#each editItem.Earns as earn, i}
 							<li>
-								<div>동작 <input type="text" bind:value={earn.work} /></div>
-								<ul>
-									{#each earn.Crafts as craft}
+								<div>
+									<select bind:value={earn.type}>
+										<option value="get">획득/구매</option>
+										<option value="craft">제작</option>
+									</select>
+									<input type="text" bind:value={earn.work} />
+									{#if earn.type == 'get'}
+										<input type="text" bind:value={earn.path} />
+									{/if}
+								</div>
+								{#if earn.type == 'craft'}
+									<ul class="row">
+										{#each earn.Crafts as craft, x}
+											<li class="col">
+												아이템 <input type="text" class="count" bind:value={craft.itemCd} />
+												개수 <input type="text" class="count" bind:value={craft.count} />
+												<button class="btn" data-earn-idx={i} data-craft-idx={x} on:click={removeRecipeItem}><i class="icon ic16 icon-del" />삭제</button>
+											</li>
+										{/each}
 										<li>
-											<div>아이템 <input type="text" bind:value={craft.itemCd} /></div>
-											<div>개수 <input type="text" bind:value={craft.count} /></div>
+											<button on:click={addRecipeItem} data-earn-idx={i}>레시피 아이템 추가</button>
 										</li>
-									{/each}
-								</ul>
+									</ul>
+								{/if}
 							</li>
 						{/each}
 					</ul>
