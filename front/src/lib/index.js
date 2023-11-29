@@ -12,7 +12,6 @@ export default {
 			body = param.method == 'GET' ? null : JSON.stringify(param.data || {})
 			headers['Content-Type'] = 'application/json'
 		}
-		console.log(headers)
 		let response = await fetch(this.apiUrl + param.url, { method: param.method || 'POST', body, headers })
 		let res = await response.json()
 		if (res.code == '00' && res.bdrId) {

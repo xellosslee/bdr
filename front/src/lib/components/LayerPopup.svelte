@@ -2,7 +2,6 @@
 	import { fade } from 'svelte/transition'
 	import ImageSearch from '$components/ImageSearch.svelte'
 	import ItemSearch from '$components/ItemSearch.svelte'
-	import { onMount } from 'svelte'
 	import lib from '$lib'
 	export let popupItem = {}
 	let uploadImage = {} // 업로드 대상 이미지 값 저장용
@@ -62,16 +61,24 @@
 		editItem.Earns[idx].Crafts.splice(craftIdx, 1)
 		editItem.Earns[idx].Crafts = editItem.Earns[idx].Crafts
 	}
-	function save(evt) {
+	async function save(evt) {
 		console.debug(editItem)
 		let data = {
+			itemIdEnc: editItem.itemIdEnc,
 			itemCdEnc: editItem.itemCdEnc,
-			name: editItem.name,
+			...(editItem.name != popupItem.name ? { name: editItem.name } : {}),
 			...(editItem?.itemImage?.fileId != null ? { fileId: editItem.itemImage.fileId } : {}),
-			desc: editItem.desc,
-			Earns: editItem.Earns.map((e) => ({ itemId: e.itemId, work: e.work, type: e.type })),
+			...(editItem.desc != popupItem.desc ? { desc: editItem.desc } : {}),
+			...(editItem.grade != popupItem.grade ? { grade: editItem.grade } : {}),
+			Earns: editItem.Earns.map((e) => ({ itemId: e.itemId, work: e.work, type: e.type, Crafts: e.Crafts.map((ee) => ({ itemCd: ee.itemCd, count: ee.count })) })),
+			Usages: editItem.Usages.map((e) => ({ itemId: e.itemId, resultItemCd: e.resultItemCd })),
 		}
 		console.debug(data)
+		let result = await lib.api({ url: '/item/put', data })
+		if (result.code == '00') {
+			alert('아이템이 등록 되었습니다.\n감사합니다.')
+			closeEditLayer()
+		}
 	}
 </script>
 
@@ -84,7 +91,17 @@
 		{#if editItem != null}
 			<div class="box-container">
 				<div class="inputWrap name">
-					<div class="inputTitle">아이템명 <input type="text" class="label" value={editItem?.name} /></div>
+					<div class="inputTitle">
+						아이템명
+						<input type="text" class="label" value={editItem['name']} />
+						<select bind:value={editItem['grade']}>
+							<option value="1">흰색</option>
+							<option value="2">녹색</option>
+							<option value="3">파란색</option>
+							<option value="4">노란색</option>
+							<option value="5">빨강색</option>
+						</select>
+					</div>
 				</div>
 				<ImageSearch bind:popupItem={editItem} />
 				<div class="inputWrap imageUpload">
@@ -136,9 +153,7 @@
 							<li class="miniItemLabel">
 								<img
 									class={'miniItem grade' + usage.usageItems[0].grade}
-									src={usage.usageItems[0].itemImage && usage.usageItems[0].itemImage.imgUrl
-										? lib.apiUrl + usage.usageItems[0].itemImage.imgUrl
-										: lib.apiUrl + usage.usageItems[0].imgUrl}
+									src={usage.usageItems[0].itemImage && usage.usageItems[0].itemImage.imgUrl ? lib.apiUrl + usage.usageItems[0].itemImage.imgUrl : lib.apiUrl + usage.usageItems[0].imgUrl}
 									alt={usage.usageItems[0].name}
 								/>
 								<span class={'grade' + usage.usageItems[0].grade}>{usage.usageItems[0].name}</span>
