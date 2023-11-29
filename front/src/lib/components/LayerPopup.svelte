@@ -47,6 +47,7 @@
 	<div class="box">
 		<div class="popupTitle">아이템 수정</div>
 		<button class="closeBtn" on:click={closeEditLayer}><i class="icon ic16 icon-close" /></button>
+
 		<div class="box-container">
 			<div class="inputWrap name">
 				<div class="inputTitle">아이템명 <input type="text" class="label" value={popupItem?.name} /></div>
