@@ -202,7 +202,7 @@
 	img.miniItem {
 		width: min(22px, 5.6410256vw);
 		height: min(22px, 5.6410256vw);
-		border: 1px solid var(--gray-color3);
+		border: 2px solid var(--gray-color3);
 		border-radius: 4px;
 	}
 
@@ -286,27 +286,27 @@
 	}
 	img.miniItem.grade1,
 	.itemImg.grade1 {
-		border: 1px solid var(--grade1);
+		border-color: var(--grade1);
 		box-sizing: border-box;
 	}
 	img.miniItem.grade2,
 	.itemImg.grade2 {
-		border: 1px solid var(--grade2);
+		border-color: var(--grade2);
 		box-sizing: border-box;
 	}
 	img.miniItem.grade3,
 	.itemImg.grade3 {
-		border: 1px solid var(--grade3);
+		border-color: var(--grade3);
 		box-sizing: border-box;
 	}
 	img.miniItem.grade4,
 	.itemImg.grade4 {
-		border: 1px solid var(--grade4);
+		border-color: var(--grade4);
 		box-sizing: border-box;
 	}
 	img.miniItem.grade5,
 	.itemImg.grade5 {
-		border: 1px solid var(--grade5);
+		border-color: var(--grade5);
 		box-sizing: border-box;
 	}
 	.itemName.grade1 {
