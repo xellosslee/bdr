@@ -1,10 +1,13 @@
 <script>
 	import { fade } from 'svelte/transition'
 	import ImageSearch from '$components/ImageSearch.svelte'
+	import ItemSearch from '$components/ItemSearch.svelte'
+	import { onMount } from 'svelte'
+	import lib from '$lib'
 	export let popupItem = {}
 	let uploadImage = {} // 업로드 대상 이미지 값 저장용
 	let dimmedClickClose = true
-
+	let editItem = structuredClone(popupItem)
 	export function closeEditLayer() {
 		popupItem = null
 	}
@@ -40,6 +43,14 @@
 			closeEditLayer()
 		}
 	}
+	function removeUsage(evt) {
+		let newUsages = editItem.Usages.filter((e) => e.resultItemCd != evt.target.dataset.itemCd)
+		editItem.Usages = newUsages
+	}
+
+	function save(evt) {
+		console.debug(editItem)
+	}
 </script>
 
 <div class="layerPopup" transition:fade={{ duration: 300 }}>
@@ -48,54 +59,62 @@
 		<div class="popupTitle">아이템 수정</div>
 		<button class="closeBtn" on:click={closeEditLayer}><i class="icon ic16 icon-close" /></button>
 
-		<div class="box-container">
-			<div class="inputWrap name">
-				<div class="inputTitle">아이템명 <input type="text" class="label" value={popupItem?.name} /></div>
-			</div>
-			<ImageSearch bind:popupItem />
-			<div class="inputWrap imageUpload">
-				<div class="inputTitle">
-					이미지 파일 업로드<input type="file" on:change={setImageName} /><input type="text" value={uploadImage.name || ''} /><button on:click={doUpload}>doUpload</button>
+		{#if editItem != null}
+			<div class="box-container">
+				<div class="inputWrap name">
+					<div class="inputTitle">아이템명 <input type="text" class="label" value={editItem?.name} /></div>
+				</div>
+				<ImageSearch bind:popupItem={editItem} />
+				<div class="inputWrap imageUpload">
+					<div class="inputTitle">
+						이미지 파일 업로드<input type="file" on:change={setImageName} /><input type="text" value={uploadImage.name || ''} /><button on:click={doUpload}>doUpload</button>
+					</div>
+				</div>
+				<div class="inputWrap desc">
+					<div class="inputTitle">아이템 설명<textarea>{editItem.desc.replace(/<br>/gi, '\n')}</textarea></div>
+				</div>
+				<div class="inputWrap crafts">
+					<div class="inputTitle">획득 방법</div>
+					<ul>
+						{#each editItem.Earns as earn}
+							<li>
+								<div>동작 <input type="text" bind:value={earn.work} /></div>
+								<ul>
+									{#each earn.Crafts as craft}
+										<li>
+											<div>아이템 <input type="text" bind:value={craft.itemCd} /></div>
+											<div>개수 <input type="text" bind:value={craft.count} /></div>
+										</li>
+									{/each}
+								</ul>
+							</li>
+						{/each}
+					</ul>
+				</div>
+				<div class="inputWrap usages">
+					<div class="inputTitle">제작가능 아이템</div>
+					<ItemSearch bind:popupItem={editItem} />
+					<ul>
+						{#each editItem.Usages as usage}
+							<li class="miniItemLabel">
+								<img
+									class={'miniItem grade' + usage.usageItems[0].grade}
+									src={usage.usageItems[0].itemImage && usage.usageItems[0].itemImage.imgUrl
+										? lib.apiUrl + usage.usageItems[0].itemImage.imgUrl
+										: lib.apiUrl + usage.usageItems[0].imgUrl}
+									alt={usage.usageItems[0].name}
+								/>
+								<span class={'grade' + usage.usageItems[0].grade}>{usage.usageItems[0].name}</span>
+								<button class="btn" data-item-cd={usage.resultItemCd} on:click={removeUsage}><i class="icon ic16 icon-del" />삭제</button>
+							</li>
+						{/each}
+					</ul>
 				</div>
 			</div>
-			<div class="inputWrap desc">
-				<div class="inputTitle">아이템 설명<textarea>{popupItem.desc.replace(/<br>/gi, '\n')}</textarea></div>
-			</div>
-			<div class="inputWrap crafts">
-				<div class="inputTitle">획득 방법</div>
-				<ul>
-					<li>
-						<div>동작 <input type="text" value="요리" /></div>
-						<ul>
-							<li>
-								<div>아이템 <input type="text" /></div>
-								<div>개수 <input type="text" /></div>
-							</li>
-							<li>
-								<div>아이템 <input type="text" /></div>
-								<div>개수 <input type="text" /></div>
-							</li>
-							<li>
-								<div>아이템 <input type="text" /></div>
-								<div>개수 <input type="text" /></div>
-							</li>
-							<li>
-								<div>아이템 <input type="text" /></div>
-								<div>개수 <input type="text" /></div>
-							</li>
-						</ul>
-					</li>
-				</ul>
-			</div>
-			<div class="inputWrap usages">
-				<div class="inputTitle">제작가능 아이템<button class="btn"><i class="icon ic16 icon-add" />추가</button></div>
-				<ul>
-					<li>
-						<div>아이템 선택</div>
-						<button class="btn"><i class="icon ic16 icon-del" />삭제</button>
-					</li>
-				</ul>
-			</div>
+		{/if}
+
+		<div class="btnWrap">
+			<button class="btn" on:click={save}>저 장</button>
 		</div>
 	</div>
 </div>
@@ -109,6 +128,7 @@
 		bottom: 0;
 		width: 100%;
 		height: 100%;
+		overflow: hidden;
 	}
 
 	.dimmed {
@@ -148,13 +168,20 @@
 	}
 
 	.box-container {
-		padding: 50px 20px;
+		padding: 0 20px 20px;
 		display: flex;
 		flex-wrap: wrap;
+		position: absolute;
+		overflow: auto;
+		top: 0;
+		bottom: 0;
+		left: 0;
+		right: 0;
+		margin: 50px 0;
 	}
 
 	.box-container > div {
-		flex: 1 0 auto;
+		width: 100%;
 	}
 
 	@keyframes showAni {
@@ -183,5 +210,49 @@
 	.layerPopup textarea {
 		width: calc(100% - 6px);
 		height: 200px;
+	}
+
+	.inputWrap.usages li {
+		display: flex;
+	}
+
+	.btnWrap {
+		display: flex;
+		position: absolute;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		height: 40px;
+	}
+	.btnWrap button {
+		margin: 10px auto;
+	}
+
+	.miniItemLabel {
+		display: flex;
+		align-items: center;
+		line-height: min(22px, 5.6410256vw);
+		padding: 4px 6px;
+		color: var(--point-color);
+		font-size: min(15px, 3.8461538vw);
+		border-radius: 4px;
+	}
+	.miniItemLabel span {
+		margin-left: 4px;
+	}
+	.miniItemLabel > button {
+		margin-left: 4px;
+	}
+	img.miniItem {
+		width: min(22px, 5.6410256vw);
+		height: min(22px, 5.6410256vw);
+		border: 2px solid var(--gray-color3);
+		border-radius: 4px;
+	}
+	img.miniItem {
+		width: min(22px, 5.6410256vw);
+		height: min(22px, 5.6410256vw);
+		border: 2px solid var(--gray-color3);
+		border-radius: 4px;
 	}
 </style>

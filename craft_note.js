@@ -305,6 +305,7 @@ router.post('/item/fast/search', async (req, res) => {
 				name: items[i].name,
 				grade: items[i].grade,
 				imgUrl: items[i].itemImage.imgUrl,
+				itemCd: items[i].itemCd,
 			})
 		}
 		res.send(200, { ...jsonSuccess, data })
