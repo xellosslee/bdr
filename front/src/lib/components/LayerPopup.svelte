@@ -45,6 +45,7 @@
 <div class="layerPopup" transition:fade={{ duration: 300 }}>
 	<button class="dimmed" on:click={dimmedClick} aria-roledescription="close btn" />
 	<div class="box">
+		<div class="popupTitle">아이템 수정</div>
 		<button class="closeBtn" on:click={closeEditLayer}><i class="icon ic16 icon-close" /></button>
 		<div class="box-container">
 			<div class="inputWrap name">
@@ -133,13 +134,20 @@
 
 	.closeBtn {
 		position: absolute;
-		top: 10px;
+		top: 5px;
 		right: 10px;
 		padding: 10px;
 	}
 
+	.popupTitle {
+		font-size: 20px;
+		font-weight: 800;
+		line-height: 50px;
+		margin-left: 20px;
+	}
+
 	.box-container {
-		padding: 20px;
+		padding: 50px 20px;
 		display: flex;
 		flex-wrap: wrap;
 	}
