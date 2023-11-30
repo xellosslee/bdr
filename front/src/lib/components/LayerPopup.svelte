@@ -226,6 +226,7 @@
 		padding: 0 20px 20px;
 		display: flex;
 		flex-wrap: wrap;
+		align-content: flex-start;
 		position: absolute;
 		overflow: auto;
 		top: 0;

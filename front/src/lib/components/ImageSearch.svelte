@@ -19,7 +19,7 @@
 			return
 		}
 		searchTextBefore = name
-		let result = await lib.api({ url: '/item/fast/search', data: { search: name } })
+		let result = await lib.api({ url: '/item/fast-search', data: { search: name } })
 		console.log(result)
 		searchResultList = result.data
 	}

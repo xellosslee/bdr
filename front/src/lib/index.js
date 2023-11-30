@@ -18,8 +18,4 @@ export default {
 		}
 		return res
 	},
-	apiUrl: import.meta.env.VITE_API_HOST,
-	imgUrl: (path) => {
-		return new URL(`$lib/${path}`, import.meta.url).href
-	},
 }
