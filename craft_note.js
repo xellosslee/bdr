@@ -355,13 +355,16 @@ router.post('/item/put', async function (req, res) {
 		// 기존 아이템 수정 - (수정하여 새로운 레코드 생성)
 		if (req.body.itemIdEnc) {
 			req.body.itemId = decode(req.body.itemIdEnc)
-			item = await DB.Item.findOne({ attributes: ['itemCd', 'name', 'fileId', 'desc'], where: { itemId: req.body.itemId } })
-			let newItem = await DB.Item.create({ itemCd: item.itemCd, name: req.body.name || item.name, fileId: req.body.fileId || item.fileId, desc: req.body.desc || item.desc }, { transaction })
+			item = await DB.Item.findOne({ attributes: ['itemCd', 'name', 'fileId', 'grade', 'desc'], where: { itemId: req.body.itemId } })
+			let newItem = await DB.Item.create(
+				{ itemCd: item.itemCd, name: req.body.name || item.name, fileId: req.body.fileId || item.fileId, grade: req.body.grade || item.grade, desc: req.body.desc || item.desc },
+				{ transaction },
+			)
 			for (let i = 0; i < req.body.Earns.length; i++) {
-				let earn = await DB.Earn.create({ itemId: newItem.itemId, ...req.body.Earns[i] }, { transaction })
+				let earn = await DB.Earn.create({ ...req.body.Earns[i], itemId: newItem.itemId }, { transaction })
 				if (Array.isArray(req.body.Earns[i].Crafts)) {
 					await DB.Craft.bulkCreate(
-						req.body.Earns[i].Crafts.map((e) => ({ earnId: earn.id, itemCd: e.itemId, count: e.count })),
+						req.body.Earns[i].Crafts.map((e) => ({ earnId: earn.id, itemCd: e.itemCd, count: e.count })),
 						{ transaction },
 					)
 				}
