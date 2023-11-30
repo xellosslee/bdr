@@ -7,6 +7,7 @@
 	let uploadImage = {} // 업로드 대상 이미지 값 저장용
 	let dimmedClickClose = true
 	let editItem = structuredClone(popupItem)
+	console.debug(editItem)
 	export function closeEditLayer() {
 		popupItem = null
 	}
@@ -43,7 +44,8 @@
 		}
 	}
 	function removeUsage(evt) {
-		let newUsages = editItem.Usages.filter((e) => e.resultItemCd != evt.target.dataset.itemCd)
+		debugger
+		let newUsages = editItem.Usages.filter((e) => e.usageItems[0].itemCd != evt.target.dataset.itemCd)
 		editItem.Usages = newUsages
 	}
 	function addEarn() {
@@ -70,14 +72,15 @@
 			...(editItem?.itemImage?.fileId != null ? { fileId: editItem.itemImage.fileId } : {}),
 			...(editItem.desc != popupItem.desc ? { desc: editItem.desc } : {}),
 			...(editItem.grade != popupItem.grade ? { grade: editItem.grade } : {}),
-			Earns: editItem.Earns.map((e) => ({ itemId: e.itemId, work: e.work, type: e.type, Crafts: e.Crafts.map((ee) => ({ itemCd: ee.itemCd, count: ee.count })) })),
-			Usages: editItem.Usages.map((e) => ({ itemId: e.itemId, resultItemCd: e.resultItemCd })),
+			Earns: editItem.Earns.map((e) => ({ work: e.work, type: e.type, Crafts: e.Crafts.map((ee) => ({ itemCd: ee.itemCd, count: ee.count })) })),
+			Usages: editItem.Usages.map((e) => ({ resultItemCd: e.usageItems[0].itemCd })),
 		}
 		console.debug(data)
 		let result = await lib.api({ url: '/item/put', data })
 		if (result.code == '00') {
 			alert('아이템이 등록 되었습니다.\n감사합니다.')
 			closeEditLayer()
+			location.href = ''
 		}
 	}
 </script>
@@ -93,13 +96,13 @@
 				<div class="inputWrap name">
 					<div class="inputTitle">
 						아이템명
-						<input type="text" class="label" value={editItem['name']} />
-						<select bind:value={editItem['grade']}>
-							<option value="1">흰색</option>
-							<option value="2">녹색</option>
-							<option value="3">파란색</option>
-							<option value="4">노란색</option>
-							<option value="5">빨강색</option>
+						<input type="text" class="label" bind:value={editItem['name']} />
+						<select bind:value={editItem.grade}>
+							<option value={1}>흰색</option>
+							<option value={2}>녹색</option>
+							<option value={3}>파란색</option>
+							<option value={4}>노란색</option>
+							<option value={5}>빨강색</option>
 						</select>
 					</div>
 				</div>
@@ -157,7 +160,7 @@
 									alt={usage.usageItems[0].name}
 								/>
 								<span class={'grade' + usage.usageItems[0].grade}>{usage.usageItems[0].name}</span>
-								<button class="btn" data-item-cd={usage.resultItemCd} on:click={removeUsage}><i class="icon ic16 icon-del" />삭제</button>
+								<button class="btn" data-item-cd={usage.usageItems[0].itemCd} on:click={removeUsage}><i class="icon ic16 icon-del" />삭제</button>
 							</li>
 						{/each}
 					</ul>
