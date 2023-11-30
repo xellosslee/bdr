@@ -11,7 +11,7 @@ export default {
 			body = param.method == 'GET' ? null : JSON.stringify(param.data || {})
 			headers['Content-Type'] = 'application/json'
 		}
-		let response = await fetch(this.apiUrl + param.url, { method: param.method || 'POST', body, headers })
+		let response = await fetch(param.url, { method: param.method || 'POST', body, headers })
 		let res = await response.json()
 		if (res.code == '00') {
 			// do global api action
@@ -19,4 +19,7 @@ export default {
 		return res
 	},
 	apiUrl: import.meta.env.VITE_API_HOST,
+	imgUrl: (path) => {
+		return new URL(`$lib/${path}`, import.meta.url).href
+	},
 }

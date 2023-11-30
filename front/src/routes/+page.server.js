@@ -77,8 +77,8 @@ export async function load({ params, cookies }) {
 		throw { code: '02' }
 	}
 	let resultItems = items.map((e) => ({
-		itemIdEnc: encode(e.dataValues.itemId),
-		itemCdEnc: encode(e.dataValues.itemCd),
+		itemIdEnc: encode(e.dataValues.itemId.toString()),
+		itemCdEnc: encode(e.dataValues.itemCd.toString()),
 		name: e.dataValues.name,
 		desc: e.dataValues.desc,
 		grade: e.dataValues.grade,

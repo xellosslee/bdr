@@ -23,7 +23,7 @@
 			// 단어의 변경이 없으면 재조회 안하도록 수정
 			searchedText = evt.target.value
 			let data = { search: evt.target.value }
-			let result = await lib.api({ url: '/item/fast/search', data })
+			let result = await lib.api({ url: '/item/fast-search', data })
 			// 검색결과 출력
 			console.debug(result)
 			if (result.code == '00' && result.data.length > 0) {
@@ -42,7 +42,7 @@
 		<div id="autoComplete" class={searchItems.length == 0 ? 'empty' : ''}>
 			{#each searchItems as e}
 				<a class="miniItemLabel" href={e.itemUrl} target="_self">
-					<img class={'miniItem grade' + e.grade} src={lib.apiUrl + e.imgUrl} alt={e.name} /><span>{e.name}</span>
+					<img class={'miniItem grade' + e.grade} src={e.imgUrl.replace('/images', '')} alt={e.name} /><span>{e.name}</span>
 				</a>
 			{/each}
 		</div>

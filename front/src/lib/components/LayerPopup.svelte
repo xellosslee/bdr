@@ -159,7 +159,7 @@
 					<ul>
 						{#each editItem.Usages as usage}
 							<li class="miniItemLabel">
-								<img class={'miniItem grade' + usage.grade} src={lib.apiUrl + usage.imgUrl} alt={usage.name} />
+								<img class={'miniItem grade' + usage.grade} src={usage.imgUrl.replace('/images', '')} alt={usage.name} />
 								<span class={'grade' + usage.grade}>{usage.name}</span>
 								<button class="btn" data-item-cd={usage.itemCd} on:click={removeUsage}><i class="icon ic16 icon-del" />삭제</button>
 							</li>

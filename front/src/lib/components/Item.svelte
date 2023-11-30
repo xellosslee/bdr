@@ -38,7 +38,7 @@
 			localStorage.removeItem('bookmark-' + item.itemCdEnc)
 			item.bookmarked = 0
 		} else {
-			localStorage.setItem('bookmark-' + item.itemCdEnc, JSON.stringify({ name: item.name, imgUrl: lib.apiUrl + item.itemImage.imgUrl }))
+			localStorage.setItem('bookmark-' + item.itemCdEnc, JSON.stringify({ name: item.name, imgUrl: item.itemImage.imgUrl.replace('/images', '') }))
 			item.bookmarked = 1
 		}
 	}
@@ -57,7 +57,7 @@
 <div class="content" data-item-id={item.itemIdEnc}>
 	<div class="itemHeader">
 		<div class="left">
-			<div class={'itemImg grade' + item.grade}><img src={item.itemImage && item.itemImage.imgUrl ? lib.apiUrl + item.itemImage.imgUrl : ''} alt={item.name} /></div>
+			<div class={'itemImg grade' + item.grade}><img src={item.itemImage.imgUrl.replace('/images', '')} alt={item.name} /></div>
 			<div class={'itemName grade' + item.grade}>{item.name}</div>
 		</div>
 		<div class="right">
@@ -104,7 +104,7 @@
 					{#each earn.Crafts as craft}
 						<div class="col" style="align-items: center;">
 							<div class="miniItemLabel" onclick="location.href='{craft.url}'">
-								<img class={'miniItem grade' + craft.grade} src={lib.apiUrl + craft.imgUrl} alt={craft.name} />
+								<img class={'miniItem grade' + craft.grade} src={craft.imgUrl.replace('/images', '')} alt={craft.name} />
 								<span class={'grade' + craft.grade}>{craft.name}</span>
 							</div>
 							<div>{craft.count} x <input class="count" type="text" value={craft.count * (earn.makeCnt || 0)} readonly /></div>
@@ -120,7 +120,7 @@
 		<div class="usageList">
 			{#each item.Usages as usage}
 				<div class="miniItemLabel" onclick="location.href='{usage.url}'">
-					<img class={'miniItem grade' + usage.grade} src={lib.apiUrl + usage.imgUrl} alt={usage.name} />
+					<img class={'miniItem grade' + usage.grade} src={usage.imgUrl.replace('/images', '')} alt={usage.name} />
 					<span class={'grade' + usage.grade}>{usage.name}</span>
 				</div>
 			{/each}

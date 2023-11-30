@@ -1,4 +1,4 @@
-// note: encoded data is NOT encrypted
+import crypto from 'crypto'
 const CRYPTO_KEY = Buffer.from('NoCKvdLslUuB4y3EZlKate1XGottHski1LmyqJHvUhs=', 'base64')
 const ALGORITHM2 = 'aes-256-cbc'
 const ALGORITHM = 'aes-256-ctr'

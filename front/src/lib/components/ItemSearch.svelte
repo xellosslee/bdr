@@ -47,14 +47,14 @@
 <div class="inputTitle">
 	아이템
 	{#if craft?.imgUrl}
-		<img class="miniItem" src={lib.apiUrl + craft.imgUrl} alt="현재 이미지, 교체될 이미지" />
+		<img class="miniItem" src={craft.imgUrl.replace('/images', '')} alt="현재 이미지, 교체될 이미지" />
 	{/if}
 	<input on:keyup={search} value={searchText} style={inputWidth ? 'width:' + inputWidth + 'px' : ''} />
 	{#if searchResultList.length > 0}
 		<div class="wrap">
 			{#each searchResultList as searchItem, i}
 				<button class="miniItemLabel" on:click={choose} data-image-idx={i}>
-					<img class={'miniItem'} src={searchItem.imgUrl ? lib.apiUrl + searchItem.imgUrl : ''} alt={searchItem.name} />
+					<img class={'miniItem'} src={searchItem.imgUrl ? searchItem.imgUrl.replace('/images', '') : ''} alt={searchItem.name} />
 					<span>{searchItem.name}</span>
 				</button>
 			{/each}
