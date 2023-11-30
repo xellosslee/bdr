@@ -1,14 +1,11 @@
 <script>
 	import lib from '$lib'
-	import { onMount } from 'svelte'
-	export let popupItem = {}
-	export let type = 0
+	export let popupItem = null
+	export let inputWidth = null
+	export let craft = null
 	let searchResultList = [] // 팝업 검색 결과 (최대 10개) 노출용 리스트
 	let searchTextBefore = '' // 팝업의 이미지 검색 기록 저장용 temp 변수
 	let searchText = ''
-	onMount(() => {
-		popupItem.chooseItem = {}
-	})
 	async function search(event) {
 		let name = event.target.value
 		if (name == '') {
@@ -29,7 +26,8 @@
 		searchResultList = result.data
 	}
 	function choose(event) {
-		if (type == 0) {
+		if (craft) {
+		} else {
 			let i = popupItem.Usages.findIndex((e) => (e.resultItemCd || e.usageItems[0].itemCd) == searchResultList[event.currentTarget.dataset.imageIdx].itemCd)
 			if (i != -1) {
 				alert('동일한 아이템이 추가되어 있습니다.')
@@ -37,7 +35,6 @@
 				popupItem.Usages.push({ usageItems: [searchResultList[event.currentTarget.dataset.imageIdx]] })
 				popupItem.Usages = popupItem.Usages
 			}
-		} else if (type == 1) {
 		}
 		// 검색 초기화
 		searchResultList = []
@@ -47,15 +44,22 @@
 </script>
 
 <div class="inputTitle">
-	아이템 검색 <input list="image-list" on:keyup={search} value={searchText} />
-	<div class="wrap">
-		{#each searchResultList as popupImage, i}
-			<button class="miniItemLabel" on:click={choose} data-image-idx={i}>
-				<img class={'miniItem'} src={popupImage.imgUrl ? lib.apiUrl + popupImage.imgUrl : ''} alt={popupImage.name} />
-				<span>{popupImage.name}</span>
-			</button>
-		{/each}
-	</div>
+	아이템
+	{#if popupItem?.itemImage?.imgUrl || (craft?.craftItems && craft?.craftItems[0].imgUrl)}
+		<img class="miniItem" src={lib.apiUrl + (popupItem?.itemImage?.imgUrl || (craft?.craftItems && craft?.craftItems[0].imgUrl))} alt="현재 이미지, 교체될 이미지" />
+	{/if}
+	<br />
+	<input on:keyup={search} value={searchText} style={inputWidth ? 'width:' + inputWidth + 'px' : ''} />
+	{#if searchResultList.length > 0}
+		<div class="wrap">
+			{#each searchResultList as searchItem, i}
+				<button class="miniItemLabel" on:click={choose} data-image-idx={i}>
+					<img class={'miniItem'} src={searchItem.imgUrl ? lib.apiUrl + searchItem.imgUrl : ''} alt={searchItem.name} />
+					<span>{searchItem.name}</span>
+				</button>
+			{/each}
+		</div>
+	{/if}
 </div>
 
 <style>
@@ -67,6 +71,9 @@
 		background: white;
 		border: 1px solid #bbb;
 		border-radius: 4px;
+	}
+	.inputTitle > input {
+		width: 50px;
 	}
 	.miniItemLabel {
 		display: flex;

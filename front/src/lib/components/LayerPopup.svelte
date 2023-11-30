@@ -52,6 +52,11 @@
 		editItem.Earns.push({ type: 'get', Crafts: [] })
 		editItem.Earns = editItem.Earns
 	}
+	function removeEarn(evt) {
+		let idx = evt.currentTarget.dataset.earnIdx
+		editItem.Earns.splice(idx, 1)
+		editItem.Earns = editItem.Earns
+	}
 	function addRecipeItem(evt) {
 		let idx = evt.currentTarget.dataset.earnIdx
 		editItem.Earns[idx].Crafts.push({})
@@ -116,7 +121,7 @@
 					<div class="inputTitle">아이템 설명<textarea>{editItem.desc.replace(/<br>/gi, '\n')}</textarea></div>
 				</div>
 				<div class="inputWrap crafts">
-					<div class="inputTitle">획득 방법<button on:click={addEarn}>추가</button></div>
+					<div class="inputTitle">획득 방법<button style="margin-left: 5px;" on:click={addEarn}>추가</button></div>
 					<ul>
 						{#each editItem.Earns as earn, i}
 							<li>
@@ -129,13 +134,14 @@
 									{#if earn.type == 'get'}
 										<input type="text" bind:value={earn.path} />
 									{/if}
+									<button class="btn inline" data-earn-idx={i} on:click={removeEarn}>삭제</button>
 								</div>
 								{#if earn.type == 'craft'}
 									<ul class="row">
 										{#each earn.Crafts as craft, x}
 											<li class="col">
-												<ItemSearch bind:popupItem={editItem} type={1} />
-												아이템 <input type="text" class="count" bind:value={craft.itemCd} />
+												<ItemSearch bind:craft />
+												<!-- 아이템 <input type="text" class="count" bind:value={craft.itemCd} /> -->
 												개수 <input type="text" class="count" bind:value={craft.count} />
 												<button class="btn" data-earn-idx={i} data-craft-idx={x} on:click={removeRecipeItem}><i class="icon ic16 icon-del" />삭제</button>
 											</li>
@@ -151,7 +157,7 @@
 				</div>
 				<div class="inputWrap usages">
 					<div class="inputTitle">제작가능 아이템</div>
-					<ItemSearch bind:popupItem={editItem} />
+					<ItemSearch bind:popupItem={editItem} inputWidth="100" />
 					<ul>
 						{#each editItem.Usages as usage}
 							<li class="miniItemLabel">
@@ -240,6 +246,10 @@
 		width: 100%;
 	}
 
+	.inline {
+		display: inline;
+	}
+
 	@keyframes showAni {
 		0% {
 			opacity: 0;
@@ -310,5 +320,11 @@
 		height: min(22px, 5.6410256vw);
 		border: 2px solid var(--gray-color3);
 		border-radius: 4px;
+	}
+	ul {
+		padding-left: 10px;
+	}
+	ul > li {
+		margin-right: 10px;
 	}
 </style>
