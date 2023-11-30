@@ -5,7 +5,7 @@ import { encode, decode } from '$lib/util/crypt.js'
 export async function POST({ request, cookies }) {
 	const { search } = await request.json()
 	if (search == null || search == '') {
-		return json({ code: '00', message: '검색단어가 없습니다.' }, { status: 200 })
+		return json({ code: '00', message: '검색단어가 없습니다.' })
 	}
 	let data = []
 	let items = await DB.Item.findAll({
@@ -29,5 +29,5 @@ export async function POST({ request, cookies }) {
 			itemCd: items[i].itemCd,
 		})
 	}
-	return json({ code: '00', data }, { status: 200 })
+	return json({ code: '00', data })
 }
