@@ -134,6 +134,7 @@
 									<ul class="row">
 										{#each earn.Crafts as craft, x}
 											<li class="col">
+												<ItemSearch bind:popupItem={editItem} type={1} />
 												아이템 <input type="text" class="count" bind:value={craft.itemCd} />
 												개수 <input type="text" class="count" bind:value={craft.count} />
 												<button class="btn" data-earn-idx={i} data-craft-idx={x} on:click={removeRecipeItem}><i class="icon ic16 icon-del" />삭제</button>

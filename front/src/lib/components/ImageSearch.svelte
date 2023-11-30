@@ -33,20 +33,29 @@
 	}
 </script>
 
-<div class={popupItem?.class}>
-	<div class="inputTitle">
-		이미지 <img class="miniItem" src={lib.apiUrl + popupItem?.itemImage?.imgUrl} alt="현재 이미지, 교체될 이미지" />
-		검색 <input list="image-list" on:keyup={imageSearch} bind:value={popupImageSearch} />
+<div class="inputTitle">
+	이미지 <img class="miniItem" src={lib.apiUrl + popupItem?.itemImage?.imgUrl} alt="현재 이미지, 교체될 이미지" />
+	검색 <input list="image-list" on:keyup={imageSearch} bind:value={popupImageSearch} />
+	<div class="wrap">
+		{#each popupImageList as popupImage, i}
+			<button class="miniItemLabel" on:click={chooseImage} data-image-idx={i}>
+				<img class={'miniItem'} src={popupImage.imgUrl ? lib.apiUrl + popupImage.imgUrl : ''} alt={popupImage.name} />
+				<span>{popupImage.name}</span>
+			</button>
+		{/each}
 	</div>
-	{#each popupImageList as popupImage, i}
-		<button class="miniItemLabel" on:click={chooseImage} data-image-idx={i}>
-			<img class={'miniItem'} src={popupImage.imgUrl ? lib.apiUrl + popupImage.imgUrl : ''} alt={popupImage.name} />
-			<span>{popupImage.name}</span>
-		</button>
-	{/each}
 </div>
 
 <style>
+	.inputTitle {
+		position: relative;
+	}
+	.inputTitle > .wrap {
+		position: absolute;
+		background: white;
+		border: 1px solid #bbb;
+		border-radius: 4px;
+	}
 	.miniItemLabel {
 		display: flex;
 		align-items: center;
@@ -56,13 +65,11 @@
 		font-size: min(15px, 3.8461538vw);
 		border-radius: 4px;
 	}
-
 	.miniItemLabel:hover {
 		background: var(--point-color);
 		cursor: pointer;
 		color: #fff;
 	}
-
 	.miniItemLabel span {
 		margin-left: 4px;
 	}
