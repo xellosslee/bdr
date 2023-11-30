@@ -41,6 +41,16 @@
 			item.bookmarked = 1
 		}
 	}
+	/**
+	 * 꽃 1 4 9
+	 * 곡물 1 3 6
+	 * 채소 1 2 8
+	 * 과일 1 4 9
+	 * 벌꿀 1 2 3
+	 * 물고기 0.5 1 2
+	 * 약초 1 3 6
+	 * 버섯 1 3 5
+	 */
 </script>
 
 <div class="content" data-item-id={item.itemIdEnc}>
@@ -116,11 +126,7 @@
 			{#each item.Usages as usage}
 				{#if usage.usageItems && usage.usageItems.length > 0}
 					<div class="miniItemLabel" onclick="location.href='{usage.usageItems[0].url}'">
-						<img
-							class={'miniItem grade' + usage.usageItems[0].grade}
-							src={usage.usageItems[0].itemImage && usage.usageItems[0].itemImage.imgUrl ? lib.apiUrl + usage.usageItems[0].itemImage.imgUrl : ''}
-							alt={usage.usageItems[0].name}
-						/>
+						<img class={'miniItem grade' + usage.usageItems[0].grade} src={usage.usageItems[0].itemImage && usage.usageItems[0].itemImage.imgUrl ? lib.apiUrl + usage.usageItems[0].itemImage.imgUrl : ''} alt={usage.usageItems[0].name} />
 						<span class={'grade' + usage.usageItems[0].grade}>{usage.usageItems[0].name}</span>
 					</div>
 				{/if}
@@ -278,7 +284,9 @@
 		border: none;
 		padding: 0;
 		margin: 0 5px;
-		transition: opacity 0.3s, transform 0.3s;
+		transition:
+			opacity 0.3s,
+			transform 0.3s;
 	}
 
 	.btn.solid.success {
