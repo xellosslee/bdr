@@ -5,7 +5,7 @@ import { encode, decode } from '$lib/util/crypt.js'
 export async function POST({ request, cookies }) {
 	const { search } = await request.json()
 	if (search == null || search == '') {
-		throw { message: '검색단어가 없습니다.' }
+		return json({ code: '00', message: '검색단어가 없습니다.' }, { status: 200 })
 	}
 	let data = []
 	let items = await DB.Item.findAll({
