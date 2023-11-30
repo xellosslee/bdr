@@ -5,25 +5,18 @@
 	import LayerPopup from '$components/LayerPopup.svelte'
 	import Item from '$components/Item.svelte'
 	import HeaderSearchBox from '$components/HeaderSearchBox.svelte'
-	let items = null // 화면 랜딩된 아이템 전체 정보. Earns, Usages
+	export let data
 	let popupItem = null // 열려있는 팝업의 아이템 정보
-	onMount(async function () {
-		let r = await lib.api({ url: '/items/get/' + $page.params.itemId })
-		if (r.code == '00') {
-			items = r.data
-			console.log(items)
-		}
-	})
 </script>
 
 <HeaderSearchBox />
 <div class="container">
-	{#if items == null}
+	{#if data.items == null}
 		<div class="content">로딩 중...</div>
-	{:else if items.length == 0}
+	{:else if data.items.length == 0}
 		<div class="content">아이템을 찾을 수 없습니다.</div>
 	{:else}
-		{#each items as item}
+		{#each data.items as item}
 			<Item bind:item bind:popupItem />
 		{/each}
 	{/if}

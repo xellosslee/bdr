@@ -46,8 +46,8 @@
 
 <div class="inputTitle">
 	아이템
-	{#if (!ignoreImg && popupItem?.itemImage?.imgUrl) || (craft?.craftItems && craft?.craftItems[0].imgUrl)}
-		<img class="miniItem" src={lib.apiUrl + (popupItem?.itemImage?.imgUrl || (craft?.craftItems && craft?.craftItems[0].imgUrl))} alt="현재 이미지, 교체될 이미지" />
+	{#if craft?.imgUrl}
+		<img class="miniItem" src={lib.apiUrl + craft.imgUrl} alt="현재 이미지, 교체될 이미지" />
 	{/if}
 	<input on:keyup={search} value={searchText} style={inputWidth ? 'width:' + inputWidth + 'px' : ''} />
 	{#if searchResultList.length > 0}
@@ -71,12 +71,15 @@
 		background: white;
 		border: 1px solid #bbb;
 		border-radius: 4px;
+		width: 300px;
+		z-index: 9;
 	}
 	.inputTitle > input {
 		width: 50px;
 	}
 	.miniItemLabel {
 		display: flex;
+		width: 100%;
 		align-items: center;
 		line-height: min(22px, 5.6410256vw);
 		padding: 4px 6px;

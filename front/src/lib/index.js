@@ -4,7 +4,6 @@ export default {
 		let body
 		let headers = {
 			...(param.headers || {}),
-			'bdr-id': localStorage.getItem('bdrId'),
 		}
 		if (param.data instanceof FormData) {
 			body = param.data
@@ -14,9 +13,8 @@ export default {
 		}
 		let response = await fetch(this.apiUrl + param.url, { method: param.method || 'POST', body, headers })
 		let res = await response.json()
-		if (res.code == '00' && res.bdrId) {
-			console.debug('reset storage')
-			localStorage.setItem('bdrId', res.bdrId)
+		if (res.code == '00') {
+			// do global api action
 		}
 		return res
 	},

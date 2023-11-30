@@ -3,6 +3,7 @@
 	import { onMount } from 'svelte'
 	export let item = {}
 	export let popupItem = null
+	console.dir(item)
 	onMount(async function () {
 		let exists = localStorage.getItem('bookmark-' + item.itemCdEnc)
 		if (exists) {
@@ -101,19 +102,13 @@
 						{earn.path}
 					{/if}
 					{#each earn.Crafts as craft}
-						{#if craft.craftItems && craft.craftItems.length > 0}
-							<div class="col" style="align-items: center;">
-								<div class="miniItemLabel" onclick="location.href='{craft.craftItems[0].url}'">
-									<img
-										class={'miniItem grade' + craft.craftItems[0].grade}
-										src={craft.craftItems[0].itemImage && craft.craftItems[0].itemImage.imgUrl ? lib.apiUrl + craft.craftItems[0].itemImage.imgUrl : ''}
-										alt={craft.craftItems[0].name}
-									/>
-									<span class={'grade' + craft.craftItems[0].grade}>{craft.craftItems[0].name}</span>
-								</div>
-								<div>{craft.count} x <input class="count" type="text" value={craft.count * (earn.makeCnt || 0)} readonly /></div>
+						<div class="col" style="align-items: center;">
+							<div class="miniItemLabel" onclick="location.href='{craft.url}'">
+								<img class={'miniItem grade' + craft.grade} src={lib.apiUrl + craft.imgUrl} alt={craft.name} />
+								<span class={'grade' + craft.grade}>{craft.name}</span>
 							</div>
-						{/if}
+							<div>{craft.count} x <input class="count" type="text" value={craft.count * (earn.makeCnt || 0)} readonly /></div>
+						</div>
 					{/each}
 				</div>
 			</div>
@@ -124,12 +119,10 @@
 		<div class="subtitle">{item.name} - 제작가능 아이템</div>
 		<div class="usageList">
 			{#each item.Usages as usage}
-				{#if usage.usageItems && usage.usageItems.length > 0}
-					<div class="miniItemLabel" onclick="location.href='{usage.usageItems[0].url}'">
-						<img class={'miniItem grade' + usage.usageItems[0].grade} src={usage.usageItems[0].itemImage && usage.usageItems[0].itemImage.imgUrl ? lib.apiUrl + usage.usageItems[0].itemImage.imgUrl : ''} alt={usage.usageItems[0].name} />
-						<span class={'grade' + usage.usageItems[0].grade}>{usage.usageItems[0].name}</span>
-					</div>
-				{/if}
+				<div class="miniItemLabel" onclick="location.href='{usage.url}'">
+					<img class={'miniItem grade' + usage.grade} src={lib.apiUrl + usage.imgUrl} alt={usage.name} />
+					<span class={'grade' + usage.grade}>{usage.name}</span>
+				</div>
 			{/each}
 		</div>
 	{/if}

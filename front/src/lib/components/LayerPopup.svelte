@@ -22,7 +22,6 @@
 		data.append('image', uploadImage.file)
 		data.append('name', uploadImage.name)
 		let result = await lib.api({ url: '/file/put', data })
-		console.log(result)
 		if (result.code == '00') {
 			alert('업로드 성공')
 		} else {
@@ -44,7 +43,7 @@
 		}
 	}
 	function removeUsage(evt) {
-		let newUsages = editItem.Usages.filter((e) => e.usageItems[0].itemCd != evt.target.dataset.itemCd)
+		let newUsages = editItem.Usages.filter((e) => e.itemCd != evt.target.dataset.itemCd)
 		editItem.Usages = newUsages
 	}
 	function addEarn() {
@@ -77,7 +76,7 @@
 			...(editItem.desc != popupItem.desc ? { desc: editItem.desc } : {}),
 			...(editItem.grade != popupItem.grade ? { grade: editItem.grade } : {}),
 			Earns: editItem.Earns.map((e) => ({ work: e.work, type: e.type, Crafts: e.Crafts.map((ee) => ({ itemCd: ee.itemCd, count: ee.count })) })),
-			Usages: editItem.Usages.map((e) => ({ resultItemCd: e.usageItems[0].itemCd })),
+			Usages: editItem.Usages.map((e) => ({ resultItemCd: e.itemCd })),
 		}
 		console.debug(data)
 		let result = await lib.api({ url: '/item/put', data })
@@ -160,13 +159,9 @@
 					<ul>
 						{#each editItem.Usages as usage}
 							<li class="miniItemLabel">
-								<img
-									class={'miniItem grade' + usage.usageItems[0].grade}
-									src={usage.usageItems[0].itemImage && usage.usageItems[0].itemImage.imgUrl ? lib.apiUrl + usage.usageItems[0].itemImage.imgUrl : lib.apiUrl + usage.usageItems[0].imgUrl}
-									alt={usage.usageItems[0].name}
-								/>
-								<span class={'grade' + usage.usageItems[0].grade}>{usage.usageItems[0].name}</span>
-								<button class="btn" data-item-cd={usage.usageItems[0].itemCd} on:click={removeUsage}><i class="icon ic16 icon-del" />삭제</button>
+								<img class={'miniItem grade' + usage.grade} src={lib.apiUrl + usage.imgUrl} alt={usage.name} />
+								<span class={'grade' + usage.grade}>{usage.name}</span>
+								<button class="btn" data-item-cd={usage.itemCd} on:click={removeUsage}><i class="icon ic16 icon-del" />삭제</button>
 							</li>
 						{/each}
 					</ul>
