@@ -3,6 +3,7 @@
 	export let popupItem = null
 	export let inputWidth = null
 	export let craft = null
+	export let ignoreImg = false
 	let searchResultList = [] // 팝업 검색 결과 (최대 10개) 노출용 리스트
 	let searchTextBefore = '' // 팝업의 이미지 검색 기록 저장용 temp 변수
 	let searchText = ''
@@ -45,10 +46,9 @@
 
 <div class="inputTitle">
 	아이템
-	{#if popupItem?.itemImage?.imgUrl || (craft?.craftItems && craft?.craftItems[0].imgUrl)}
+	{#if (!ignoreImg && popupItem?.itemImage?.imgUrl) || (craft?.craftItems && craft?.craftItems[0].imgUrl)}
 		<img class="miniItem" src={lib.apiUrl + (popupItem?.itemImage?.imgUrl || (craft?.craftItems && craft?.craftItems[0].imgUrl))} alt="현재 이미지, 교체될 이미지" />
 	{/if}
-	<br />
 	<input on:keyup={search} value={searchText} style={inputWidth ? 'width:' + inputWidth + 'px' : ''} />
 	{#if searchResultList.length > 0}
 		<div class="wrap">

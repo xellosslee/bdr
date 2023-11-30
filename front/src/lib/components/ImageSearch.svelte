@@ -35,7 +35,7 @@
 
 <div class="inputTitle">
 	이미지 <img class="miniItem" src={lib.apiUrl + popupItem?.itemImage?.imgUrl} alt="현재 이미지, 교체될 이미지" />
-	검색 <input list="image-list" on:keyup={search} bind:value={searchText} />
+	<input on:keyup={search} bind:value={searchText} />
 	{#if searchResultList.length > 0}
 		<div class="wrap">
 			{#each searchResultList as searchItem, i}

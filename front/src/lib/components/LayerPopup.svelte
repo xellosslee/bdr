@@ -44,7 +44,6 @@
 		}
 	}
 	function removeUsage(evt) {
-		debugger
 		let newUsages = editItem.Usages.filter((e) => e.usageItems[0].itemCd != evt.target.dataset.itemCd)
 		editItem.Usages = newUsages
 	}
@@ -157,7 +156,7 @@
 				</div>
 				<div class="inputWrap usages">
 					<div class="inputTitle">제작가능 아이템</div>
-					<ItemSearch bind:popupItem={editItem} inputWidth="100" />
+					<ItemSearch bind:popupItem={editItem} inputWidth="100" ignoreImg={true} />
 					<ul>
 						{#each editItem.Usages as usage}
 							<li class="miniItemLabel">
@@ -174,7 +173,6 @@
 				</div>
 			</div>
 		{/if}
-
 		<div class="btnWrap">
 			<button class="btn" on:click={save}>저 장</button>
 		</div>
@@ -272,7 +270,9 @@
 			z-index: -1;
 		}
 	}
-
+	.inputTitle {
+		font-weight: bold;
+	}
 	.layerPopup textarea {
 		width: calc(100% - 6px);
 		height: 200px;
