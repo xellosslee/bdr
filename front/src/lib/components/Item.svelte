@@ -1,9 +1,14 @@
 <script>
 	import lib from '$lib'
 	import { onMount } from 'svelte'
+	import { bookmarkStore } from '$lib/store'
 	export let item = {}
 	export let popupItem = null
 	console.dir(item)
+	let bookmarkList = []
+	bookmarkStore.subscribe((e) => {
+		bookmarkList = e
+	})
 	onMount(async function () {
 		let exists = localStorage.getItem('bookmark-' + item.itemCdEnc)
 		if (exists) {
@@ -36,9 +41,11 @@
 		let exists = localStorage.getItem('bookmark-' + item.itemCdEnc)
 		if (exists) {
 			localStorage.removeItem('bookmark-' + item.itemCdEnc)
+			bookmarkStore.set([...bookmarkList.filter((e) => e.url.substring(1) != item.itemCdEnc)])
 			item.bookmarked = 0
 		} else {
 			localStorage.setItem('bookmark-' + item.itemCdEnc, JSON.stringify({ name: item.name, imgUrl: item.itemImage.imgUrl.replace('/images', '') }))
+			bookmarkStore.set([...bookmarkList, { url: '/' + item.itemCdEnc, name: item.name, imgUrl: item.itemImage.imgUrl.replace('/images', '') }])
 			item.bookmarked = 1
 		}
 	}
