@@ -21,7 +21,7 @@
 		let data = new FormData()
 		data.append('image', uploadImage.file)
 		data.append('name', uploadImage.name)
-		let result = await lib.api({ url: '/file/put', data })
+		let result = await lib.api({ url: '/file', method: 'PUT', data })
 		if (result.code == '00') {
 			alert('업로드 성공')
 		} else {
@@ -79,12 +79,12 @@
 			Usages: editItem.Usages.map((e) => ({ resultItemCd: e.itemCd })),
 		}
 		console.debug(data)
-		// let result = await lib.api({ url: '/item/put', data })
-		// if (result.code == '00') {
-		// 	alert('아이템이 등록 되었습니다.\n감사합니다.')
-		// 	closeEditLayer()
-		// 	location.href = ''
-		// }
+		let result = await lib.api({ url: '/item', method: 'PUT', data })
+		if (result.code == '00') {
+			alert('아이템이 등록 되었습니다.\n감사합니다.')
+			closeEditLayer()
+			location.href = ''
+		}
 	}
 </script>
 

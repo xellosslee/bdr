@@ -2,7 +2,7 @@ import { json } from '@sveltejs/kit'
 import { DB, sq, Op } from '$lib/server/mysql.js'
 import { encode, decode } from '$lib/util/crypt.js'
 
-export async function POST({ request, cookies }) {
+export async function PUT({ request, cookies }) {
 	let transaction = await sq.transaction()
 	try {
 		let bdrId = cookies.get('bdrId')
