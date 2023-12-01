@@ -7,13 +7,14 @@
 	let searchedText = ''
 	let searchItems = []
 	let boxOpened = false
+	let position = 0
 
 	function handleClickOutside(event) {
 		boxOpened = false
 	}
 	async function keyupEvent(evt) {
-		if (evt.key == 'Enter' && searchItems.length > 0) {
-			location.href = location.protocol + '//' + location.host + searchItems[0].itemUrl
+		if (evt.key == 'Enter' && searchItems.length > 0 && searchItems[position]?.itemUrl) {
+			location.href = searchItems[position]?.itemUrl
 			return
 		}
 		if (searchText == '') {
@@ -24,6 +25,17 @@
 		if (pattern.test(evt.target.value)) {
 			console.log('자음,모음만 있는 경우 검색 안함')
 			return
+		}
+		if (evt.key == 'ArrowUp') {
+			position--
+			if (position < 0) {
+				position = searchItems.length - 1
+			}
+		} else if (evt.key == 'ArrowDown') {
+			position++
+			if (position >= searchItems.length) {
+				position = 0
+			}
 		}
 		if (evt.target.value && searchedText != evt.target.value) {
 			// 단어의 변경이 없으면 재조회 안하도록 수정
@@ -50,8 +62,8 @@
 		<input type="text" bind:value={searchText} on:keyup={keyupEvent} on:focus={openBox} placeholder="파트너! 어서 궁금한 아이템명을 입력해봐!" spellcheck="false" />
 		{#if boxOpened && searchItems.length > 0}
 			<div id="autoComplete">
-				{#each searchItems as e}
-					<a class="miniItemLabel" href={e.itemUrl} target="_self">
+				{#each searchItems as e, i}
+					<a class={'miniItemLabel ' + (position == i ? 'selected' : '')} href={e.itemUrl} target="_self">
 						<img class={'miniItem grade' + e.grade} src={e.imgUrl.replace('/images', '')} alt={e.name} /><span>{e.name}</span>
 					</a>
 				{/each}
@@ -154,6 +166,7 @@
 		border-radius: 4px;
 	}
 
+	.miniItemLabel.selected,
 	.miniItemLabel:hover {
 		background: var(--point-color);
 		cursor: pointer;
