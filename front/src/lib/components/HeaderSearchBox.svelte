@@ -1,10 +1,29 @@
 <script>
 	import lib from '$lib'
 	import logo from '$lib/img/blackSpirit.png'
+	import { onMount } from 'svelte'
+
 	let searchText = ''
 	let searchedText = ''
 	let searchItems = []
+	let boxOpened = false
 
+	function handleClick(event) {
+		// 특정 요소를 클릭한 경우 이벤트 전파를 막습니다.
+		if (event.target.closest('.contentHeader')) {
+			return
+		}
+		// 특정 요소 외부를 클릭한 경우 처리할 작업을 여기에 추가합니다.
+		boxOpened = false
+	}
+	onMount(() => {
+		// DOM 요소 외부 클릭 이벤트를 감지합니다.
+		document.addEventListener('click', handleClick)
+		return () => {
+			// 컴포넌트가 제거될 때 이벤트 리스너를 제거합니다.
+			document.removeEventListener('click', handleClick)
+		}
+	})
 	async function keyupEvent(evt) {
 		if (evt.key == 'Enter' && searchItems.length > 0) {
 			location.href = location.protocol + '//' + location.host + searchItems[0].itemUrl
@@ -33,33 +52,39 @@
 			}
 		}
 	}
+	async function openBox(evt) {
+		boxOpened = true
+	}
 </script>
 
 <header class="contentHeader">
 	<a href="/" target="_self"><div class="homeLink"><img src={logo} alt="흑정령(홈아이콘)" /></div></a>
 	<div class="searchWrap">
-		<input type="text" bind:value={searchText} on:keyup={keyupEvent} placeholder="파트너! 어서 궁금한 아이템명을 입력해봐!" spellcheck="false" />
-		<div id="autoComplete" class={searchItems.length == 0 ? 'empty' : ''}>
-			{#each searchItems as e}
-				<a class="miniItemLabel" href={e.itemUrl} target="_self">
-					<img class={'miniItem grade' + e.grade} src={e.imgUrl.replace('/images', '')} alt={e.name} /><span>{e.name}</span>
-				</a>
-			{/each}
-		</div>
-		<div id="toolBox" class="empty">
-			<div class="historyWrap">
-				<div>검색기록</div>
-				<div id="historyList">
-					<li />
+		<input type="text" bind:value={searchText} on:keyup={keyupEvent} on:focus={openBox} placeholder="파트너! 어서 궁금한 아이템명을 입력해봐!" spellcheck="false" />
+		{#if boxOpened && searchItems.length > 0}
+			<div id="autoComplete">
+				{#each searchItems as e}
+					<a class="miniItemLabel" href={e.itemUrl} target="_self">
+						<img class={'miniItem grade' + e.grade} src={e.imgUrl.replace('/images', '')} alt={e.name} /><span>{e.name}</span>
+					</a>
+				{/each}
+			</div>
+		{:else if boxOpened}
+			<div id="toolBox">
+				<div class="historyWrap">
+					<div>검색기록</div>
+					<div id="historyList">
+						<li />
+					</div>
+				</div>
+				<div class="bookmarkWrap">
+					<div>북마크</div>
+					<div id="bookmarkList">
+						<li />
+					</div>
 				</div>
 			</div>
-			<div class="bookmarkWrap">
-				<div>북마크</div>
-				<div id="bookmarkList">
-					<li />
-				</div>
-			</div>
-		</div>
+		{/if}
 	</div>
 </header>
 
