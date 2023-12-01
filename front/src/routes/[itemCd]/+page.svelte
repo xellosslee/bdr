@@ -113,8 +113,8 @@
 	}
 	.floating {
 		position: fixed;
-		width: 130px;
-		height: 230px;
+		width: 110px;
+		height: 215px;
 		background: white;
 		right: 10px;
 		bottom: 10px;
