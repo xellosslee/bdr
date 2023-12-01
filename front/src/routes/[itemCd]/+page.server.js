@@ -14,37 +14,31 @@ export async function load({ params, cookies }) {
 		{ model: DB.File, as: 'itemImage', attributes: ['imgUrl'] },
 		{
 			model: DB.Earn,
-			include: [
-				{
-					model: DB.Craft,
-					include: [
-						{
-							model: DB.Item,
-							as: 'craftItems',
-							attributes: ['name', 'itemCd', 'fileId', 'grade'],
-							include: [{ model: DB.File, attributes: ['imgUrl'], as: 'itemImage' }],
-							where: { removed: 0 },
-						},
-					],
+			include: {
+				model: DB.Craft,
+				include: {
+					model: DB.Item,
+					as: 'craftItems',
+					attributes: ['name', 'itemCd', 'fileId', 'grade'],
+					include: [{ model: DB.File, attributes: ['imgUrl'], as: 'itemImage' }],
+					where: { removed: 0 },
 				},
-			],
+			},
 		},
 		{
 			model: DB.Usages,
-			include: [
-				{
-					model: DB.Item,
-					as: 'usageItems',
-					attributes: ['name', 'itemCd', 'fileId', 'grade'],
-					include: [{ model: DB.File, attributes: ['imgUrl'], as: 'itemImage' }],
-					order: [
-						['likeCount', 'desc'],
-						['name', 'asc'],
-					],
-					where: { removed: 0 },
-					limit: 1,
-				},
-			],
+			include: {
+				model: DB.Item,
+				as: 'usageItems',
+				attributes: ['name', 'itemCd', 'fileId', 'grade'],
+				include: [{ model: DB.File, attributes: ['imgUrl'], as: 'itemImage', required: true }],
+				order: [
+					['likeCount', 'desc'],
+					['name', 'asc'],
+				],
+				where: { removed: 0 },
+				limit: 1,
+			},
 		},
 	]
 	// 운영에서는 숫자 조회 불가능하게 방지
@@ -65,6 +59,7 @@ export async function load({ params, cookies }) {
 				include: itemIncludeArray,
 				where: { itemCd: params.itemCd, removed: 0 },
 				order: [['likeCount', 'desc']],
+				logging: console.log,
 			})
 			console.debug(params.itemCd)
 		} catch (err) {
@@ -88,21 +83,29 @@ export async function load({ params, cookies }) {
 			type: ee.dataValues.type,
 			work: ee.dataValues.work,
 			path: ee.dataValues.path,
-			Crafts: ee.Crafts.map((t) => ({
-				url: '/' + encode(t.craftItems[0].itemCd.toString()),
-				imgUrl: t.craftItems[0].itemImage.imgUrl,
-				name: t.craftItems[0].name,
-				grade: t.craftItems[0].grade,
-				itemCd: t.craftItems[0].itemCd,
-				count: t.count,
-			})),
+			Crafts: ee.Crafts.map((t) =>
+				t?.craftItems[0]
+					? {
+							url: '/' + encode(t?.craftItems[0]?.itemCd.toString()),
+							imgUrl: t?.craftItems[0]?.itemImage?.imgUrl,
+							name: t?.craftItems[0]?.name,
+							grade: t?.craftItems[0]?.grade,
+							itemCd: t?.craftItems[0]?.itemCd,
+							count: t?.count,
+					  }
+					: null,
+			).filter((e) => e != null),
 		})),
-		Usages: e.Usages.map((ee) => ({
-			url: '/' + encode(ee.usageItems[0].itemCd.toString()),
-			imgUrl: ee.usageItems[0].itemImage.imgUrl,
-			name: ee.usageItems[0].name,
-			grade: ee.usageItems[0].grade,
-		})),
+		Usages: e.Usages.map((ee) =>
+			ee?.usageItems[0]
+				? {
+						url: '/' + encode(ee?.usageItems[0]?.itemCd.toString()),
+						imgUrl: ee?.usageItems[0]?.itemImage?.imgUrl,
+						name: ee?.usageItems[0]?.name,
+						grade: ee?.usageItems[0]?.grade,
+				  }
+				: null,
+		).filter((e) => e != null),
 	}))
 	return {
 		items: resultItems,
