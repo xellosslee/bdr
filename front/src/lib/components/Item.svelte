@@ -49,16 +49,6 @@
 			item.bookmarked = 1
 		}
 	}
-	/**
-	 * 꽃 1 4 9
-	 * 곡물 1 3 6
-	 * 채소 1 2 8
-	 * 과일 1 4 9
-	 * 벌꿀 1 2 3
-	 * 물고기 0.5 1 2
-	 * 약초 1 3 6
-	 * 버섯 1 3 5
-	 */
 </script>
 
 <div class="content" data-item-id={item.itemIdEnc}>
