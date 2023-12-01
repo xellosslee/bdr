@@ -1,17 +1,13 @@
 <script>
 	import '$lib/css/default.css'
 	import '$lib/css/icons.css'
-	import { viewStack, popCloseFunction } from '$lib/store'
+	import { popCloseFunction } from '$lib/store'
 
 	function handleKeyDown(event) {
 		if (event.key === 'Escape') {
 			escape()
 		}
 	}
-	let viewStackList
-	const unsubscribe = viewStack.subscribe((value) => {
-		viewStackList = value
-	})
 	function escape() {
 		console.debug('닫기 시도')
 		let closeFunc = popCloseFunction()
