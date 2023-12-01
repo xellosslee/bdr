@@ -29,11 +29,11 @@
 	function choose(event) {
 		if (craft) {
 		} else {
-			let i = popupItem.Usages.findIndex((e) => (e.resultItemCd || e.itemCd) == searchResultList[event.currentTarget.dataset.imageIdx].itemCd)
+			let i = popupItem.Usages.findIndex((e) => e.itemCd == searchResultList[event.currentTarget.dataset.imageIdx].itemCd)
 			if (i != -1) {
 				alert('동일한 아이템이 추가되어 있습니다.')
 			} else {
-				popupItem.Usages.push({ usageItems: [searchResultList[event.currentTarget.dataset.imageIdx]] })
+				popupItem.Usages.push(searchResultList[event.currentTarget.dataset.imageIdx])
 				popupItem.Usages = popupItem.Usages
 			}
 		}

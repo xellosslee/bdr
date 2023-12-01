@@ -103,6 +103,7 @@ export async function load({ params, cookies }) {
 			imgUrl: ee.usageItems[0].itemImage.imgUrl,
 			name: ee.usageItems[0].name,
 			grade: ee.usageItems[0].grade,
+			itemCd: ee.usageItems[0].itemCd,
 		})),
 	}))
 	return {
