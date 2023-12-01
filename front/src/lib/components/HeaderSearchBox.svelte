@@ -139,7 +139,7 @@
 			<div id="toolBox">
 				<div class="historyWrap">
 					<div class="title">최근 검색 ({searchHistory.length}건)<button class="remove" on:click={removeAllSearch}><img src="/trashcan.svg" alt="remove all search history" /></button></div>
-					<div class="searchBox" id="historyList">
+					<div class="resultBox">
 						{#if searchHistory.length == 0}
 							<span class="notExist">검색 기록이 없습니다.</span>
 						{/if}
@@ -150,7 +150,7 @@
 				</div>
 				<div class="bookmarkWrap">
 					<div class="title">북마크 ({bookmarkList.length}건)<button class="remove" on:click={removeAllBookmark}><img src="/trashcan.svg" alt="remove all bookmark history" /></button></div>
-					<div>
+					<div class="resultBox">
 						{#if bookmarkList.length == 0}
 							<span class="notExist">아직 북마크가 없습니다.</span>
 						{/if}
@@ -206,15 +206,16 @@
 		line-height: 44px;
 		border: 1px solid var(--gray-color2);
 		border-radius: 4px;
+		z-index: 8;
 	}
 	.contentHeader .searchWrap > div#autoComplete.empty,
 	.contentHeader .searchWrap > div#toolBox.empty {
 		display: none;
 	}
-	.searchBox {
+	.resultBox {
 		max-height: 310px;
 		overflow-x: hidden;
-		overflow-y: scroll;
+		overflow-y: auto;
 	}
 	.title {
 		display: flex;
