@@ -46,7 +46,7 @@
 
 <div class="inputTitle">
 	아이템
-	{#if craft?.imgUrl}
+	{#if craft?.imgUrl && !ignoreImg}
 		<img class="miniItem" src={craft.imgUrl.replace('/images', '')} alt="현재 이미지, 교체될 이미지" />
 	{/if}
 	<input on:keyup={search} value={searchText} style={inputWidth ? 'width:' + inputWidth + 'px' : ''} />
