@@ -96,5 +96,7 @@
 		width: 40px;
 		height: 40px;
 		border-radius: 50%;
+		background-image: url('$lib/img/blackSpirit.png');
+		background-size: contain;
 	}
 </style>
