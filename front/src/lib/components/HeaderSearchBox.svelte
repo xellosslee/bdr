@@ -38,8 +38,10 @@
 		})
 	})
 	function handleClickOutside(event) {
-		boxOpened = false
-		popCloseFunction()
+		if (boxOpened) {
+			boxOpened = false
+			popCloseFunction()
+		}
 	}
 	async function keyupEvent(evt) {
 		if (evt.key == 'Enter' && searchItems.length > 0 && searchItems[position]?.itemUrl) {

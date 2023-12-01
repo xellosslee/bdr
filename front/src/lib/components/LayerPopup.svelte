@@ -13,6 +13,7 @@
 	// 레이어 팝업 닫힘 함수를 등록
 	addByCloseFunction(closeEditLayer)
 	export function closeEditLayer() {
+		console.log('called closeEditLayer')
 		popupItem = null
 		popCloseFunction()
 	}
