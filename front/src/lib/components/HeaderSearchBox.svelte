@@ -2,6 +2,7 @@
 	import lib from '$lib'
 	import logo from '$lib/img/blackSpirit.png'
 	import { clickOutside } from '$lib/closeOutside.js'
+	import { addViewStackByCloseFunction, popCloseFunction } from '$lib/store'
 
 	let searchText = ''
 	let searchedText = ''
@@ -11,6 +12,7 @@
 
 	function handleClickOutside(event) {
 		boxOpened = false
+		popCloseFunction()
 	}
 	async function keyupEvent(evt) {
 		if (evt.key == 'Enter' && searchItems.length > 0 && searchItems[position]?.itemUrl) {
@@ -49,10 +51,15 @@
 			} else {
 				searchItems = []
 			}
+			if (!boxOpened) {
+				openBox()
+			}
 		}
 	}
-	async function openBox(evt) {
+	async function openBox() {
 		boxOpened = true
+		// box 닫힘 함수를 등록
+		addViewStackByCloseFunction(handleClickOutside)
 	}
 </script>
 
