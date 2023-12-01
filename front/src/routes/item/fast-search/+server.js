@@ -12,6 +12,7 @@ export async function POST({ request, cookies }) {
 		attributes: ['itemCd', 'name', 'grade'],
 		include: [{ model: DB.File, as: 'itemImage', attributes: ['imgUrl'] }],
 		where: { name: { [Op.like]: '%' + search + '%' }, removed: 0 },
+		order: [[sq.literal('LENGTH(Item.name)'), 'ASC']],
 		limit: 10,
 	})
 	for (let i = 0; i < items.length; i++) {
