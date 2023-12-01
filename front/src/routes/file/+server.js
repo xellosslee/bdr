@@ -28,10 +28,10 @@ export async function PUT({ request, cookies }) {
 	await writeFile(uploadPath, imageBufferData)
 
 	let data = {}
-	// data = await DB.File.create({ name: name, imgUrl: `/items/${timestamp}.${name}.png` })
-	// if (!data) {
-	// 	throw { code: '03', message: '시스템 오류 발생.' }
-	// }
+	data = await DB.File.create({ name: name, imgUrl: `/items/${timestamp}.${name}.png` })
+	if (!data) {
+		throw { code: '03', message: '시스템 오류 발생.' }
+	}
 	return json({ code: '00', data })
 }
 
