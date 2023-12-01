@@ -1,7 +1,7 @@
 <script>
 	import '$lib/css/default.css'
 	import '$lib/css/icons.css'
-	import { viewStack } from '$lib/store'
+	import { viewStack, popCloseFunction } from '$lib/store'
 
 	function handleKeyDown(event) {
 		if (event.key === 'Escape') {
@@ -14,14 +14,13 @@
 	})
 	function escape() {
 		console.debug('닫기 시도')
-		if (!Array.isArray(viewStackList) || viewStackList.length == 0) {
+		let closeFunc = popCloseFunction()
+		if (closeFunc == null) {
 			console.debug('닫을 창 없음')
 			return
 		}
-		let lastView = viewStackList.pop()
-		lastView()
+		closeFunc()
 		console.debug('닫기 완료')
-		viewStack.set([...viewStackList])
 	}
 </script>
 
