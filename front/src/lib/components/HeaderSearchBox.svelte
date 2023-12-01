@@ -2,7 +2,7 @@
 	import lib from '$lib'
 	import logo from '$lib/img/blackSpirit.png'
 	import { clickOutside } from '$lib/closeOutside.js'
-	import { addByCloseFunction, popCloseFunction } from '$lib/store'
+	import { addByCloseFunction, popCloseFunction, bookmarkStore, searchStore } from '$lib/store'
 	import { onMount } from 'svelte'
 
 	let searchText = ''
@@ -11,17 +11,31 @@
 	let boxOpened = false
 	let position = 0
 	let bookmarkList = []
+	let searchHistory = []
 	onMount(async () => {
 		for (let k of Object.keys(localStorage)) {
-			console.log(k)
 			if (k.indexOf('bookmark-') != -1) {
 				bookmarkList.push({
 					...JSON.parse(localStorage[k]),
 					url: '/' + k.substring(9),
 				})
 			}
+			if (k.indexOf('search-') != -1) {
+				searchHistory.push({
+					...JSON.parse(localStorage[k]),
+					url: '/' + k.substring(7),
+				})
+			}
 		}
-		console.log(bookmarkList)
+		// 화면 랜딩 시 초기화
+		bookmarkStore.set(bookmarkList)
+		searchStore.set(searchHistory)
+		bookmarkStore.subscribe((e) => {
+			bookmarkList = e
+		})
+		searchStore.subscribe((e) => {
+			searchHistory = e
+		})
 	})
 	function handleClickOutside(event) {
 		boxOpened = false
@@ -29,7 +43,7 @@
 	}
 	async function keyupEvent(evt) {
 		if (evt.key == 'Enter' && searchItems.length > 0 && searchItems[position]?.itemUrl) {
-			location.href = searchItems[position]?.itemUrl
+			moveSearchResult(searchItems[position])
 			return
 		}
 		if (searchText == '') {
@@ -74,6 +88,18 @@
 		// box 닫힘 함수를 등록
 		addByCloseFunction(handleClickOutside)
 	}
+	function moveSearchResult(item) {
+		searchStore.set([
+			...searchHistory,
+			{
+				url: item.itemUrl,
+				name: item.name,
+				imgUrl: item.imgUrl,
+			},
+		])
+		localStorage.setItem('search-' + item.itemUrl.substring(1), JSON.stringify({ name: item.name, imgUrl: item.imgUrl.replace('/images', '') }))
+		location.href = item.itemUrl
+	}
 </script>
 
 <header class="contentHeader" use:clickOutside on:click_outside={handleClickOutside}>
@@ -83,17 +109,22 @@
 		{#if boxOpened && searchItems.length > 0}
 			<div id="autoComplete">
 				{#each searchItems as e, i}
-					<a class={'miniItemLabel ' + (position == i ? 'selected' : '')} href={e.itemUrl} target="_self">
+					<button class={'miniItemLabel ' + (position == i ? 'selected' : '')} on:click={(moveSearchResult, e)}>
 						<img class={'miniItem grade' + e.grade} src={e.imgUrl.replace('/images', '')} alt={e.name} /><span>{e.name}</span>
-					</a>
+					</button>
 				{/each}
 			</div>
 		{:else if boxOpened}
 			<div id="toolBox">
 				<div class="historyWrap">
-					<div>검색기록</div>
+					<div>최근 검색</div>
 					<div id="historyList">
-						<li />
+						{#if searchHistory.length == 0}
+							<span class="notExist">검색 기록이 없습니다.</span>
+						{/if}
+						{#each searchHistory as e}
+							<a class="miniItemLabel" href={e.url} target="_self"><img class="miniItem" alt={e.name} src={e.imgUrl} /><span>{e.name}</span></a>
+						{/each}
 					</div>
 				</div>
 				<div class="bookmarkWrap">
@@ -182,6 +213,7 @@
 	}
 
 	.miniItemLabel {
+		width: 100%;
 		display: flex;
 		align-items: center;
 		line-height: min(22px, 5.6410256vw);

@@ -19,3 +19,6 @@ export function popCloseFunction() {
 	viewStack.set([...viewStackList])
 	return closeFunc
 }
+
+export const bookmarkStore = writable([])
+export const searchStore = writable([])
