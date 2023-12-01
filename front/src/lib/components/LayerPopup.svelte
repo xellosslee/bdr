@@ -4,14 +4,14 @@
 	import ItemSearch from '$components/ItemSearch.svelte'
 	import lib from '$lib'
 	export let popupItem = {}
-	import { addViewStackByCloseFunction, popCloseFunction } from '$lib/store'
+	import { addByCloseFunction, popCloseFunction } from '$lib/store'
 
 	let uploadImage = {} // 업로드 대상 이미지 값 저장용
 	let dimmedClickClose = true
 	let editItem = structuredClone(popupItem)
 	console.debug(editItem)
 	// 레이어 팝업 닫힘 함수를 등록
-	addViewStackByCloseFunction(closeEditLayer)
+	addByCloseFunction(closeEditLayer)
 	export function closeEditLayer() {
 		popupItem = null
 		popCloseFunction()

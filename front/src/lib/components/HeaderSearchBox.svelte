@@ -2,14 +2,27 @@
 	import lib from '$lib'
 	import logo from '$lib/img/blackSpirit.png'
 	import { clickOutside } from '$lib/closeOutside.js'
-	import { addViewStackByCloseFunction, popCloseFunction } from '$lib/store'
+	import { addByCloseFunction, popCloseFunction } from '$lib/store'
+	import { onMount } from 'svelte'
 
 	let searchText = ''
 	let searchedText = ''
 	let searchItems = []
 	let boxOpened = false
 	let position = 0
-
+	let bookmarkList = []
+	onMount(async () => {
+		for (let k of Object.keys(localStorage)) {
+			console.log(k)
+			if (k.indexOf('bookmark-') != -1) {
+				bookmarkList.push({
+					...JSON.parse(localStorage[k]),
+					url: '/' + k.substring(9),
+				})
+			}
+		}
+		console.log(bookmarkList)
+	})
 	function handleClickOutside(event) {
 		boxOpened = false
 		popCloseFunction()
@@ -59,7 +72,7 @@
 	async function openBox() {
 		boxOpened = true
 		// box 닫힘 함수를 등록
-		addViewStackByCloseFunction(handleClickOutside)
+		addByCloseFunction(handleClickOutside)
 	}
 </script>
 
@@ -85,8 +98,13 @@
 				</div>
 				<div class="bookmarkWrap">
 					<div>북마크</div>
-					<div id="bookmarkList">
-						<li />
+					<div>
+						{#if bookmarkList.length == 0}
+							<span class="notExist">아직 북마크가 없습니다.</span>
+						{/if}
+						{#each bookmarkList as e}
+							<a class="miniItemLabel" href={e.url} target="_self"><img class="miniItem" alt={e.name} src={e.imgUrl} /><span>{e.name}</span></a>
+						{/each}
 					</div>
 				</div>
 			</div>
