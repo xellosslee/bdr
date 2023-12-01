@@ -49,7 +49,7 @@
 		}
 	}
 	function removeUsage(evt) {
-		let newUsages = editItem.Usages.filter((e) => e.itemCd != evt.target.dataset.itemCd)
+		let newUsages = editItem.Usages.filter((e) => e.url != evt.target.dataset.url)
 		editItem.Usages = newUsages
 	}
 	function addEarn() {
@@ -81,15 +81,15 @@
 			...(editItem?.itemImage?.fileId != null ? { fileId: editItem.itemImage.fileId } : {}),
 			...(editItem.desc != popupItem.desc ? { desc: editItem.desc } : {}),
 			...(editItem.grade != popupItem.grade ? { grade: editItem.grade } : {}),
-			Earns: editItem.Earns.map((e) => ({ work: e.work, type: e.type, Crafts: e.Crafts.map((ee) => ({ itemCd: ee.itemCd, count: ee.count })) })),
-			Usages: editItem.Usages.map((e) => ({ resultItemCd: e.itemCd })),
+			Earns: editItem.Earns.map((e) => ({ work: e.work, type: e.type, Crafts: e.Crafts.map((ee) => ({ itemCd: ee.url.substring(1), count: ee.count })) })),
+			Usages: editItem.Usages.map((e) => ({ resultItemCd: e.url.substring(1) })),
 		}
 		console.debug(data)
 		let result = await lib.api({ url: '/item', method: 'PUT', data })
 		if (result.code == '00') {
 			alert('아이템이 등록 되었습니다.\n감사합니다.')
 			closeEditLayer()
-			location.href = ''
+			location.reload()
 		}
 	}
 </script>
@@ -167,7 +167,7 @@
 							<li class="miniItemLabel">
 								<img class={'miniItem grade' + usage.grade} src={usage.imgUrl.replace('/images', '')} alt={usage.name} />
 								<span class={'grade' + usage.grade}>{usage.name}</span>
-								<button class="btn" data-item-cd={usage.itemCd} on:click={removeUsage}><i class="icon ic16 icon-del" />삭제</button>
+								<button class="btn" data-url={usage.url} on:click={removeUsage}><i class="icon ic16 icon-del" />삭제</button>
 							</li>
 						{/each}
 					</ul>

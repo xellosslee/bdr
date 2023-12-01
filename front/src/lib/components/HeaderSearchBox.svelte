@@ -44,7 +44,7 @@
 		}
 	}
 	async function keyupEvent(evt) {
-		if (evt.key == 'Enter' && searchItems.length > 0 && searchItems[position]?.itemUrl) {
+		if (evt.key == 'Enter' && searchItems.length > 0 && searchItems[position]?.url) {
 			moveSearchResult(searchItems[position])
 			return
 		}
@@ -72,7 +72,7 @@
 			// 단어의 변경이 없으면 재조회 안하도록 수정
 			searchedText = evt.target.value
 			let data = { search: evt.target.value }
-			let result = await lib.api({ url: '/item/fast-search', data })
+			let result = await lib.api({ url: '/item', data })
 			// 검색결과 출력
 			console.debug(result)
 			if (result.code == '00' && result.data.length > 0) {
@@ -94,13 +94,13 @@
 		searchStore.set([
 			...searchHistory,
 			{
-				url: item.itemUrl,
+				url: item.url,
 				name: item.name,
 				imgUrl: item.imgUrl,
 			},
 		])
-		localStorage.setItem('search-' + item.itemUrl.substring(1), JSON.stringify({ name: item.name, imgUrl: item.imgUrl.replace('/images', '') }))
-		location.href = item.itemUrl
+		localStorage.setItem('search-' + item.url.substring(1), JSON.stringify({ name: item.name, imgUrl: item.imgUrl.replace('/images', '') }))
+		location.href = item.url
 	}
 	function removeAllSearch() {
 		for (let k of Object.keys(localStorage)) {

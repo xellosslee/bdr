@@ -94,7 +94,8 @@ export async function load({ params, cookies }) {
 				imgUrl: t.craftItems[0].itemImage.imgUrl,
 				name: t.craftItems[0].name,
 				grade: t.craftItems[0].grade,
-				itemCd: t.craftItems[0].itemCd,
+				// itemCd: t.craftItems[0].itemCd,
+				// itemCd그대로 쓰지 않고 암호화 된 url 변수 사용
 				count: t.count,
 			})),
 		})),
@@ -103,7 +104,8 @@ export async function load({ params, cookies }) {
 			imgUrl: ee.usageItems[0].itemImage.imgUrl,
 			name: ee.usageItems[0].name,
 			grade: ee.usageItems[0].grade,
-			itemCd: ee.usageItems[0].itemCd,
+			// itemCd: ee.usageItems[0].itemCd,
+			// itemCd그대로 쓰지 않고 암호화 된 url 변수 사용
 		})),
 	}))
 	return {

@@ -22,14 +22,16 @@
 			return
 		}
 		searchTextBefore = name
-		let result = await lib.api({ url: '/item/fast-search', data: { search: name } })
+		let result = await lib.api({ url: '/item', data: { search: name } })
 		console.log(result)
 		searchResultList = result.data
 	}
 	function choose(event) {
 		if (craft) {
+			craft.url = searchResultList[event.currentTarget.dataset.imageIdx].url
+			craft.imgUrl = searchResultList[event.currentTarget.dataset.imageIdx].imgUrl
 		} else {
-			let i = popupItem.Usages.findIndex((e) => e.itemCd == searchResultList[event.currentTarget.dataset.imageIdx].itemCd)
+			let i = popupItem.Usages.findIndex((e) => e.url == searchResultList[event.currentTarget.dataset.imageIdx].url)
 			if (i != -1) {
 				alert('동일한 아이템이 추가되어 있습니다.')
 			} else {

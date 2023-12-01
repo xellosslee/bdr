@@ -1,6 +1,5 @@
 import { json } from '@sveltejs/kit'
 import { DB, sq, Op } from '$lib/server/mysql.js'
-import { encode, decode } from '$lib/util/crypt.js'
 import { writeFile } from 'fs/promises'
 import path from 'path'
 
@@ -28,9 +27,28 @@ export async function PUT({ request, cookies }) {
 	const imageBufferData = Buffer.from(await image.arrayBuffer())
 	await writeFile(uploadPath, imageBufferData)
 
-	let data = await DB.File.create({ name: name, imgUrl: `/items/${timestamp}.${name}.png` })
-	if (!data) {
-		throw { code: '03', message: '시스템 오류 발생.' }
+	let data = {}
+	// data = await DB.File.create({ name: name, imgUrl: `/items/${timestamp}.${name}.png` })
+	// if (!data) {
+	// 	throw { code: '03', message: '시스템 오류 발생.' }
+	// }
+	return json({ code: '00', data })
+}
+
+export async function POST({ request, cookies }) {
+	let bdrId = cookies.get('bdrId')
+	if (!bdrId) {
+		throw { code: '97', message: '비정상 적인 접근입니다.' }
 	}
+	const { search } = await request.json()
+	if (search == null || search == '') {
+		return json({ code: '00', message: '검색단어가 없습니다.' })
+	}
+	let data = await DB.File.findAll({
+		attributes: ['fileId', 'imgUrl', 'name'],
+		where: { name: { [Op.like]: '%' + search + '%' } },
+		order: [[sq.literal('LENGTH(File.name)'), 'ASC']],
+		limit: 10,
+	})
 	return json({ code: '00', data })
 }
