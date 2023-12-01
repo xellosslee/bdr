@@ -100,6 +100,22 @@
 		localStorage.setItem('search-' + item.itemUrl.substring(1), JSON.stringify({ name: item.name, imgUrl: item.imgUrl.replace('/images', '') }))
 		location.href = item.itemUrl
 	}
+	function removeAllSearch() {
+		for (let k of Object.keys(localStorage)) {
+			if (k.indexOf('search-') != -1) {
+				localStorage.removeItem(k)
+			}
+		}
+		searchHistory = []
+	}
+	function removeAllBookmark() {
+		for (let k of Object.keys(localStorage)) {
+			if (k.indexOf('bookmark-') != -1) {
+				localStorage.removeItem(k)
+			}
+		}
+		bookmarkList = []
+	}
 </script>
 
 <header class="contentHeader" use:clickOutside on:click_outside={handleClickOutside}>
@@ -109,7 +125,12 @@
 		{#if boxOpened && searchItems.length > 0}
 			<div id="autoComplete">
 				{#each searchItems as e, i}
-					<button class={'miniItemLabel ' + (position == i ? 'selected' : '')} on:click={(moveSearchResult, e)}>
+					<button
+						class={'miniItemLabel ' + (position == i ? 'selected' : '')}
+						on:click={() => {
+							moveSearchResult(e)
+						}}
+					>
 						<img class={'miniItem grade' + e.grade} src={e.imgUrl.replace('/images', '')} alt={e.name} /><span>{e.name}</span>
 					</button>
 				{/each}
@@ -117,23 +138,23 @@
 		{:else if boxOpened}
 			<div id="toolBox">
 				<div class="historyWrap">
-					<div>최근 검색</div>
-					<div id="historyList">
+					<div class="title">최근 검색 ({searchHistory.length}건)<button class="remove" on:click={removeAllSearch}><img src="/trashcan.svg" alt="remove all search history" /></button></div>
+					<div class="searchBox" id="historyList">
 						{#if searchHistory.length == 0}
 							<span class="notExist">검색 기록이 없습니다.</span>
 						{/if}
-						{#each searchHistory as e}
+						{#each searchHistory as e, i}
 							<a class="miniItemLabel" href={e.url} target="_self"><img class="miniItem" alt={e.name} src={e.imgUrl} /><span>{e.name}</span></a>
 						{/each}
 					</div>
 				</div>
 				<div class="bookmarkWrap">
-					<div>북마크</div>
+					<div class="title">북마크 ({bookmarkList.length}건)<button class="remove" on:click={removeAllBookmark}><img src="/trashcan.svg" alt="remove all bookmark history" /></button></div>
 					<div>
 						{#if bookmarkList.length == 0}
 							<span class="notExist">아직 북마크가 없습니다.</span>
 						{/if}
-						{#each bookmarkList as e}
+						{#each bookmarkList as e, i}
 							<a class="miniItemLabel" href={e.url} target="_self"><img class="miniItem" alt={e.name} src={e.imgUrl} /><span>{e.name}</span></a>
 						{/each}
 					</div>
@@ -189,6 +210,23 @@
 	.contentHeader .searchWrap > div#autoComplete.empty,
 	.contentHeader .searchWrap > div#toolBox.empty {
 		display: none;
+	}
+	.searchBox {
+		max-height: 310px;
+		overflow-x: hidden;
+		overflow-y: scroll;
+	}
+	.title {
+		display: flex;
+		align-items: center;
+	}
+	button.remove {
+		margin-left: auto;
+		margin-right: 10px;
+	}
+	button.remove > img {
+		width: 17px;
+		height: 17px;
 	}
 
 	.contentHeader .searchWrap > div#toolBox {
