@@ -37,7 +37,6 @@ let DB = {
 }
 
 DB.Usages.belongsTo(DB.Item, { foreignKey: 'itemId', as: 'Item', constraints: false, foreignKeyConstraint: false })
-DB.Usages.hasMany(DB.Item, { foreignKey: 'itemCd', sourceKey: 'resultItemCd', as: 'resultItem', constraints: false, foreignKeyConstraint: false })
 
 DB.Item.belongsTo(DB.File, { foreignKey: 'fileId', targetKey: 'fileId', as: 'itemImage', constraints: false, foreignKeyConstraint: false })
 
