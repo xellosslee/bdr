@@ -8,6 +8,17 @@
 	export let data
 	let popupItem = null // 열려있는 팝업의 아이템 정보
 	let floatingStat = false
+	let floatingContent = [
+		['종류', '흰', '녹', '파'],
+		['꽃', '1', '4', '9'],
+		['곡물', '1', '3', '6'],
+		['채소', '1', '2', '8'],
+		['과일', '1', '4', '9'],
+		['벌꿀', '1', '2', '3'],
+		['물고기', '0.5', '1', '2'],
+		['약초', '1', '3', '6'],
+		['버섯', '1', '3', '5'],
+	]
 	function toggleFloating() {
 		floatingStat = !floatingStat
 	}
@@ -32,62 +43,19 @@
 	<button class="floating fold" on:click={toggleFloating}></button>
 {:else}
 	<button class="floating" on:click={toggleFloating}>
-		<div>종류별 재료개수</div>
 		<table>
-			<tr>
-				<th>종류</th>
-				<th>흰</th>
-				<th>녹</th>
-				<th>파</th>
-			</tr>
-			<tr>
-				<td>꽃</td>
-				<td>1</td>
-				<td>4</td>
-				<td>9</td>
-			</tr>
-			<tr>
-				<td>곡물</td>
-				<td>1</td>
-				<td>3</td>
-				<td>6</td>
-			</tr>
-			<tr>
-				<td>채소</td>
-				<td>1</td>
-				<td>2</td>
-				<td>8</td>
-			</tr>
-			<tr>
-				<td>과일</td>
-				<td>1</td>
-				<td>4</td>
-				<td>9</td>
-			</tr>
-			<tr>
-				<td>벌꿀</td>
-				<td>1</td>
-				<td>2</td>
-				<td>3</td>
-			</tr>
-			<tr>
-				<td>물고기</td>
-				<td>0.5</td>
-				<td>1</td>
-				<td>2</td>
-			</tr>
-			<tr>
-				<td>약초</td>
-				<td>1</td>
-				<td>3</td>
-				<td>6</td>
-			</tr>
-			<tr>
-				<td>버섯</td>
-				<td>1</td>
-				<td>3</td>
-				<td>5</td>
-			</tr>
+			<tr><th colspan="100%">재료개수 비율</th></tr>
+			{#each floatingContent as row, r}
+				<tr>
+					{#each row as col}
+						{#if r == 0}
+							<th>{col}</th>
+						{:else}
+							<td>{col}</td>
+						{/if}
+					{/each}
+				</tr>
+			{/each}
 		</table>
 	</button>
 {/if}
@@ -113,8 +81,8 @@
 	}
 	.floating {
 		position: fixed;
-		width: 110px;
-		height: 215px;
+		width: 130px;
+		height: 235px;
 		background: white;
 		right: 10px;
 		bottom: 10px;
