@@ -1,29 +1,16 @@
 <script>
 	import lib from '$lib'
 	import logo from '$lib/img/blackSpirit.png'
-	import { onMount } from 'svelte'
+	import { clickOutside } from '$lib/closeOutside.js'
 
 	let searchText = ''
 	let searchedText = ''
 	let searchItems = []
 	let boxOpened = false
 
-	function handleClick(event) {
-		// 특정 요소를 클릭한 경우 이벤트 전파를 막습니다.
-		if (event.target.closest('.contentHeader')) {
-			return
-		}
-		// 특정 요소 외부를 클릭한 경우 처리할 작업을 여기에 추가합니다.
+	function handleClickOutside(event) {
 		boxOpened = false
 	}
-	onMount(() => {
-		// DOM 요소 외부 클릭 이벤트를 감지합니다.
-		document.addEventListener('click', handleClick)
-		return () => {
-			// 컴포넌트가 제거될 때 이벤트 리스너를 제거합니다.
-			document.removeEventListener('click', handleClick)
-		}
-	})
 	async function keyupEvent(evt) {
 		if (evt.key == 'Enter' && searchItems.length > 0) {
 			location.href = location.protocol + '//' + location.host + searchItems[0].itemUrl
@@ -57,7 +44,7 @@
 	}
 </script>
 
-<header class="contentHeader">
+<header class="contentHeader" use:clickOutside on:click_outside={handleClickOutside}>
 	<a href="/" target="_self"><div class="homeLink"><img src={logo} alt="흑정령(홈아이콘)" /></div></a>
 	<div class="searchWrap">
 		<input type="text" bind:value={searchText} on:keyup={keyupEvent} on:focus={openBox} placeholder="파트너! 어서 궁금한 아이템명을 입력해봐!" spellcheck="false" />
