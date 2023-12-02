@@ -9,6 +9,7 @@
 	let uploadImage = {} // 업로드 대상 이미지 값 저장용
 	let dimmedClickClose = true
 	let editItem = structuredClone(popupItem)
+	editItem.desc = editItem.desc.replace(/<br>/gi, '\n')
 	console.debug(editItem)
 	// 레이어 팝업 닫힘 함수를 등록
 	addByCloseFunction(closeEditLayer)
@@ -79,9 +80,9 @@
 			itemCdEnc: editItem.itemCdEnc,
 			...(editItem.name != popupItem.name ? { name: editItem.name } : {}),
 			...(editItem?.itemImage?.fileId != null ? { fileId: editItem.itemImage.fileId } : {}),
-			...(editItem.desc != popupItem.desc ? { desc: editItem.desc } : {}),
+			...(editItem.desc != popupItem.desc ? { desc: editItem.desc.replace(/\n/gi, '<br>') } : {}),
 			...(editItem.grade != popupItem.grade ? { grade: editItem.grade } : {}),
-			Earns: editItem.Earns.map((e) => ({ work: e.work, type: e.type, Crafts: e.Crafts.map((ee) => ({ itemCd: ee.url.substring(1), count: ee.count })) })),
+			Earns: editItem.Earns.map((e) => ({ work: e.work, path: e.path, type: e.type, Crafts: e.Crafts.map((ee) => ({ itemCd: ee.url.substring(1), count: ee.count })) })),
 			Usages: editItem.Usages.map((e) => ({ resultItemCd: e.url.substring(1) })),
 		}
 		console.debug(data)
@@ -122,7 +123,7 @@
 					</div>
 				</div>
 				<div class="inputWrap desc">
-					<div class="inputTitle">아이템 설명<textarea>{editItem.desc.replace(/<br>/gi, '\n')}</textarea></div>
+					<div class="inputTitle">아이템 설명<textarea bind:value={editItem.desc}></textarea></div>
 				</div>
 				<div class="inputWrap crafts">
 					<div class="inputTitle">획득 방법<button style="margin-left: 5px;" on:click={addEarn}>추가</button></div>
