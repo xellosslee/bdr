@@ -5,6 +5,7 @@ export default defineConfig({
 	plugins: [sveltekit()],
 	server: {
 		port: 7700,
+		host: true,
 		strictPort: true,
 		// fs: {
 		// 	allow: [searchForWorkspaceRoot(process.cwd()), '/static/items/'],
