@@ -104,9 +104,10 @@
 		{#if editItem != null}
 			<div class="box-container">
 				<div class="inputWrap name">
-					<div class="inputTitle">
-						아이템명
-						<input type="text" class="label" bind:value={editItem['name']} />
+					<div class="inputTitle">아이템명</div>
+					<input type="text" class="label" bind:value={editItem['name']} placeholder="아이템명 입력" />
+					<label class="inputTitle">
+						아이템 등급
 						<select bind:value={editItem.grade}>
 							<option value={1}>흰색</option>
 							<option value={2}>녹색</option>
@@ -114,22 +115,27 @@
 							<option value={4}>노란색</option>
 							<option value={5}>빨강색</option>
 						</select>
-					</div>
+					</label>
 				</div>
-				<ImageSearch bind:popupItem={editItem} />
+				<div class="inputWrap">
+					<ImageSearch bind:popupItem={editItem} />
+				</div>
 				<div class="inputWrap imageUpload">
-					<div class="inputTitle">
-						이미지 파일 업로드<input type="file" on:change={setImageName} /><input type="text" value={uploadImage.name || ''} /><button on:click={doUpload}>doUpload</button>
-					</div>
+					<div class="inputTitle">이미지 파일 업로드</div>
+					<input type="file" on:change={setImageName} /><input type="text" value={uploadImage.name || ''} placeholder="이미지 이름 입력" /><button class="btn" on:click={doUpload}>업로드하기</button>
 				</div>
 				<div class="inputWrap desc">
-					<div class="inputTitle">아이템 설명<textarea bind:value={editItem.desc}></textarea></div>
+					<div class="inputTitle">아이템 설명</div>
+					<textarea bind:value={editItem.desc}></textarea>
 				</div>
 				<div class="inputWrap crafts">
-					<div class="inputTitle">획득 방법<button style="margin-left: 5px;" on:click={addEarn}>추가</button></div>
+					<div class="inputTitle">
+						획득 방법
+						<button class="btn" style="margin-left: 5px;" on:click={addEarn}>추가</button>
+					</div>
 					<ul>
 						{#each editItem.Earns as earn, i}
-							<li>
+							<li class="earnWrap">
 								<div>
 									<select bind:value={earn.type}>
 										<option value="get">획득/구매</option>
@@ -162,21 +168,23 @@
 				</div>
 				<div class="inputWrap usages">
 					<div class="inputTitle">제작가능 아이템</div>
-					<ItemSearch bind:popupItem={editItem} inputWidth="100" ignoreImg={true} />
-					<ul>
-						{#each editItem.Usages as usage}
-							<li class="miniItemLabel">
-								<img class={'miniItem grade' + usage.grade} src={usage.imgUrl.replace('/images', '')} alt={usage.name} />
-								<span class={'grade' + usage.grade}>{usage.name}</span>
-								<button class="btn" data-url={usage.url} on:click={removeUsage}><i class="icon ic16 icon-del" />삭제</button>
-							</li>
-						{/each}
-					</ul>
+					<div>
+						<ItemSearch bind:popupItem={editItem} inputWidth="100" ignoreImg={true} />
+						<ul>
+							{#each editItem.Usages as usage}
+								<li class="miniItemLabel">
+									<img class={'miniItem grade' + usage.grade} src={usage.imgUrl.replace('/images', '')} alt={usage.name} />
+									<span class={'grade' + usage.grade}>{usage.name}</span>
+									<button class="btn" data-url={usage.url} on:click={removeUsage}><i class="icon ic16 icon-del" />삭제</button>
+								</li>
+							{/each}
+						</ul>
+					</div>
 				</div>
 			</div>
 		{/if}
 		<div class="btnWrap">
-			<button class="btn" on:click={save}>저 장</button>
+			<button class="btn btn-lg" on:click={save}>저장하기</button>
 		</div>
 	</div>
 </div>
@@ -273,12 +281,22 @@
 			z-index: -1;
 		}
 	}
-	.inputTitle {
+	:global(.inputTitle) {
 		font-weight: bold;
 	}
 	.layerPopup textarea {
 		width: calc(100% - 6px);
 		height: 200px;
+	}
+
+	.inputWrap {
+		margin-bottom: 10px;
+		display: flex;
+		flex-wrap: wrap;
+	}
+
+	:global(.inputWrap div.inputTitle) {
+		min-width: 15%;
 	}
 
 	.inputWrap.usages li {
@@ -291,7 +309,7 @@
 		left: 0;
 		right: 0;
 		bottom: 0;
-		height: 40px;
+		height: 60px;
 	}
 	.btnWrap button {
 		margin: 10px auto;
@@ -329,5 +347,16 @@
 	}
 	ul > li {
 		margin-right: 10px;
+	}
+	.earnWrap {
+		border: 1px solid var(--gray-color3);
+		border-radius: 4px;
+		background-color: var(--gray-color4);
+		margin-bottom: 10px;
+		padding: 5px 5px 10px 10px;
+	}
+
+	select {
+		padding: 2px 6px;
 	}
 </style>
