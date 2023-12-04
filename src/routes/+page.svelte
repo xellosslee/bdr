@@ -7,7 +7,10 @@
 	import HeaderSearchBox from '$components/HeaderSearchBox.svelte'
 	export let data
 	let popupItem = null // 열려있는 팝업의 아이템 정보
-	let floatingStat = false
+	let floatingStat = null
+	onMount(() => {
+		floatingStat = localStorage.getItem('floating')
+	})
 	let floatingContent = [
 		['종류', '흰', '녹', '파'],
 		['꽃', '1', '4', '9'],
@@ -20,7 +23,8 @@
 		['버섯', '1', '3', '5'],
 	]
 	function toggleFloating() {
-		floatingStat = !floatingStat
+		floatingStat = floatingStat == '0' ? '1' : '0'
+		localStorage.setItem('floating', floatingStat)
 	}
 </script>
 
@@ -39,25 +43,27 @@
 {#if popupItem}
 	<LayerPopup bind:popupItem />
 {/if}
-{#if floatingStat}
-	<button class="floating fold" on:click={toggleFloating}></button>
-{:else}
-	<button class="floating" on:click={toggleFloating}>
-		<table>
-			<tr><th colspan="100%">재료개수 비율</th></tr>
-			{#each floatingContent as row, r}
-				<tr>
-					{#each row as col}
-						{#if r == 0}
-							<th>{col}</th>
-						{:else}
-							<td>{col}</td>
-						{/if}
-					{/each}
-				</tr>
-			{/each}
-		</table>
-	</button>
+{#if floatingStat != null}
+	{#if floatingStat == '0'}
+		<button class="floating fold" on:click={toggleFloating}></button>
+	{:else}
+		<button class="floating" on:click={toggleFloating}>
+			<table>
+				<tr><th colspan="100%">재료개수 비율</th></tr>
+				{#each floatingContent as row, r}
+					<tr>
+						{#each row as col}
+							{#if r == 0}
+								<th>{col}</th>
+							{:else}
+								<td>{col}</td>
+							{/if}
+						{/each}
+					</tr>
+				{/each}
+			</table>
+		</button>
+	{/if}
 {/if}
 <footer></footer>
 
