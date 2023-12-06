@@ -6,7 +6,8 @@
 		"dev": "vite dev",
 		"build": "vite build",
 		"preview": "vite preview",
-		"host": "vite --host"
+		"host": "vite --host",
+		"del": "pm2 del bdr"
 	},
 	"devDependencies": {
 		"@sveltejs/adapter-auto": "^2.0.0",
