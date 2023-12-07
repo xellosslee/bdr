@@ -1,0 +1,85 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model craft {
+  id        BigInt   @id @default(autoincrement()) @db.UnsignedBigInt
+  earn      earn     @relation(fields: [earnId], references: [id])
+  earnId    BigInt   @db.UnsignedBigInt
+  itemCd    BigInt   @db.UnsignedBigInt
+  count     BigInt   @db.UnsignedBigInt
+  createdAt DateTime @default(now())
+  item      item[]
+
+  @@index([earnId, itemCd])
+}
+
+model earn {
+  id        BigInt   @id @default(autoincrement()) @db.UnsignedBigInt
+  item      item     @relation(fields: [itemId], references: [itemId])
+  itemId    BigInt   @db.UnsignedBigInt
+  type      String?
+  work      String?
+  path      String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  crafts    craft[]
+
+  @@index([itemId])
+}
+
+model file {
+  fileId    BigInt   @id @default(autoincrement()) @db.UnsignedBigInt
+  imgUrl    String?
+  name      String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  item      item[]
+}
+
+model item {
+  itemId    BigInt   @id @default(autoincrement()) @db.UnsignedBigInt
+  itemCd    BigInt   @db.UnsignedBigInt
+  name      String?
+  desc      String?  @db.Text
+  grade     Int?     @db.TinyInt
+  itemImg   file     @relation(fields: [fileId], references: [fileId])
+  fileId    BigInt   @db.UnsignedBigInt
+  likeCount BigInt
+  removed   Int      @db.TinyInt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  earns     earn[]
+  craft     craft[]
+  usages    usages[]
+
+  @@index([itemCd, fileId])
+}
+
+model like_history {
+  likeHistoryId BigInt   @id @default(autoincrement()) @db.UnsignedBigInt
+  itemId        BigInt   @db.UnsignedBigInt
+  bdrId         String
+  createdAt     DateTime @default(now())
+
+  @@index([itemId, bdrId, createdAt])
+}
+
+model usages {
+  id           BigInt   @id @default(autoincrement()) @db.UnsignedBigInt
+  item         item?    @relation(fields: [itemId], references: [itemId])
+  itemId       BigInt   @db.UnsignedBigInt
+  resultItemCd BigInt   @db.UnsignedBigInt
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([itemId, resultItemCd])
+}
