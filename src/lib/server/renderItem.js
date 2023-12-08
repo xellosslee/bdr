@@ -1,12 +1,14 @@
 import { DB, sq, Op } from '$lib/server/mysql.js'
 import { encode, decode } from '$lib/util/crypt.js'
 import { NODE_ENV } from '$env/static/private'
-import prisma from '$lib/prisma.js'
+// import prisma from '$lib/prisma.js'
 
 export async function renderItem(itemCd, force) {
 	if (itemCd == null) {
-		let item = await prisma.$queryRaw`SELECT itemCd FROM item WHERE removed = 0 ORDER BY RAND() LIMIT 1`
-		itemCd = item[0].itemCd
+		// let item = await prisma.$queryRaw`SELECT itemCd FROM item WHERE removed = 0 ORDER BY RAND() LIMIT 1`
+		// itemCd = item[0].itemCd
+		let item = await DB.Item.findOne({ attributes: ['itemCd'], order: [sq.fn('rand')] })
+		itemCd = item.itemCd
 	}
 	// 운영에서는 숫자 조회 불가능하게 방지
 	if (NODE_ENV != 'production' || force) {
