@@ -84,7 +84,7 @@ export async function renderItem(itemCd, force) {
 		],
 		where: { itemCd: itemCd, removed: 0 },
 		order: [['likeCount', 'desc']],
-		logging: console.log,
+		// logging: console.log,
 	})
 	let resultItems = items.map((e) => ({
 		itemIdEnc: encode(e.dataValues.itemId.toString()),
