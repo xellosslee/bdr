@@ -1,5 +1,5 @@
 import { json } from '@sveltejs/kit'
-import { DB, sq, Op } from '$lib/server/mysql.js'
+import prisma from '$lib/prisma.js'
 import { encode, decode } from '$lib/util/crypt.js'
 
 export async function PUT({ request, cookies }) {
@@ -16,7 +16,8 @@ export async function PUT({ request, cookies }) {
 		} else {
 			itemCd = decode(itemCdEnc)
 		}
-		let cnt = await DB.Item.count({ where: { itemCd: itemCd, removed: 0 } })
+		let cnt = await prisma.file.count({ where: { itemCd: itemCd, removed: 0 } })
+		// let cnt = await DB.Item.count({ where: { itemCd: itemCd, removed: 0 } })
 		if (cnt >= 3) {
 			return json({ code: '01', message: '동일한 아이템을 3개를 초과하여 만들 수 없습니다.' })
 		}
@@ -65,12 +66,12 @@ export async function POST({ request, cookies }) {
 		return json({ code: '00', message: '검색단어가 없습니다.' })
 	}
 	let data = []
-	let items = await DB.Item.findAll({
-		attributes: ['itemCd', 'name', 'grade'],
-		include: [{ model: DB.File, as: 'itemImage', attributes: ['imgUrl'] }],
-		where: { name: { [Op.like]: '%' + search + '%' }, removed: 0 },
-		order: [[sq.literal('LENGTH(Item.name)'), 'ASC']],
-		limit: 10,
+	let items = await prisma.item.findMany({
+		select: { itemCd: true, name: true, grade: true, itemImg: { select: { imgUrl: true } } },
+		where: { name: { contains: search } },
+		orderBy: { name: 'asc' },
+		// 원래 name 의 length 기준으로 짧은 순으로 정렬하고 싶은데 아직 prisma에서 하는법 모름
+		take: 10,
 	})
 	for (let i = 0; i < items.length; i++) {
 		let url = '/' + encode(items[i].itemCd.toString())
@@ -83,7 +84,7 @@ export async function POST({ request, cookies }) {
 			url: url,
 			name: items[i].name,
 			grade: items[i].grade,
-			imgUrl: items[i].itemImage.imgUrl,
+			imgUrl: items[i].itemImg.imgUrl,
 		})
 	}
 	return json({ code: '00', data })
