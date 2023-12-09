@@ -1,5 +1,5 @@
 import { json } from '@sveltejs/kit'
-import { DB, sq, Op } from '$lib/server/mysql.js'
+import prisma from '$lib/prisma.js'
 import { writeFile } from 'fs/promises'
 import path from 'path'
 
@@ -27,8 +27,7 @@ export async function PUT({ request, cookies }) {
 	const imageBufferData = Buffer.from(await image.arrayBuffer())
 	await writeFile(uploadPath, imageBufferData)
 
-	let data = {}
-	data = await DB.File.create({ name: name, imgUrl: `/items/${timestamp}.${name}.png` })
+	let data = await prisma.file.create({ name: name, imgUrl: `/items/${timestamp}.${name}.png` })
 	if (!data) {
 		throw { code: '03', message: '시스템 오류 발생.' }
 	}
@@ -44,11 +43,12 @@ export async function POST({ request, cookies }) {
 	if (search == null || search == '') {
 		return json({ code: '00', message: '검색단어가 없습니다.' })
 	}
-	let data = await DB.File.findAll({
-		attributes: ['fileId', 'imgUrl', 'name'],
-		where: { name: { [Op.like]: '%' + search + '%' } },
-		order: [[sq.literal('LENGTH(File.name)'), 'ASC']],
-		limit: 10,
+	let data = await prisma.file.findMany({
+		select: { fileId: !0, imgUrl: !0, name: !0 },
+		where: { name: { contains: search } },
+		orderBy: { name: 'asc' },
+		// 원래 name 의 length 기준으로 짧은 순으로 정렬하고 싶은데 아직 prisma에서 하는법 모름
+		take: 10,
 	})
 	return json({ code: '00', data })
 }
