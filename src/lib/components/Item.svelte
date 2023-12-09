@@ -104,7 +104,7 @@
 								<img class={'miniItem grade' + craft.grade} src={craft.imgUrl.replace('/images', '')} alt={craft.name} />
 								<span class={'grade' + craft.grade}>{craft.name}</span>
 							</div>
-							<div>{craft.count} x <input class="count" type="text" value={craft.count * (earn.makeCnt || 0)} readonly /></div>
+							<div>{craft.count} x <input class="count" type="text" value={Number(craft.count) * (earn.makeCnt || 0)} readonly /></div>
 						</div>
 					{/each}
 				</div>
