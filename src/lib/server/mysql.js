@@ -5,18 +5,19 @@ import Usages from '$lib/models/usages.js'
 import File from '$lib/models/file.js'
 import Craft from '$lib/models/craft.js'
 import LikeHistory from '$lib/models/like_history.js'
-import { NODE_ENV, QUERY_PARAM_LOG, DB_HOST, DB_NAME, DB_USER, DB_PASS, DB_PORT, SYNC_DB } from '$env/static/private'
+import { NODE_ENV, SECRET_QUERY_PARAM_LOG, SECRET_DB_HOST, SECRET_DB_NAME, SECRET_DB_USER, SECRET_DB_PASS, SECRET_DB_PORT, SECRET_SYNC_DB } from '$env/static/private'
 
 let logging = (...msg) => {
-	if (NODE_ENV == 'local' || QUERY_PARAM_LOG == 1) {
+	if (NODE_ENV == 'local' || SECRET_QUERY_PARAM_LOG == 1) {
 		console.log(msg[0], msg[1]?.bind || '')
 	} else {
 		return false
 	}
 }
-const sq = new Sequelize(DB_NAME || 'wing', DB_USER || 'root', DB_PASS, {
-	host: DB_HOST || 'localhost',
-	port: DB_PORT || 3306,
+console.log(SECRET_DB_HOST)
+const sq = new Sequelize(SECRET_DB_NAME || 'wing', SECRET_DB_USER || 'root', SECRET_DB_PASS, {
+	host: SECRET_DB_HOST || 'localhost',
+	port: SECRET_DB_PORT || 3306,
 	timezone: '+09:00', // SETUP THE TIMEZONE
 	dialect: 'mysql',
 	dialectOptions: { dateStrings: true, typeCast: true },
@@ -56,11 +57,11 @@ setInterval(ping, 28500 * 1000)
 
 DBSync()
 async function DBSync() {
-	if (SYNC_DB === '2' && NODE_ENV !== 'production') {
+	if (SECRET_SYNC_DB === '2' && NODE_ENV !== 'production') {
 		await sq.sync({ force: true })
 		console.log('All models were synchronized successfully.')
 		DB.initialized = true
-	} else if (SYNC_DB === '1') {
+	} else if (SECRET_SYNC_DB === '1') {
 		await sq.sync({ alter: true })
 		console.log('All models were synchronized successfully.')
 		DB.initialized = true
