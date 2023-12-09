@@ -55,6 +55,7 @@ model item {
   itemImg   file     @relation(fields: [fileId], references: [fileId])
   fileId    BigInt   @db.UnsignedBigInt
   likeCount BigInt
+  priority  Int?     @default(0) @db.TinyInt
   removed   Int      @db.TinyInt
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
