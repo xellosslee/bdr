@@ -74,27 +74,40 @@ export async function renderItem(itemCd, force) {
 				type: r.type,
 				work: r.work,
 				path: r.path,
-				Crafts: r.crafts.map((t) => {
-					let item = relateItems.find((q) => q.itemCd == t.itemCd)
-					return {
-						url: '/' + encode(item.itemCd.toString()),
-						imgUrl: item.itemImg.imgUrl,
-						name: item.name,
-						grade: item.grade,
-						count: t.count,
-					}
-				}),
+				Crafts: r.crafts
+					.map((t) => {
+						let item = relateItems.find((q) => {
+							return q.itemCd == t.itemCd
+						})
+						if (!item) {
+							console.warn('craft item is null')
+							return null
+						}
+						return {
+							url: '/' + encode(item.itemCd.toString()),
+							imgUrl: item.itemImg.imgUrl,
+							name: item.name,
+							grade: item.grade,
+							count: t.count,
+						}
+					})
+					.filter((e) => e != null),
 			}
 		}),
-		Usages: e.usages.map((r) => {
-			let item = relateItems.find((q) => q.itemCd == r.resultItemCd)
-			return {
-				url: '/' + encode(item.itemCd.toString()),
-				imgUrl: item.itemImg.imgUrl,
-				name: item.name,
-				grade: item.grade,
-			}
-		}),
+		Usages: e.usages
+			.map((r) => {
+				let item = relateItems.find((q) => q.itemCd == r.resultItemCd)
+				if (!item) {
+					return null
+				}
+				return {
+					url: '/' + encode(item.itemCd.toString()),
+					imgUrl: item.itemImg.imgUrl,
+					name: item.name,
+					grade: item.grade,
+				}
+			})
+			.filter((e) => e),
 	}))
 	console.debug(resultItems)
 	console.debug(resultItems[0].Earns[0].Crafts)
