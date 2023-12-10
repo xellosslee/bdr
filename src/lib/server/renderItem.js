@@ -41,6 +41,7 @@ export async function renderItem(itemCd, force) {
 			usages: true,
 		},
 		where: { itemCd: itemCd, removed: 0 },
+		orderBy: [{ priority: 'desc' }, { likeCount: 'desc' }, { itemId: 'desc' }],
 	})
 	// console.debug(itemsA[0])
 	// console.debug(itemsA[0].earns[0].crafts)
