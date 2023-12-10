@@ -1,5 +1,5 @@
 import { json } from '@sveltejs/kit'
-import { DB, sq, Op } from '$lib/server/mysql.js'
+import prisma from '$lib/prisma.js'
 import { encode, decode } from '$lib/util/crypt.js'
 import dayjs from 'dayjs'
 
@@ -9,19 +9,24 @@ export async function POST({ request, cookies }) {
 	if (!bdrId) {
 		throw { code: '97', message: '비정상 적인 접근입니다.' }
 	}
-	let item = await DB.Item.findOne({
-		attributes: ['itemId'],
-		where: { itemId: decode(itemId) },
-	})
+	prisma.transaction
+	let item = await prisma.item.findUnique({ select: { itemId: true }, where: { itemId: decode(itemId) } })
 	if (item) {
-		let checkOver = await DB.LikeHistory.count({
-			where: { bdrId: bdrId, itemId: item.itemId, createdAt: { [Op.between]: [dayjs().format('YYYY-MM-DD 00:00:00'), dayjs().format('YYYY-MM-DD 23:59:59')] } },
+		let checkLimit = await prisma.like_history.count({
+			where: {
+				bdrId: bdrId,
+				itemId: item.itemId,
+				createdAt: {
+					gte: dayjs().startOf('d'),
+					lte: dayjs().endOf('d'),
+				},
+			},
 		})
-		if (checkOver > 0) {
-			return json({ code: '01', message: '좋아요, 싫어요는 게시글별 하루 한번만 가능합니다.' })
+		if (checkLimit > 3) {
+			return json({ code: '01', message: '좋아요, 싫어요는 게시글별 하루 최대 세번만 가능합니다.' })
 		}
-		await item.increment({ likeCount: like == '1' ? 1 : -1 })
-		await DB.LikeHistory.create({ bdrId: bdrId, itemId: item.itemId })
+		// 트랜잭션으로 묶어서 수행해야 하는 경우 이렇게 씀
+		await prisma.$transaction([prisma.item.update({ where: { itemId: item.itemId }, data: { likeCount: { increment: 1 } } }), prisma.like_history.create({ data: { itemId: item.itemId, bdrId: bdrId } })])
 	} else {
 		return json({ code: '02', message: '해당 아이템을 찾을 수 없습니다.' })
 	}
