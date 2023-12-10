@@ -3,7 +3,7 @@ import prisma from '$lib/prisma.js'
 import { encode, decode } from '$lib/util/crypt.js'
 
 export async function PUT({ request, cookies }) {
-	let transaction = await sq.transaction()
+	// let transaction = await sq.transaction()
 	try {
 		let bdrId = cookies.get('bdrId')
 		if (!bdrId) {
@@ -16,7 +16,7 @@ export async function PUT({ request, cookies }) {
 		} else {
 			itemCd = decode(itemCdEnc)
 		}
-		let cnt = await prisma.file.count({ where: { itemCd: itemCd, removed: 0 } })
+		let cnt = await prisma.item.count({ where: { itemCd: itemCd, removed: 0 } })
 		// let cnt = await DB.Item.count({ where: { itemCd: itemCd, removed: 0 } })
 		if (cnt >= 3) {
 			return json({ code: '01', message: '동일한 아이템을 3개를 초과하여 만들 수 없습니다.' })
@@ -25,29 +25,53 @@ export async function PUT({ request, cookies }) {
 		// 기존 아이템 수정 - (수정하여 새로운 레코드 생성)
 		if (itemIdEnc) {
 			itemId = decode(itemIdEnc)
-			item = await DB.Item.findOne({ attributes: ['itemCd', 'name', 'fileId', 'grade', 'desc'], where: { itemId: itemId } })
-			let newItem = await DB.Item.create({ itemCd: item.itemCd, name: name || item.name, fileId: fileId || item.fileId, grade: grade || item.grade, desc: desc || item.desc }, { transaction })
+			// item = await DB.Item.findOne({ attributes: ['itemCd', 'name', 'fileId', 'grade', 'desc'], where: { itemId: itemId } })
+			item = await prisma.item.findUnique({ select: { itemCd: true, name: true, fileId: true, grade: true, desc: true }, where: { itemId: itemId } })
+			let itemResult = await prisma.item.create({
+				data: {
+					itemCd: item.itemCd,
+					name: name || item.name,
+					fileId: fileId || item.fileId,
+					grade: grade || item.grade,
+					desc: desc || item.desc,
+					likeCount: 0,
+					removed: 0,
+					usages: {
+						createMany: { data: Usages.map((e) => ({ resultItemCd: decode(e.resultItemCd) })) },
+					},
+				},
+			})
+			// createMany 내부에 create나 createMany 가 중첩하여 존재 할 수 없음
+			// 따라서 루프 돌면서 insert 진행해야 함.
+			console.log(itemResult)
 			for (let i = 0; i < Earns.length; i++) {
-				let earn = await DB.Earn.create({ ...Earns[i], itemId: newItem.itemId }, { transaction })
-				if (Array.isArray(Earns[i].Crafts)) {
-					await DB.Craft.bulkCreate(
-						Earns[i].Crafts.map((e) => ({ earnId: earn.id, itemCd: decode(e.itemCd), count: e.count })),
-						{ transaction },
-					)
-				}
+				let e = Earns[i]
+				await prisma.earn.create({
+					data: {
+						itemId: itemResult.itemId,
+						type: e.type,
+						work: e.work,
+						path: e.path,
+						crafts: {
+							createMany: {
+								data: e.Crafts.map((t) => ({
+									itemCd: decode(t.itemCd),
+									count: t.count,
+								})),
+							},
+						},
+					},
+				})
 			}
-			await DB.Usages.bulkCreate(
-				Usages.map((e) => ({ itemId: newItem.itemId, resultItemCd: decode(e.resultItemCd) })),
-				{ transaction },
-			)
+			console.log(itemResult)
 		} else {
 			// 신규 아이템 생성
 		}
-		await transaction.commit()
+		// await transaction.commit()
 		return json({ code: '00' })
 	} catch (err) {
 		console.error(err.original || err)
-		await transaction.rollback()
+		// await transaction.rollback()
 		if (typeof err == 'object') {
 			return json({ code: '99', ...err })
 		} else {

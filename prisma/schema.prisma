@@ -13,7 +13,7 @@ datasource db {
 
 model craft {
   id        BigInt   @id @default(autoincrement()) @db.UnsignedBigInt
-  earn      earn     @relation(fields: [earnId], references: [id])
+  earn      earn     @relation(fields: [earnId], references: [earnId])
   earnId    BigInt   @db.UnsignedBigInt
   itemCd    BigInt   @db.UnsignedBigInt
   count     BigInt   @db.UnsignedBigInt
@@ -24,7 +24,7 @@ model craft {
 }
 
 model earn {
-  id        BigInt   @id @default(autoincrement()) @db.UnsignedBigInt
+  earnId    BigInt   @id @default(autoincrement()) @db.UnsignedBigInt
   item      item     @relation(fields: [itemId], references: [itemId])
   itemId    BigInt   @db.UnsignedBigInt
   type      String?

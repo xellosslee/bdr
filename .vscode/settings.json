@@ -2,7 +2,7 @@
     "editor.formatOnSave": true,
     "prettier.bracketSameLine": true,
     "prettier.htmlWhitespaceSensitivity": "css",
-    "prettier.printWidth": 250,
+    "prettier.printWidth": 200,
     "prettier.resolveGlobalModules": false,
     "prettier.useTabs": true,
     "prettier.tabWidth": 4,
