@@ -22,7 +22,7 @@ export async function POST({ request, cookies }) {
 				},
 			},
 		})
-		if (checkLimit > 3) {
+		if (checkLimit >= 3) {
 			return json({ code: '01', message: '좋아요, 싫어요는 게시글별 하루 최대 세번만 가능합니다.' })
 		}
 		let sameItemCds = await prisma.item.findMany({ where: { itemCd: item.itemCd, removed: 0 } })
@@ -31,18 +31,28 @@ export async function POST({ request, cookies }) {
 			console.log(sameItemCds)
 			sameItemCds.forEach((e) => {
 				if (e.itemId == item.itemId) {
-					e.likeCount += 1
+					e.likeCount += BigInt(like == 1 ? 1 : -1)
 				}
 			})
 			console.log(sameItemCds)
-			// await prisma.$transaction([
-			// 	prisma.item.update({ where: { itemId: item.itemId }, data: { likeCount: { increment: 1 } } }),
-			// 	prisma.like_history.create({ data: { itemId: item.itemId, bdrId: bdrId } })
-			// ])
+			sameItemCds = sameItemCds.sort((a, b) => (a.likeCount < b.likeCount ? 1 : -1))
+			console.log(sameItemCds[0])
+			await prisma.$transaction([
+				// 좋아요 적용
+				prisma.item.update({ where: { itemId: BigInt(item.itemId) }, data: { likeCount: { increment: like == 1 ? 1 : -1 } } }),
+				// 본인 외 priority 0으로
+				prisma.item.updateMany({ where: { itemCd: item.itemCd }, data: { priority: 0 } }),
+				// 가장 높은 아이템 priority 1로
+				prisma.item.update({ where: { itemId: sameItemCds[0].itemId }, data: { priority: 1 } }),
+				prisma.like_history.create({ data: { itemId: item.itemId, bdrId: bdrId } }),
+			])
 		} else {
 			// 단일 아이템이라 priority 비교가 필요 없는 경우
 			// 트랜잭션으로 묶어서 수행해야 하는 경우 이렇게 씀
-			await prisma.$transaction([prisma.item.update({ where: { itemId: item.itemId }, data: { likeCount: { increment: 1 } } }), prisma.like_history.create({ data: { itemId: item.itemId, bdrId: bdrId } })])
+			await prisma.$transaction([
+				prisma.item.update({ where: { itemId: item.itemId }, data: { likeCount: { increment: like == 1 ? 1 : -1 } } }),
+				prisma.like_history.create({ data: { itemId: item.itemId, bdrId: bdrId } }),
+			])
 		}
 	} else {
 		return json({ code: '02', message: '해당 아이템을 찾을 수 없습니다.' })
