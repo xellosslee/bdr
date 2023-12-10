@@ -9,7 +9,7 @@
 	let popupItem = null // 열려있는 팝업의 아이템 정보
 	let floatingStat = null
 	onMount(() => {
-		floatingStat = localStorage.getItem('floating')
+		floatingStat = localStorage.getItem('floating') || '0'
 	})
 	let floatingContent = [
 		['종류', '흰', '녹', '파'],
