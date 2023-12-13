@@ -110,9 +110,6 @@ export async function renderItem(itemCd, force) {
 			})
 			.filter((e) => e),
 	}))
-	console.debug(resultItems)
-	console.debug(resultItems[0].Earns[0].Crafts)
-	console.debug(resultItems[0].Usages)
 	return {
 		items: resultItems,
 	}
