@@ -34,24 +34,28 @@
 </script>
 
 <div class="inputTitle">이미지</div>
-<img class="miniItem" src={popupItem?.itemImage?.imgUrl.replace('/images', '')} alt="현재 이미지, 교체될 이미지" />
-<input on:keyup={search} bind:value={searchText} />
-{#if searchResultList.length > 0}
-	<div class="wrap">
-		{#each searchResultList as searchItem, i}
-			<button class="miniItemLabel" on:click={choose} data-image-idx={i}>
-				<img class={'miniItem'} src={searchItem.imgUrl ? searchItem.imgUrl.replace('/images', '') : ''} alt={searchItem.name} />
-				<span>{searchItem.name}</span>
-			</button>
-		{/each}
-	</div>
+{#if popupItem?.itemImage?.imgUrl}
+	<img class="miniItem" src={popupItem?.itemImage?.imgUrl?.replace('/images', '')} alt="현재 이미지, 교체될 이미지" />
 {/if}
+<div class="inputWrap">
+	<input on:keyup={search} bind:value={searchText} />
+	{#if searchResultList.length > 0}
+		<div class="layerWrap">
+			{#each searchResultList as searchItem, i}
+				<button class="miniItemLabel" on:click={choose} data-image-idx={i}>
+					<img class={'miniItem'} src={searchItem.imgUrl ? searchItem.imgUrl.replace('/images', '') : ''} alt={searchItem.name} />
+					<span>{searchItem.name}</span>
+				</button>
+			{/each}
+		</div>
+	{/if}
+</div>
 
 <style>
-	.inputTitle {
+	.inputWrap {
 		position: relative;
 	}
-	.inputTitle > .wrap {
+	.layerWrap {
 		position: absolute;
 		background: white;
 		border: 1px solid #bbb;

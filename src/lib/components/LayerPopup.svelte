@@ -5,7 +5,7 @@
 	import lib from '$lib'
 	export let popupItem = {}
 	import { addByCloseFunction, popCloseFunction } from '$lib/store'
-
+	let title = '아이템 수정'
 	let uploadImage = {} // 업로드 대상 이미지 값 저장용
 	let dimmedClickClose = true
 	let editItem = structuredClone(popupItem)
@@ -34,6 +34,24 @@
 		} else {
 			alert(result.message)
 		}
+	}
+	function clearItem() {
+		title = '아이템 생성'
+		editItem.itemImage = {}
+		editItem.Earns = []
+		editItem.Usages = []
+		setTimeout(() => {
+			editItem = {
+				itemImage: {},
+				Earns: [],
+				Usages: [],
+			}
+		}, 1)
+	}
+	function resetItem() {
+		title = '아이템 수정'
+		editItem = structuredClone(popupItem)
+		editItem.desc = editItem.desc.replace(/<br>/gi, '\n')
 	}
 	function setImageName(evt) {
 		let image = evt.currentTarget
@@ -75,12 +93,24 @@
 	}
 	async function save(evt) {
 		console.debug(editItem)
+		if (editItem.name == null || editItem.name == '') {
+			return alert('아이템명을 작성 해주세요.')
+		}
+		if (editItem.grade == null || editItem.grade == '') {
+			return alert('아이템 등급을 선택 해주세요.')
+		}
+		if (editItem.itemImage == null || editItem.itemImage.fileId == null) {
+			return alert('이미지를 선택 해주세요.')
+		}
+		if (editItem.desc == null || editItem.desc == '') {
+			return alert('아이템 설명을 작성 해주세요.')
+		}
 		let data = {
 			itemIdEnc: editItem.itemIdEnc,
 			itemCdEnc: editItem.itemCdEnc,
 			...(editItem.name != popupItem.name ? { name: editItem.name } : {}),
 			...(editItem?.itemImage?.fileId != null ? { fileId: editItem.itemImage.fileId } : {}),
-			...(editItem.desc != popupItem.desc ? { desc: editItem.desc.replace(/\n/gi, '<br>') } : {}),
+			...(editItem.desc != popupItem.desc ? { desc: editItem.desc?.replace(/\n/gi, '<br>') } : {}),
 			...(editItem.grade != popupItem.grade ? { grade: editItem.grade } : {}),
 			Earns: editItem.Earns.map((e) => ({ work: e.work, path: e.path, type: e.type, Crafts: e.Crafts.map((ee) => ({ itemCd: ee.url.substring(1), count: ee.count })) })),
 			Usages: editItem.Usages.map((e) => ({ resultItemCd: e.url.substring(1) })),
@@ -98,7 +128,7 @@
 <div class="layerPopup" transition:fade={{ duration: 300 }}>
 	<button class="dimmed" on:click={dimmedClick} aria-roledescription="close btn" />
 	<div class="box">
-		<div class="popupTitle">아이템 수정</div>
+		<div class="popupTitle">{title}</div>
 		<button class="closeBtn" on:click={closeEditLayer}><i class="icon ic16 icon-close" /></button>
 
 		{#if editItem != null}
@@ -122,7 +152,9 @@
 				</div>
 				<div class="inputWrap imageUpload">
 					<div class="inputTitle">이미지 파일 업로드</div>
-					<input type="file" on:change={setImageName} /><input type="text" value={uploadImage.name || ''} placeholder="이미지 이름 입력" /><button class="btn" on:click={doUpload}>업로드하기</button>
+					<input type="file" on:change={setImageName} /><input type="text" value={uploadImage.name || ''} placeholder="이미지 이름 입력" /><button class="btn" on:click={doUpload}
+						>업로드하기</button
+					>
 				</div>
 				<div class="inputWrap desc">
 					<div class="inputTitle">아이템 설명</div>
@@ -152,7 +184,6 @@
 										{#each earn.Crafts as craft, x}
 											<li class="col">
 												<ItemSearch bind:craft />
-												<!-- 아이템 <input type="text" class="count" bind:value={craft.itemCd} /> -->
 												개수 <input type="text" class="count" bind:value={craft.count} />
 												<button class="btn" data-earn-idx={i} data-craft-idx={x} on:click={removeRecipeItem}><i class="icon ic16 icon-del" />삭제</button>
 											</li>
@@ -184,6 +215,8 @@
 			</div>
 		{/if}
 		<div class="btnWrap">
+			<button class="btn btn-lg" on:click={clearItem}>새 아이템 생성</button>
+			<button class="btn btn-lg" on:click={resetItem}>초기화</button>
 			<button class="btn btn-lg" on:click={save}>저장하기</button>
 		</div>
 	</div>
