@@ -9,6 +9,7 @@
 	let uploadImage = {} // 업로드 대상 이미지 값 저장용
 	let dimmedClickClose = true
 	let editItem = structuredClone(popupItem)
+	let clearItemClicked = false
 	editItem.desc = editItem.desc.replace(/<br>/gi, '\n')
 	console.debug(editItem)
 	// 레이어 팝업 닫힘 함수를 등록
@@ -47,11 +48,13 @@
 				Usages: [],
 			}
 		}, 1)
+		clearItemClicked = true
 	}
 	function resetItem() {
 		title = '아이템 수정'
 		editItem = structuredClone(popupItem)
 		editItem.desc = editItem.desc.replace(/<br>/gi, '\n')
+		clearItemClicked = false
 	}
 	function setImageName(evt) {
 		let image = evt.currentTarget
@@ -215,8 +218,11 @@
 			</div>
 		{/if}
 		<div class="btnWrap">
-			<button class="btn btn-lg" on:click={clearItem}>새 아이템 생성</button>
-			<button class="btn btn-lg" on:click={resetItem}>초기화</button>
+			{#if clearItemClicked}
+				<button class="btn btn-lg" on:click={resetItem}>뒤로 가기</button>
+			{:else}
+				<button class="btn btn-lg" on:click={clearItem}>새 아이템 생성</button>
+			{/if}
 			<button class="btn btn-lg" on:click={save}>저장하기</button>
 		</div>
 	</div>
@@ -254,6 +260,7 @@
 		min-height: 400px;
 		max-height: 90%;
 		margin: auto;
+		overflow: hidden;
 	}
 
 	.closeBtn {
@@ -326,6 +333,12 @@
 		margin-bottom: 10px;
 		display: flex;
 		flex-wrap: wrap;
+		align-items: center;
+	}
+
+	.inputWrap.crafts,
+	.inputWrap.usages {
+		align-items: start;
 	}
 
 	:global(.inputWrap div.inputTitle) {
@@ -343,9 +356,11 @@
 		right: 0;
 		bottom: 0;
 		height: 60px;
+		background-color: #fff;
+		justify-content: center;
 	}
 	.btnWrap button {
-		margin: 10px auto;
+		margin: 10px;
 	}
 
 	.miniItemLabel {
