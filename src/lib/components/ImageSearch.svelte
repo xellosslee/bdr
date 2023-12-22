@@ -60,6 +60,7 @@
 		background: white;
 		border: 1px solid #bbb;
 		border-radius: 4px;
+		z-index: 2;
 	}
 	.miniItemLabel {
 		display: flex;

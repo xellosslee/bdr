@@ -123,7 +123,7 @@
 <header class="contentHeader" use:clickOutside on:click_outside={handleClickOutside}>
 	<a href="/" target="_self"><div class="homeLink"><img src={logo} alt="흑정령(홈아이콘)" /></div></a>
 	<div class="searchWrap">
-		<input type="text" bind:value={searchText} on:keyup={keyupEvent} on:focus={openBox} placeholder="파트너! 어서 궁금한 아이템명을 입력해봐!" spellcheck="false" />
+		<input type="text" bind:value={searchText} autocomplete="off" on:keyup={keyupEvent} on:focus={openBox} placeholder="파트너! 어서 궁금한 아이템명을 입력해봐!" spellcheck="false" />
 		{#if boxOpened && searchItems.length > 0}
 			<div id="autoComplete">
 				{#each searchItems as e, i}

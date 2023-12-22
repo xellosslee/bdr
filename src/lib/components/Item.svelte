@@ -187,6 +187,7 @@
 		border: 1px solid var(--gray-color1);
 		border-radius: 5px;
 		margin: 4px;
+		padding-bottom: 4px;
 	}
 
 	.earnList > .row {
