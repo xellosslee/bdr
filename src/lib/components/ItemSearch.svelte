@@ -51,7 +51,7 @@
 	{#if craft?.imgUrl && !ignoreImg}
 		<img class="miniItem" src={craft.imgUrl.replace('/images', '')} alt="현재 이미지 or 교체될 이미지" />
 	{/if}
-	<input on:keyup={search} value={searchText} style={inputWidth ? 'width:' + inputWidth + 'px' : ''} />
+	<input on:keyup={search} value={searchText} style={inputWidth ? 'width:' + inputWidth + 'px' : ''} placeholder="검색어 입력" />
 	{#if searchResultList.length > 0}
 		<div class="wrap">
 			{#each searchResultList as searchItem, i}

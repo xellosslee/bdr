@@ -176,9 +176,11 @@
 										<option value="get">획득/구매</option>
 										<option value="craft">제작</option>
 									</select>
-									<input type="text" bind:value={earn.work} />
 									{#if earn.type == 'get'}
-										<input type="text" bind:value={earn.path} />
+										<input type="text" bind:value={earn.work} placeholder="획득/구매방법" />
+										<input type="text" bind:value={earn.path} placeholder="상세내용" />
+									{:else}
+										<input type="text" bind:value={earn.work} placeholder="제작방법" />
 									{/if}
 									<button class="btn inline" data-earn-idx={i} on:click={removeEarn}>삭제</button>
 								</div>
@@ -187,12 +189,14 @@
 										{#each earn.Crafts as craft, x}
 											<li class="col">
 												<ItemSearch bind:craft />
-												개수 <input type="text" class="count" bind:value={craft.count} />
+												<div>
+													<label><input type="text" class="count" bind:value={craft.count} />개</label>
+												</div>
 												<button class="btn" data-earn-idx={i} data-craft-idx={x} on:click={removeRecipeItem}><i class="icon ic16 icon-del" />삭제</button>
 											</li>
 										{/each}
 										<li>
-											<button on:click={addRecipeItem} data-earn-idx={i}>레시피 아이템 추가</button>
+											<button on:click={addRecipeItem} data-earn-idx={i} class="plusBtn">+</button>
 										</li>
 									</ul>
 								{/if}
@@ -392,6 +396,9 @@
 	}
 	ul {
 		padding-left: 10px;
+		width: 100%;
+		box-sizing: border-box;
+		flex: 1;
 	}
 	ul > li {
 		margin-right: 10px;
@@ -406,5 +413,30 @@
 
 	select {
 		padding: 2px 6px;
+	}
+
+	.row {
+		display: flex;
+		flex-wrap: wrap;
+	}
+
+	.plusBtn {
+		padding: 10px;
+		width: 10px;
+		height: 10px;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		color: #fff;
+		background-color: var(--gray-color);
+		border: 1px solid var(--gray-color);
+		border-radius: 50px;
+		cursor: pointer;
+	}
+
+	.plusBtn:hover {
+		border-color: var(--gray-color);
+		background-color: #fff;
+		color: var(--gray-color);
 	}
 </style>
