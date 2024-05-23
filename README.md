@@ -1,3 +1,9 @@
+# sveltekit 으로 만든 프로젝트
+
+검은사막 레시피 검색, 등록, 수정 등의 동작 수행 가능.
+
+좋아요, 싫어요 점수에 따라 주기적으로 별점이 가장 높은 항목만 노출 제어.
+
 # create-svelte
 
 Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/master/packages/create-svelte).
